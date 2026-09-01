@@ -25,6 +25,10 @@
   --note:#2E7D52;
   --neg:#B4442E;
   --shadow:0 1px 2px rgba(25,25,25,0.04), 0 6px 20px rgba(25,25,25,0.04);
+  --glass:0.72;                       /* set from Settings */
+  --glass-bg:255,255,255;
+  --glass-edge:rgba(255,255,255,0.75);
+  --glass-blur:22px;
   --tabbar-bg:#262624;
   --tabbar-ink:#8F8A81;
   --tabbar-active-ink:#FFFFFF;
@@ -44,6 +48,8 @@ body[data-theme="dark"]{
   --note:#7FD6A6;
   --neg:#E8836B;
   --shadow:0 1px 2px rgba(0,0,0,0.3), 0 6px 20px rgba(0,0,0,0.25);
+  --glass-bg:44,43,41;
+  --glass-edge:rgba(255,255,255,0.10);
   --tabbar-bg:#333230;
   --tabbar-ink:#98938A;
   --tabbar-active-ink:#FFFFFF;
@@ -58,18 +64,44 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Robot
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
 .large-title{font-size:30px;font-weight:650;letter-spacing:-0.025em;margin:0;}
 .hidden{display:none !important;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
+/* ---------- Liquid glass ----------
+   Panels are translucent and blur what is behind them, with a bright top edge
+   so they read as glass rather than flat tint. A soft backdrop sits behind
+   everything, otherwise there is nothing for the blur to pick up. */
+body::before{
+  content:'';position:fixed;inset:-10%;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(46% 34% at 14% 8%,  rgba(201,100,66,.16), transparent 70%),
+    radial-gradient(40% 30% at 88% 16%, rgba(122,132,80,.14), transparent 70%),
+    radial-gradient(52% 38% at 72% 88%, rgba(138,107,168,.13), transparent 70%),
+    radial-gradient(44% 32% at 20% 94%, rgba(74,124,140,.12), transparent 70%);
+  filter:blur(24px);
+}
+body[data-theme="dark"]::before{opacity:.55;}
+.glassy{
+  background:rgba(var(--glass-bg), var(--glass));
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(185%);
+  backdrop-filter:blur(var(--glass-blur)) saturate(185%);
+  border:1px solid var(--glass-edge);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), var(--shadow);
+}
+body[data-theme="dark"] .glassy{box-shadow:inset 0 1px 0 rgba(255,255,255,.07), var(--shadow);}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  /* no blur support: fall back to a solid panel so nothing turns unreadable */
+  .glassy{background:var(--surface);}
+}
+.card{background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(185%);backdrop-filter:blur(var(--glass-blur)) saturate(185%);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.45), var(--shadow);border-radius:18px;padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
 .card.tight{padding:6px 17px;}
 .section-label{font-size:12px;font-weight:650;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.06em;margin:20px 4px 8px;}
 .section-label:first-child{margin-top:0;}
-.hero{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px 20px;margin-bottom:13px;box-shadow:var(--shadow);}
+.hero{background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(185%);backdrop-filter:blur(var(--glass-blur)) saturate(185%);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.45), var(--shadow);border-radius:20px;padding:18px 20px;margin-bottom:13px;box-shadow:var(--shadow);}
 .hero .cap{font-size:12.5px;color:var(--ink-soft);font-weight:550;}
 .hero .big{font-size:36px;font-weight:680;letter-spacing:-0.035em;margin:4px 0 12px;line-height:1.05;}
 .hero .split{display:flex;gap:10px;}
 .hero .half{flex:1;background:var(--surface-2);border-radius:13px;padding:10px 12px;}
 .hero .half .k{font-size:11.5px;color:var(--ink-soft);margin-bottom:2px;}
 .hero .half .v{font-size:17px;font-weight:640;letter-spacing:-0.02em;}
-.monthnav{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:5px 6px;margin-bottom:13px;box-shadow:var(--shadow);}
+.monthnav{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(185%);backdrop-filter:blur(var(--glass-blur)) saturate(185%);border:1px solid var(--glass-edge);border-radius:14px;padding:5px 6px;margin-bottom:13px;box-shadow:var(--shadow);}
 .monthnav .mlabel{font-size:15px;font-weight:600;letter-spacing:-0.01em;}
 .navbtn{border:none;background:none;color:var(--ink-soft);padding:8px 12px;border-radius:10px;display:flex;align-items:center;}
 .navbtn:active{background:var(--surface-2);}
@@ -144,7 +176,7 @@ button{font-family:inherit;cursor:pointer;}
   border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);}
 .icon-opt.active{background:var(--accent);color:#FFF;border-color:var(--accent);}
 .icon-opt svg{width:17px;height:17px;}
-.today-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;
+.today-card{background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(185%);backdrop-filter:blur(var(--glass-blur)) saturate(185%);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.45), var(--shadow);border-radius:20px;
   padding:17px 19px;margin-bottom:13px;box-shadow:var(--shadow);}
 .today-card.live{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft), var(--shadow);}
 .today-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:2px;}
@@ -168,14 +200,25 @@ button.today-rate:active{background:var(--accent-soft);}
 .pulse{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.8);}}
 @media (prefers-reduced-motion:reduce){.pulse{animation:none;}}
-.timeline{position:relative;height:34px;margin-top:13px;}
+.timeline{position:relative;height:60px;margin-top:20px;}
+.tl-pay{position:absolute;top:-15px;transform:translateX(-50%);white-space:nowrap;
+  display:flex;flex-direction:column;align-items:center;line-height:1.05;pointer-events:none;}
+.tl-pay.tl-right{transform:translateX(-100%);align-items:flex-end;}
+.tl-pay.tl-left{transform:translateX(0);align-items:flex-start;}
+.tl-pay b{font-size:10.5px;font-weight:750;color:var(--ink-soft);letter-spacing:-0.02em;}
+.tl-pay i{font-size:8px;font-style:normal;font-weight:650;color:var(--ink-faint);letter-spacing:.02em;}
+.tl-pay.live b{color:var(--accent);}
+.tl-pay.past b{color:var(--pos);}
+.tl-endmark{position:absolute;top:6px;width:1.5px;height:21px;border-radius:1px;
+  background:var(--ink-faint);opacity:.5;}
+.tl-endmark.live{background:var(--accent);opacity:.85;}
 .tl-track{position:absolute;left:0;right:0;top:9px;height:15px;background:var(--surface-2);border-radius:5px;overflow:hidden;}
 .tl-bar{position:absolute;top:0;height:100%;background:var(--accent);opacity:.42;}
 .tl-bar.done{opacity:.68;}
 .tl-bar.plan{background:repeating-linear-gradient(45deg,var(--ink-faint),var(--ink-faint) 3px,transparent 3px,transparent 6px);opacity:.5;}
 .tl-now{position:absolute;top:4px;width:2px;height:25px;background:var(--ink);border-radius:1px;}
 .tl-now::after{content:'';position:absolute;top:-3px;left:-2px;width:6px;height:6px;border-radius:50%;background:var(--ink);}
-.tl-tick{position:absolute;top:26px;font-size:9px;color:var(--ink-faint);font-weight:640;transform:translateX(-50%);}
+.tl-tick{position:absolute;top:32px;font-size:9px;color:var(--ink-faint);font-weight:640;transform:translateX(-50%);}
 /* live counter: a banknote-green amount launches up and lands in the running total */
 .today-money{position:relative;}
 .coin{position:absolute;left:50%;bottom:100%;pointer-events:none;
@@ -252,7 +295,7 @@ body[data-theme="dark"] .coin{text-shadow:0 1px 0 rgba(0,0,0,.4);}
 .fl-node.n5{animation-delay:5.9s;}
 
 .hero-planned{font-size:12.5px;color:var(--ink-faint);font-weight:560;margin:2px 0 12px;letter-spacing:-0.005em;}
-.tier-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
+.tier-card{background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(185%);backdrop-filter:blur(var(--glass-blur)) saturate(185%);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.45), var(--shadow);border-radius:18px;padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
 .tier-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:3px;}
 .tier-h{font-size:20px;font-weight:680;letter-spacing:-0.025em;}
 .tier-rate{font-size:12.5px;font-weight:640;color:var(--accent);}
@@ -297,8 +340,16 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 .cal-head span{text-align:center;font-size:10px;font-weight:680;color:var(--ink-faint);letter-spacing:0.04em;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
 .cal-cell{aspect-ratio:1;border:none;border-radius:9px;background:var(--surface-2);color:var(--ink-faint);
-  display:flex;align-items:flex-start;justify-content:flex-end;padding:5px 6px;font-size:10px;font-weight:640;
-  font-family:inherit;line-height:1;}
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  padding:3px 2px;font-family:inherit;line-height:1;overflow:hidden;}
+.cal-cell .cd{font-size:10px;font-weight:640;opacity:.85;}
+.cal-cell .cv{font-size:8.5px;font-weight:700;letter-spacing:-0.02em;}
+.cal-cell .cv.plan{font-size:7.5px;font-weight:600;opacity:.75;font-style:italic;}
+@media (min-width:820px){
+  .cal-cell .cd{font-size:11px;}
+  .cal-cell .cv{font-size:10px;}
+  .cal-cell .cv.plan{font-size:9px;}
+}
 .cal-cell.blank{background:transparent;}
 .cal-cell.sel{outline:2px solid var(--ink);outline-offset:1px;}
 .cal-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px;flex-wrap:wrap;}
@@ -344,7 +395,9 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 .ybar-m{font-size:11px;color:var(--ink-faint);font-weight:640;width:26px;flex:none;}
 .ybar-track{flex:1;height:16px;border-radius:5px;background:var(--surface-2);position:relative;overflow:hidden;min-width:0;}
 .ybar-in{position:absolute;left:0;top:0;height:100%;background:var(--accent);opacity:.85;}
-.ybar-ex{position:absolute;left:0;top:0;height:100%;background:var(--neg);opacity:.5;}
+.ybar-ex{position:absolute;left:0;bottom:0;height:4px;background:var(--neg);opacity:.55;border-radius:0 0 5px 5px;}
+.ybar-pl{position:absolute;top:0;height:100%;opacity:.45;
+  background:repeating-linear-gradient(45deg,var(--ink-faint),var(--ink-faint) 3px,transparent 3px,transparent 6px);}
 .ybar-v{font-size:11.5px;font-weight:640;white-space:nowrap;width:78px;text-align:right;flex:none;letter-spacing:-0.01em;}
 .st-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;gap:8px;}
 .st-row:last-child{border-bottom:none;}
@@ -353,9 +406,41 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 .st-m{width:38px;flex:none;font-weight:600;}
 .st-n{flex:1;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:-0.01em;}
 
+/* Rows ease in one after another rather than all at once */
+.card.tight .row{animation:rowIn .34s cubic-bezier(.2,.8,.2,1) both;}
+.card.tight .row:nth-child(1){animation-delay:.01s}
+.card.tight .row:nth-child(2){animation-delay:.04s}
+.card.tight .row:nth-child(3){animation-delay:.07s}
+.card.tight .row:nth-child(4){animation-delay:.10s}
+.card.tight .row:nth-child(5){animation-delay:.13s}
+.card.tight .row:nth-child(6){animation-delay:.16s}
+.card.tight .row:nth-child(n+7){animation-delay:.18s}
+@keyframes rowIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+
+/* Donut slices sweep in */
+.donut-wrap svg circle[stroke-dasharray]{animation:arcIn .85s cubic-bezier(.25,.9,.3,1) both;}
+@keyframes arcIn{from{stroke-dashoffset:0;opacity:0;}}
+.legend-list .lg-row{animation:rowIn .3s cubic-bezier(.2,.8,.2,1) both;}
+.legend-list .lg-row:nth-child(2){animation-delay:.05s}
+.legend-list .lg-row:nth-child(3){animation-delay:.10s}
+.legend-list .lg-row:nth-child(4){animation-delay:.15s}
+.legend-list .lg-row:nth-child(n+5){animation-delay:.19s}
+
+/* Month bars grow from the left */
+.ybar-in,.ybar-ex,.ybar-pl{animation:barGrow .6s cubic-bezier(.25,.9,.3,1) both;}
+@keyframes barGrow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+.ybar-in,.ybar-ex,.ybar-pl{transform-origin:left center;}
+.ybar-row:nth-child(even) .ybar-in{animation-delay:.04s}
+
+@media (prefers-reduced-motion:reduce){
+  .card.tight .row,.legend-list .lg-row,.donut-wrap svg circle[stroke-dasharray],
+  .ybar-in,.ybar-ex,.ybar-pl{animation:none;}
+}
+
+
 /* Settings row that opens a sub-page */
 .settings-nav-card{width:100%;display:flex;align-items:center;gap:13px;text-align:left;
-  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(185%);backdrop-filter:blur(var(--glass-blur)) saturate(185%);border:1px solid var(--glass-edge);border-radius:18px;
   padding:15px 16px;margin-bottom:6px;box-shadow:var(--shadow);font-family:inherit;color:var(--ink);}
 .snc-icon{width:38px;height:38px;border-radius:12px;flex:none;background:var(--accent-soft);color:var(--accent);
   display:flex;align-items:center;justify-content:center;}
@@ -431,7 +516,9 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 }
 .swatch{transition:transform .12s ease;}
 .tabbar{position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;
-  background:var(--tabbar-bg);border:none;border-radius:22px;padding:6px;
+  background:color-mix(in srgb, var(--tabbar-bg) 82%, transparent);
+  -webkit-backdrop-filter:blur(26px) saturate(200%);backdrop-filter:blur(26px) saturate(200%);
+  border:1px solid rgba(255,255,255,.10);border-radius:22px;padding:6px;
   box-shadow:var(--tabbar-shadow);z-index:20;max-width:480px;margin:0 auto;}
 .tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;
   padding:8px 2px;border-radius:16px;color:var(--tabbar-ink);font-size:10.5px;font-weight:600;letter-spacing:-0.01em;}
@@ -492,7 +579,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       <div class="cal-grid" id="cal-grid"></div>
       <div class="cal-foot">
         <span class="cal-detail" id="cal-detail">—</span>
-        <span class="legend"><span>Less</span><i id="lg1"></i><i id="lg2"></i><i id="lg3"></i><i id="lg4"></i><span>More</span></span>
+        <span class="legend"><span>Less</span><i id="lg1"></i><i id="lg2"></i><i id="lg3"></i><i id="lg4"></i><span>More</span><i id="lgp" style="margin-left:6px"></i><span>planned</span></span>
       </div>
     </div>
 
@@ -535,6 +622,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
         <div class="field-head"><label style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:0 0 0 2px">Quick shifts</label>
           <button type="button" class="linkbtn" id="tpl-manage">Manage</button></div>
         <div class="pillrow" id="tpl-pills" style="margin-top:7px"></div>
+        </div>
       </div>
       <div class="total-strip">
         <span class="k">Calculated total</span>
@@ -580,6 +668,26 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       </div>
       <button type="button" class="btn btn-primary" id="inc-save">Log income</button>
       <button type="button" class="btn btn-ghost" id="tpl-save" style="margin-top:9px">Save as a quick shift</button>
+        <button type="button" class="btn btn-ghost" id="tpl-repeat-btn" style="margin-top:9px;padding:11px;font-size:14px">Repeat this on a weekly schedule…</button>
+        <div id="tpl-repeat-panel" class="hidden subpanel" style="margin-top:10px">
+          <div class="hint" id="rep-what" style="margin:0 0 13px"></div>
+          <div class="field"><label>Repeat on these days</label>
+            <div class="pillrow" id="rep-days"></div>
+          </div>
+          <div style="display:flex;gap:9px">
+            <div class="field" style="flex:1"><label for="rep-from">From</label><input type="date" id="rep-from"></div>
+            <div class="field" style="flex:1"><label for="rep-to">To</label><input type="date" id="rep-to"></div>
+          </div>
+          <div class="segmented" id="rep-mode">
+            <button type="button" class="seg-btn active" data-mode="planned">Planned</button>
+            <button type="button" class="seg-btn" data-mode="actual">Already worked</button>
+          </div>
+          <div class="hint" id="rep-preview" style="margin:0 0 11px"></div>
+          <div style="display:flex;gap:9px">
+            <button type="button" class="btn btn-ghost" id="rep-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary" id="rep-apply">Create shifts</button>
+          </div>
+
       <div id="tpl-save-panel" class="hidden subpanel" style="margin-top:11px">
         <div class="field"><label for="tpl-name">Name this quick shift</label><input type="text" id="tpl-name" placeholder="e.g. Sikarin evening"></div>
         <div id="tpl-summary" class="hint" style="margin:0 0 11px"></div>
@@ -636,7 +744,13 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     </div>
 
     <div class="section-label">Month by month</div>
-    <div class="card"><div id="yr-bars"></div></div>
+    <div class="card"><div id="yr-bars"></div>
+      <div class="legend" style="margin-top:11px;gap:5px">
+        <i style="background:var(--accent);width:11px;height:11px;border-radius:3px;display:block"></i><span>earned</span>
+        <i style="background:repeating-linear-gradient(45deg,var(--ink-faint),var(--ink-faint) 3px,transparent 3px,transparent 6px);opacity:.6;width:11px;height:11px;border-radius:3px;display:block;margin-left:7px"></i><span>planned</span>
+        <i style="background:var(--neg);opacity:.55;width:11px;height:4px;border-radius:2px;display:block;margin-left:7px"></i><span>spent</span>
+      </div>
+    </div>
 
     <div class="section-label">Where income came from</div>
     <div class="card"><div class="donut-wrap"><div id="yr-donut"></div><div class="legend-list" id="yr-donut-legend"></div></div></div>
@@ -695,7 +809,13 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     <div class="card"><div class="pillrow" id="theme-pills">
       <button type="button" class="pill" data-theme="light">Light</button>
       <button type="button" class="pill" data-theme="dark">Dark</button>
-    </div></div>
+    </div>
+      <div class="field" style="margin-top:14px">
+        <label for="glass-range">Glass — how see-through the panels are</label>
+        <input type="range" id="glass-range" min="30" max="100" step="5">
+      </div>
+      <div class="hint" id="glass-hint" style="margin:0"></div>
+    </div>
 
     <div class="section-label">Sound</div>
     <div class="card">
@@ -818,7 +938,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 
   var places=[], transactions=[], expenseCategories=[], templates=[];
   var settings={accent:'#C96442', theme:'light', title:'Overview',
-                sfx:true, ambient:false, muted:false, volume:0.7};
+                sfx:true, ambient:false, muted:false, volume:0.7, glass:0.72};
   var currentIncCat=null, currentExpCat=null;
   var incManageMode=false, expManageMode=false;
   var incSelectedIcon='tag', expSelectedIcon='tag';
@@ -874,7 +994,6 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
              '🛏️','🏨','👟','🌑','☀️','📋','🧰','🧾',
              '🚗','⛽','🍜','☕','✈️','🚤','🏝️','💰',
              '📈','🎯','⭐','🌸'];
-  function isEmoji(key){ return !ICONS[key]; }
   function iconMarkup(key,size){
     if(ICONS[key]) return iconSvg(key,size);
     return '<span style="font-size:'+Math.round(size*1.02)+'px;line-height:1;display:inline-block">'+esc(key)+'</span>';
@@ -1340,6 +1459,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     document.documentElement.style.setProperty('--accent',settings.accent);
     document.documentElement.style.setProperty('--accent-soft',hexToSoft(settings.accent));
     document.body.setAttribute('data-theme',settings.theme);
+    applyGlass();
     document.querySelector('meta[name="theme-color"]').setAttribute('content', settings.theme==='dark'?'#1F1E1D':'#FAF9F5');
     document.getElementById('theme-toggle').innerHTML = settings.theme==='dark'?SUN:MOON;
     renderSoundToggle();
@@ -1631,7 +1751,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   }
 
   document.getElementById('inc-place').addEventListener('change',function(){
-    currentIncCat=null; renderIncCatPills(); renderIncFields();
+    currentIncCat=null; renderIncCatPills(); renderIncFields(); renderTemplates();
   });
   // Shifts are entered as one or more blocks on a half-hour grid.
   var incBlocks=[];
@@ -1760,11 +1880,167 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     });
   });
 
+  // ---------- Repeat a quick shift across a date range ----------
+  // Sairee runs a fixed weekly rota, so a whole month can be laid down at once
+  // instead of entering each day by hand.
+  var repDays=[];              // 0=Sun .. 6=Sat
+  var repPlanned=true;
+  var DOW_LABEL=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var DOW_INDEX=[1,2,3,4,5,6,0];
+
+  function renderRepDays(){
+    document.getElementById('rep-days').innerHTML=DOW_LABEL.map(function(lbl,i){
+      var d=DOW_INDEX[i];
+      return '<button type="button" class="pill'+(repDays.indexOf(d)!==-1?' active':'')+'" data-d="'+d+'">'+lbl+'</button>';
+    }).join('');
+    document.getElementById('rep-days').querySelectorAll('.pill').forEach(function(b){
+      b.addEventListener('click',function(){
+        var d=parseInt(b.getAttribute('data-d'),10);
+        var i=repDays.indexOf(d);
+        if(i===-1) repDays.push(d); else repDays.splice(i,1);
+        renderRepDays(); updateRepPreview();
+      });
+    });
+  }
+  // The repeat panel works off whatever is set up in the form right now, so a
+  // template never has to be saved first.
+  function repSource(){
+    var src=currentIncomeSource();
+    if(!src||!src.place||!currentIncCat) return null;
+    var cat=src.cats.find(function(c){ return c.key===currentIncCat; });
+    if(!cat) return null;
+    var blocks=validBlocks().map(function(b){ return {start:b.start,end:b.end}; });
+    return {place:src.place, cat:cat, blocks:blocks};
+  }
+  function describeRepSource(){
+    var r=repSource();
+    var el=document.getElementById('rep-what');
+    if(!r){ el.textContent='Choose a workplace and category above first.'; return; }
+    if(!r.blocks.length){
+      el.textContent='Add the shift times above (＋ Add a time block), then this will repeat them.';
+      return;
+    }
+    var span=r.blocks.map(function(b){ return b.start+'\u2013'+b.end; }).join(' + ');
+    var hrs=r.blocks.reduce(function(a,b){ return a+(hoursBetween(b.start,b.end)||0); },0);
+    el.textContent='Repeating: '+r.place.name+' \u00b7 '+r.cat.label+' \u00b7 '+span+'  ('+hrs+' h a day)';
+  }
+  function repDatesInRange(){
+    var from=document.getElementById('rep-from').value;
+    var to=document.getElementById('rep-to').value;
+    if(!from||!to||!repDays.length) return [];
+    var a=new Date(from+'T00:00:00'), b=new Date(to+'T00:00:00');
+    if(isNaN(a)||isNaN(b)||a>b) return [];
+    var out=[], guard=0;
+    var d=new Date(a.getTime());
+    while(d<=b && guard++<400){
+      if(repDays.indexOf(d.getDay())!==-1) out.push(dstr(d));
+      d.setDate(d.getDate()+1);
+    }
+    return out;
+  }
+  function updateRepPreview(){
+    describeRepSource();
+    var r=repSource();
+    var dates=repDatesInRange();
+    var el=document.getElementById('rep-preview');
+    if(!r||!r.blocks.length){ el.textContent=''; return; }
+    if(!dates.length){ el.textContent='Pick at least one weekday and a valid date range.'; return; }
+    var perDay=r.blocks.reduce(function(a,b){ return a+(hoursBetween(b.start,b.end)||0); },0);
+    var shifts=dates.length*r.blocks.length;
+    el.textContent=shifts+' shift'+(shifts===1?'':'s')+' across '+dates.length+' day'+(dates.length===1?'':'s')
+      +' \u00b7 '+(perDay*dates.length).toFixed(1)+' h total';
+  }
+  ['rep-from','rep-to'].forEach(function(id){
+    document.getElementById(id).addEventListener('change',updateRepPreview);
+  });
+  document.querySelectorAll('#rep-mode .seg-btn').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('#rep-mode .seg-btn').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      repPlanned = b.getAttribute('data-mode')==='planned';
+    });
+  });
+  document.getElementById('tpl-repeat-btn').addEventListener('click',function(){
+    var panel=document.getElementById('tpl-repeat-panel');
+    var opening=panel.classList.contains('hidden');
+    panel.classList.toggle('hidden');
+    if(opening){
+      if(!repDays.length) repDays=[2,3,5,6,0];  // Tue Wed Fri Sat Sun, the usual Sairee week
+      renderRepDays();
+      var f=document.getElementById('rep-from'), t=document.getElementById('rep-to');
+      if(!f.value) f.value=todayStr();
+      if(!t.value){
+        var end=new Date(); end.setMonth(end.getMonth()+1);
+        t.value=dstr(end);
+      }
+      updateRepPreview();
+    }
+  });
+  document.getElementById('rep-cancel').addEventListener('click',function(){
+    document.getElementById('tpl-repeat-panel').classList.add('hidden');
+  });
+  document.getElementById('rep-apply').addEventListener('click',function(){
+    var r=repSource();
+    var dates=repDatesInRange();
+    var el=document.getElementById('rep-preview');
+    if(!r||!r.blocks.length||!dates.length){ updateRepPreview(); return; }
+    var place=r.place, cat=r.cat, def=formulaFor(cat);
+    var created=0, skipped=0;
+    dates.forEach(function(ds){
+      r.blocks.forEach(function(b){
+        var hours=hoursBetween(b.start,b.end);
+        if(!(hours>0)) return;
+        // never double-book the same slot
+        var clash=transactions.some(function(t){
+          return t.date===ds && t.placeId===place.id && t.catKey===cat.key && t.startTime===b.start;
+        });
+        if(clash){ skipped++; return; }
+        var vals={hours:hours};
+        var amount, note, meta={};
+        if(def.manual){
+          var amtEl=document.getElementById('dyn-amount');
+          amount=amtEl?(parseFloat(amtEl.value)||0):0;
+          var dEl=document.getElementById('dyn-desc');
+          note=dEl?dEl.value:'';
+        }else{
+          var x=def.extra?def.extra(place,vals,ds.slice(0,7)):null;
+          amount=def.calc(place,vals,x);
+          note=def.note?def.note(vals,x):'';
+          if(def.meta) meta=def.meta(vals);
+        }
+        transactions.push({id:uid(), date:ds, type:'income',
+          placeId:place.id, placeName:place.name, catKey:cat.key, catLabel:cat.label,
+          note:note, amount:amount, meta:meta, planned:repPlanned, paid:false,
+          startTime:b.start, endTime:b.end});
+        created++;
+      });
+    });
+    if(created){ saveTx(); renderSummary(); refreshDayLogs(); }
+    el.textContent=created+' shift'+(created===1?'':'s')+' created'
+      + (skipped?(' \u00b7 '+skipped+' already existed and were left alone'):'')
+      + (repPlanned?' \u00b7 saved as planned':'');
+    if(created) playSubmit();
+  });
+
+  // Quick shifts belong to a workplace, so only that workplace's ones are shown.
+  // Re-rendered whenever the workplace changes, not just on first load.
+  function templatesForCurrentPlace(){
+    var val=document.getElementById('inc-place').value;
+    return templates.filter(function(t){ return t.placeId===val; });
+  }
   function renderTemplates(){
     var wrap=document.getElementById('tpl-wrap');
-    if(!templates.length){ wrap.classList.add('hidden'); return; }
+    var val=document.getElementById('inc-place').value;
+    // Other income has no shifts to repeat, so the box is not relevant there.
+    if(val===OTHER_INCOME_ID){ wrap.classList.add('hidden'); return; }
+    var mine=templatesForCurrentPlace();
     wrap.classList.remove('hidden');
-    document.getElementById('tpl-pills').innerHTML=templates.map(function(tp){
+    if(!mine.length){
+      document.getElementById('tpl-pills').innerHTML=
+        '<span class="hint" style="margin:0">None saved for this workplace yet \u2014 fill a shift in below, then tap \u201cSave as a quick shift\u201d.</span>';
+      return;
+    }
+    document.getElementById('tpl-pills').innerHTML=mine.map(function(tp){
       return '<button type="button" class="pill" data-tpl="'+tp.id+'">'+iconMarkup(tp.icon||'\u23F1\uFE0F',14)+esc(tp.name)
         + (tplManageMode?'<span class="pill-del" data-deltpl="'+tp.id+'">\u2715</span>':'')+'</button>';
     }).join('');
@@ -2093,6 +2369,21 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       });
     });
   }
+  function applyGlass(){
+    var v = settings.glass==null ? 0.72 : settings.glass;
+    document.documentElement.style.setProperty('--glass', String(v));
+    document.documentElement.style.setProperty('--glass-blur', (10+Math.round((1-v)*26))+'px');
+    var r=document.getElementById('glass-range');
+    if(r) r.value=Math.round(v*100);
+    var h=document.getElementById('glass-hint');
+    if(h) h.textContent = v>=0.95 ? 'Solid panels.' : (v<=0.45 ? 'Very see-through — heaviest blur.' : 'Frosted.');
+  }
+  document.getElementById('glass-range').addEventListener('input',function(){
+    settings.glass=parseInt(this.value,10)/100;
+    applyGlass(); saveSettings();
+  });
+  document.getElementById('glass-range').addEventListener('change',function(){ playTick(900); });
+
   function renderThemePills(){
     document.querySelectorAll('#theme-pills .pill').forEach(function(b){
       b.classList.toggle('active', b.getAttribute('data-theme')===settings.theme);
@@ -2510,7 +2801,6 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 
   // ---------- Hours, pay status and forecasting ----------
   function hoursOf(t){ return (t.meta && t.meta.hours) ? t.meta.hours : 0; }
-  function isPaid(t){ return t.type==='income' && !t.planned && t.paid===true; }
   // Effective THB/hour per workplace, for months where hours were recorded.
   function ratePerHour(mk){
     var out={};
@@ -2579,43 +2869,86 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   function dailyTotals(mk){
     var out={};
     transactions.forEach(function(t){
-      if(!txInMonth(t,mk) || t.planned) return;
+      if(!txInMonth(t,mk)) return;
+      if(t.planned && !isAccruing(t)) return;   // future shifts still do not count
       var d=parseInt(t.date.slice(8,10),10);
       if(!out[d]) out[d]={income:0,expense:0,count:0};
-      var amt=effectiveAmount(t);
+      var amt=earnedSoFar(t);
+      if(amt<=0 && t.planned) return;
+      if(!out[d]) out[d]={income:0,expense:0,count:0};
       if(t.type==='income') out[d].income+=amt; else out[d].expense+=amt;
       out[d].count++;
     });
     return out;
   }
 
-  var LEVELS=[0.16,0.36,0.62,1];
+  // Ten steps each, so a heavy day reads clearly against a light one.
+  var ORANGE_STEPS=[0.10,0.19,0.28,0.37,0.46,0.56,0.66,0.77,0.88,1.00];
+  var GREY_STEPS  =[0.07,0.12,0.17,0.22,0.28,0.34,0.41,0.49,0.58,0.68];
+  function stepIndex(value,max){
+    if(!(max>0)||!(value>0)) return -1;
+    var i=Math.ceil(value/max*10)-1;
+    return Math.max(0, Math.min(9, i));
+  }
+  function greyRGBA(a){
+    return document.body.getAttribute('data-theme')==='dark'
+      ? 'rgba(200,196,188,'+a+')' : 'rgba(90,86,80,'+a+')';
+  }
+  // Compact money for the tiny cell labels.
+  function fmtTiny(v){
+    v=Math.round(v);
+    if(v>=1000000) return (v/1000000).toFixed(1)+'M';
+    if(v>=10000)   return Math.round(v/1000)+'k';
+    if(v>=1000)    return (v/1000).toFixed(1)+'k';
+    return String(v);
+  }
+
+  function plannedByDay(mk){
+    var out={};
+    transactions.forEach(function(t){
+      if(t.type!=='income' || !t.planned || !txInMonth(t,mk)) return;
+      var d=parseInt(t.date.slice(8,10),10);
+      out[d]=(out[d]||0)+effectiveAmount(t);
+    });
+    return out;
+  }
   function renderHeatmap(){
     var head=document.getElementById('cal-head');
     head.innerHTML=DOW.map(function(d){ return '<span>'+d+'</span>'; }).join('');
-    for(var i=0;i<4;i++){
+    [1,3,6,9].forEach(function(step,i){
       var el=document.getElementById('lg'+(i+1));
-      if(el) el.style.background=accentRGBA(LEVELS[i]);
-    }
+      if(el) el.style.background=accentRGBA(ORANGE_STEPS[step]);
+    });
+    var lp=document.getElementById('lgp');
+    if(lp) lp.style.background=greyRGBA(GREY_STEPS[5]);
     var totals=dailyTotals(viewMonth);
+    var plans=plannedByDay(viewMonth);
     var n=daysInMonth(viewMonth), offset=firstWeekdayIndex(viewMonth);
-    var max=0;
-    Object.keys(totals).forEach(function(d){ if(totals[d].income>max) max=totals[d].income; });
+    var maxA=0, maxP=0;
+    Object.keys(totals).forEach(function(d){ if(totals[d].income>maxA) maxA=totals[d].income; });
+    Object.keys(plans).forEach(function(d){ if(plans[d]>maxP) maxP=plans[d]; });
 
     var html='';
     for(var b=0;b<offset;b++) html+='<span class="cal-cell blank"></span>';
     for(var d=1;d<=n;d++){
       var inc=totals[d]?totals[d].income:0;
-      var style='', cls='cal-cell';
-      if(inc>0 && max>0){
-        var ratio=inc/max;
-        var lvl = ratio>0.75?3 : ratio>0.5?2 : ratio>0.25?1 : 0;
-        style=' style="background:'+accentRGBA(LEVELS[lvl])+';color:'+(lvl>=2?'#FFF':'var(--ink)')+'"';
-      }else if(totals[d]){
-        style=' style="background:var(--surface-2)"';
+      var pl=plans[d]||0;
+      var style='', cls='cal-cell', label='', labelCls='cv';
+      if(inc>0){
+        var oi=stepIndex(inc,maxA);
+        style=' style="background:'+accentRGBA(ORANGE_STEPS[oi])+';color:'+(oi>=6?'#FFF':'var(--ink)')+'"';
+        label=fmtTiny(inc);
+      }else if(pl>0){
+        var gi=stepIndex(pl,maxP);
+        style=' style="background:'+greyRGBA(GREY_STEPS[gi])+';color:var(--ink-soft)"';
+        label=fmtTiny(pl);
+        labelCls='cv plan';   // smaller and lighter: this has not happened yet
       }
       if(selectedDay===d) cls+=' sel';
-      html+='<button type="button" class="'+cls+'" data-day="'+d+'"'+style+'>'+d+'</button>';
+      html+='<button type="button" class="'+cls+'" data-day="'+d+'"'+style+'>'
+          + '<span class="cd">'+d+'</span>'
+          + (label?'<span class="'+labelCls+'">'+label+'</span>':'')
+          + '</button>';
     }
     var grid=document.getElementById('cal-grid');
     grid.innerHTML=html;
@@ -2626,7 +2959,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
         renderHeatmap();
       });
     });
-    showDayDetail(totals,max);
+    showDayDetail(totals,maxA);
   }
   function showDayDetail(totals,max){
     var el=document.getElementById('cal-detail');
@@ -2840,7 +3173,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
         + ((chip||bits.length)?'<div class="t2">'+chip+esc(bits.join(' \u00b7 '))+'</div>':'')+'</div></div>'
         + '<span style="display:flex;align-items:center;gap:1px;white-space:nowrap">'
         + '<span class="amt" style="color:'+(t.planned?'var(--ink-faint)':(t.type==='income'?'var(--pos)':'var(--neg)'))+'">'
-        + fmtSigned(effectiveAmount(t),t.type)+'</span>'
+        + fmtSigned(earnedSoFar(t),t.type)+'</span>'
         + '<button type="button" class="icon-btn dl-edit" data-id="'+t.id+'" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>'
         + '<button type="button" class="icon-btn danger dl-del" data-id="'+t.id+'" aria-label="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'
         + '</span></div>';
@@ -3063,38 +3396,9 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     return h;
   }
 
-  function renderTimeline(){
-    var el=document.getElementById('timeline');
-    var today=todayStr();
-    var list=shiftsOn(today);
-    var carried=[];
-    var y=new Date(); y.setDate(y.getDate()-1);
-    var ys=y.getFullYear()+'-'+String(y.getMonth()+1).padStart(2,'0')+'-'+String(y.getDate()).padStart(2,'0');
-    shiftsOn(ys).forEach(function(t){
-      var a=hhmmToMin(t.startTime), end=a+shiftMinutes(t.startTime,t.endTime);
-      if(end>1440) carried.push({tx:t, from:0, to:Math.min(1440,end-1440)});
-    });
-    if(!list.length && !carried.length){ el.innerHTML=''; el.style.display='none'; return; }
-    el.style.display='';
-    var now=nowMinutes();
-    var bars=carried.map(function(c){
-      return '<span class="tl-bar'+(c.tx.planned?' plan':' done')+'" style="left:0;width:'+(c.to/1440*100).toFixed(2)+'%"></span>';
-    });
-    list.forEach(function(t){
-      var a=hhmmToMin(t.startTime), span=shiftMinutes(t.startTime,t.endTime);
-      var to=Math.min(1440,a+span);
-      bars.push('<span class="tl-bar'+(t.planned?' plan':(now>=a?' done':''))+'" style="left:'
-        +(a/1440*100).toFixed(2)+'%;width:'+Math.max(0.6,(to-a)/1440*100).toFixed(2)+'%"></span>');
-    });
-    var ticks=[0,6,12,18,24].map(function(h){
-      return '<span class="tl-tick" style="left:'+(h/24*100)+'%">'+(h===24?'24':String(h).padStart(2,'0'))+'</span>';
-    }).join('');
-    el.innerHTML='<div class="tl-track">'+bars.join('')+'</div>'
-      + '<span class="tl-now" style="left:'+(now/1440*100).toFixed(3)+'%"></span>'+ticks;
-  }
-
   // The clock can be pinned to a chosen hourly rate. This only changes what the
-  // clock shows — logged entries keep the amount their workplace rules produced.
+  // clock and the timeline projections show — logged entries keep the amount
+  // their workplace rules produced.
   var CLOCK_RATES=[500,600,700,800,900];
   function clockRateFor(tx){
     var auto=perHourOf(tx);
@@ -3122,9 +3426,59 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     if(!w.classList.contains('hidden')) renderRatePicker();
   });
 
+  function renderTimeline(){
+    var el=document.getElementById('timeline');
+    var today=todayStr();
+    var list=shiftsOn(today);
+    var carried=[];
+    var y=new Date(); y.setDate(y.getDate()-1);
+    var ys=y.getFullYear()+'-'+String(y.getMonth()+1).padStart(2,'0')+'-'+String(y.getDate()).padStart(2,'0');
+    shiftsOn(ys).forEach(function(t){
+      var a=hhmmToMin(t.startTime), end=a+shiftMinutes(t.startTime,t.endTime);
+      if(end>1440) carried.push({tx:t, from:0, to:Math.min(1440,end-1440)});
+    });
+    if(!list.length && !carried.length){ el.innerHTML=''; el.style.display='none'; return; }
+    el.style.display='';
+    var now=nowMinutes();
+
+    var bars=carried.map(function(c){
+      return '<span class="tl-bar'+(c.tx.planned?' plan':' done')+'" style="left:0;width:'+(c.to/1440*100).toFixed(2)+'%"></span>';
+    });
+    // Each shift is labelled at its end mark with what it will have paid by then,
+    // so the value of finishing is visible while you are still in it.
+    var labels=[];
+    list.forEach(function(t){
+      var a=hhmmToMin(t.startTime), span=shiftMinutes(t.startTime,t.endTime);
+      var to=Math.min(1440,a+span);
+      var running=(now>=a && now<a+span);
+      bars.push('<span class="tl-bar'+(t.planned?' plan':(now>=a?' done':''))+'" style="left:'
+        +(a/1440*100).toFixed(2)+'%;width:'+Math.max(0.6,(to-a)/1440*100).toFixed(2)+'%"></span>');
+
+      // full value of that block at whatever rate applies to it
+      var payout=clockRateFor(t)*(span/60);
+      if(!(payout>0)) return;
+      var pos=to/1440*100;
+      var cls='tl-pay'+(running?' live':(now>=a+span?' past':''));
+      // keep the last labels from running off the right edge
+      var align = pos>82 ? ' tl-right' : (pos<8 ? ' tl-left' : '');
+      labels.push('<span class="'+cls+align+'" style="left:'+pos.toFixed(2)+'%">'
+        + '<b>'+fmt(payout)+'</b><i>'+t.endTime+'</i></span>');
+      labels.push('<span class="tl-endmark'+(running?' live':'')+'" style="left:'+pos.toFixed(2)+'%"></span>');
+    });
+
+    var ticks=[0,6,12,18,24].map(function(h){
+      return '<span class="tl-tick" style="left:'+(h/24*100)+'%">'+(h===24?'24':String(h).padStart(2,'0'))+'</span>';
+    }).join('');
+    el.innerHTML='<div class="tl-track">'+bars.join('')+'</div>'
+      + labels.join('')
+      + '<span class="tl-now" style="left:'+(now/1440*100).toFixed(3)+'%"></span>'+ticks;
+  }
+
   var clockTimer=null;
   // Kept outside renderToday so re-rendering the screen never loses part of a baht.
   var coinAccum=0;
+  var elapsedCheck=0;
+  var accrualTick=0;
   // ---------- Sound ----------
   // Everything is synthesised with Web Audio, so the app stays a single file
   // and works with no network. iOS only permits audio after a real gesture,
@@ -3225,6 +3579,12 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       blip(f, t+i*0.055, 0.2, 'triangle', 0.2);
     });
   }
+  function playTick(freq){
+    if(!settings.sfx || settings.muted) return;
+    if(!audioReady()) return;
+    resumeAudio();
+    blip(freq||740, actx.currentTime, 0.045, 'sine', 0.055);
+  }
   function playTap(){
     if(!settings.sfx || settings.muted) return;
     if(!audioReady()) return;
@@ -3289,6 +3649,24 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   function syncAmbient(){
     if(settings.ambient && !settings.muted) startAmbient(); else stopAmbient();
   }
+  // One delegated listener gives every button a tick, so new buttons added later
+  // are covered automatically. Buttons with their own sound opt out by id.
+  var OWN_SOUND={'inc-save':1,'exp-save':1,'rep-apply':1,'sound-toggle':1};
+  document.addEventListener('click',function(e){
+    var el=e && e.target;
+    var hops=0;
+    while(el && hops++<6 && !(el.tagName==='BUTTON')) el=el.parentNode;
+    if(!el || el.tagName!=='BUTTON') return;
+    var id=el.getAttribute && el.getAttribute('id');
+    if(id && OWN_SOUND[id]) return;
+    // pitch varies a little by role so the interface does not feel monotone
+    var cls=(el.className||'')+'';
+    if(cls.indexOf('tab-btn')!==-1) playTick(660);
+    else if(cls.indexOf('pill')!==-1) playTick(880);
+    else if(cls.indexOf('btn-primary')!==-1) playTick(520);
+    else playTick(740);
+  });
+
   // Any first tap unlocks audio on iOS.
   document.addEventListener('click',function once(){
     resumeAudio();
@@ -3299,6 +3677,33 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   document.addEventListener('visibilitychange',function(){
     if(document.hidden) stopAmbient(); else syncAmbient();
   });
+
+  // Numbers roll to their new value instead of snapping, which makes a figure
+  // changing feel like something happened rather than a flicker.
+  var countTimers={};
+  function countTo(el,target,formatter){
+    if(!el) return;
+    var key=el.getAttribute('id')||el.className;
+    if(countTimers[key]) cancelAnimationFrame(countTimers[key]);
+    var from=el.__val||0;
+    if(REDUCE_MOTION || from===target){
+      el.__val=target; el.textContent=formatter(target); return;
+    }
+    var t0=null, dur=620;
+    function step(ts){
+      if(t0===null) t0=ts;
+      var p=Math.min(1,(ts-t0)/dur);
+      var e=1-Math.pow(1-p,3);            // ease-out, settles gently
+      var v=from+(target-from)*e;
+      el.textContent=formatter(v);
+      if(p<1){ countTimers[key]=requestAnimationFrame(step); }
+      else { el.__val=target; el.textContent=formatter(target); }
+    }
+    countTimers[key]=requestAnimationFrame(step);
+  }
+  function countMoney(id,value){
+    countTo(document.getElementById(id), value, function(v){ return fmt(v); });
+  }
 
   // ---------- Reward animations ----------
   function spawnCoin(amount){
@@ -3418,6 +3823,19 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 
     if(clockTimer) clearInterval(clockTimer);
     clockTimer=setInterval(function(){
+      if(++elapsedCheck>=60){ elapsedCheck=0; if(autoConfirmElapsed()){ renderSummary(); refreshDayLogs(); } }
+      // While a shift runs the ledger keeps climbing, so redraw the figures
+      // periodically. Ten seconds feels live without redrawing every second.
+      if(++accrualTick>=10){
+        accrualTick=0;
+        if(transactions.some(isAccruing)){
+          var onOverview=!document.getElementById('view-summary').classList.contains('hidden');
+          var onTotals=!document.getElementById('view-totals').classList.contains('hidden');
+          if(onOverview) renderSummary();
+          else if(onTotals) renderTotals();
+          refreshDayLogs();
+        }
+      }
       if(document.getElementById('view-summary').classList.contains('hidden')) return;
         var a=activeShift();
       if(!a){ if(card.classList.contains('live')) renderToday(); return; }
@@ -3438,6 +3856,68 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       }
       renderTimeline();
     },1000);
+  }
+
+  // ---------- Planned shifts become worked once their time has passed ----------
+  // The moment a scheduled shift ends it is, by definition, a shift you worked.
+  // Holding it as "planned" would understate real earnings, so it flips itself.
+  function shiftEndAt(t){
+    if(!t.date) return null;
+    var p=t.date.split('-');
+    var d=new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10));
+    if(isNaN(d)) return null;
+    if(t.startTime && t.endTime){
+      var a=hhmmToMin(t.startTime), span=shiftMinutes(t.startTime,t.endTime);
+      if(a===null||span===null) return null;
+      d.setMinutes(a+span);
+    }else{
+      d.setHours(23,59,59,999);   // no times recorded: treat it as end of that day
+    }
+    return d;
+  }
+  function shiftStartAt(t){
+    if(!t.date || !t.startTime) return null;
+    var p=t.date.split('-');
+    var d=new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10));
+    if(isNaN(d)) return null;
+    d.setMinutes(hhmmToMin(t.startTime));
+    return d;
+  }
+  // What a shift has actually earned by this moment. A shift still running pays
+  // out pro rata, so the figures climb through the shift instead of jumping at
+  // the end. Anything already confirmed simply counts in full.
+  function earnedSoFar(t){
+    var full=effectiveAmount(t);
+    if(!t.planned) return full;
+    if(!t.startTime || !t.endTime) return 0;
+    var a=shiftStartAt(t), b=shiftEndAt(t);
+    if(!a||!b) return 0;
+    var now=Date.now(), s0=a.getTime(), e0=b.getTime();
+    if(now<=s0) return 0;
+    if(now>=e0) return full;
+    return full*((now-s0)/(e0-s0));
+  }
+  function isAccruing(t){
+    if(!t.planned || !t.startTime || !t.endTime) return false;
+    var a=shiftStartAt(t), b=shiftEndAt(t);
+    if(!a||!b) return false;
+    var now=Date.now();
+    return now>a.getTime() && now<b.getTime();
+  }
+
+  function autoConfirmElapsed(){
+    var now=new Date(), changed=[];
+    transactions.forEach(function(t){
+      if(!t.planned) return;
+      var end=shiftEndAt(t);
+      if(end && end.getTime()<=now.getTime()){ t.planned=false; changed.push(t); }
+    });
+    if(!changed.length) return 0;
+    invalidateTiers();
+    // now that they count, hourly shifts are repriced at the month's real tier
+    changed.forEach(function(t){ if(isTieredHourly(t)) t.amount=effectiveAmount(t); });
+    saveTx();
+    return changed.length;
   }
 
   // ---------- Delete with undo ----------
@@ -3492,7 +3972,11 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       var mi=parseInt(t.date.slice(5,7),10)-1;
       var amt=effectiveAmount(t);
       if(t.planned){
-        if(t.type==='income'){ months[mi].planned+=amt; plannedTotal+=amt; plannedCount++; }
+        if(t.type!=='income') return;
+        var got=earnedSoFar(t);                 // part already worked counts as income
+        if(got>0){ months[mi].income+=got; byPlace[t.placeName]=(byPlace[t.placeName]||0)+got; outstanding+=got; }
+        var left=Math.max(0, amt-got);
+        if(left>0){ months[mi].planned+=left; plannedTotal+=left; plannedCount++; }
         return;
       }
       if(t.type==='income'){
@@ -3550,9 +4034,9 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   function renderTotals(){
     var d=yearData(viewYear);
     document.getElementById('year-label').textContent=String(viewYear);
-    document.getElementById('yr-net').textContent=fmt(d.net);
-    document.getElementById('yr-inc').textContent=fmt(d.income);
-    document.getElementById('yr-exp').textContent=fmt(d.expense);
+    countMoney('yr-net', d.net);
+    countMoney('yr-inc', d.income);
+    countMoney('yr-exp', d.expense);
     var extra=document.getElementById('yr-extra');
     if(d.plannedCount){
       extra.classList.remove('hidden');
@@ -3561,16 +4045,19 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     }else{ extra.classList.add('hidden'); }
 
     // month-by-month bars
+    // Planned continues on from the real bar in grey, so the confirmed figure
+    // stays the obvious one while the projected total is still legible.
     var peak=1;
-    d.months.forEach(function(m){ peak=Math.max(peak,m.income,m.expense); });
+    d.months.forEach(function(m){ peak=Math.max(peak, m.income+m.planned, m.expense); });
     document.getElementById('yr-bars').innerHTML=d.months.map(function(m,i){
-      var w=Math.round(m.income/peak*100), we=Math.round(m.expense/peak*100);
-      var quiet=(m.income===0&&m.expense===0);
+      var w=m.income/peak*100, wp=m.planned/peak*100, we=m.expense/peak*100;
+      var quiet=(m.income===0&&m.expense===0&&m.planned===0);
       return '<div class="ybar-row">'
         + '<span class="ybar-m">'+MONTHS[i].slice(0,3)+'</span>'
         + '<span class="ybar-track">'
-        + (w>0?'<i class="ybar-in" style="width:'+w+'%"></i>':'')
-        + (we>0?'<i class="ybar-ex" style="width:'+we+'%"></i>':'')
+        + (w>0 ?'<i class="ybar-in" style="left:0;width:'+w.toFixed(2)+'%"></i>':'')
+        + (wp>0?'<i class="ybar-pl" style="left:'+w.toFixed(2)+'%;width:'+wp.toFixed(2)+'%"></i>':'')
+        + (we>0?'<i class="ybar-ex" style="width:'+we.toFixed(2)+'%"></i>':'')
         + '</span>'
         + '<span class="ybar-v" style="color:'+(quiet?'var(--ink-faint)':'var(--ink)')+'">'
         + (quiet?'—':fmt(m.income-m.expense))+'</span></div>';
@@ -3671,8 +4158,9 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     transactions.forEach(function(t){
       if(!txInMonth(t,viewMonth)) return;
       monthTx.push(t); // planned entries still show in the list, greyed out
-      if(t.planned) return; // but never count toward confirmed totals below
-      var amt=effectiveAmount(t);
+      if(t.planned && !isAccruing(t)) return;   // future shifts contribute nothing yet
+      var amt=earnedSoFar(t);
+      if(amt<=0) return;
       if(t.type==='income'){
         inc+=amt;
         byPlace[t.placeName]=(byPlace[t.placeName]||0)+amt;
@@ -3685,7 +4173,10 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     transactions.forEach(function(t){
       // effectiveAmount, not the stored figure: a planned hourly shift is worth
       // whatever the month's tier rate currently is, same as everywhere else.
-      if(t.planned && t.type==='income' && txInMonth(t,viewMonth)){ plannedTotal+=effectiveAmount(t); plannedCount++; }
+      if(t.planned && t.type==='income' && txInMonth(t,viewMonth)){
+        plannedTotal+=Math.max(0, effectiveAmount(t)-earnedSoFar(t));  // only the part not yet earned
+        plannedCount++;
+      }
     });
     var hp=document.getElementById('hero-planned');
     if(plannedCount){
@@ -3693,9 +4184,9 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       hp.innerHTML='\u25CB '+plannedCount+' planned '+(plannedCount===1?'shift':'shifts')
         +' \u00b7 on track for <strong>'+fmt(inc-exp+plannedTotal)+'</strong>';
     }else{ hp.classList.add('hidden'); }
-    document.getElementById('hero-net').textContent=fmt(inc-exp);
-    document.getElementById('hero-inc').textContent=fmt(inc);
-    document.getElementById('hero-exp').textContent=fmt(exp);
+    countMoney('hero-net', inc-exp);
+    countMoney('hero-inc', inc);
+    countMoney('hero-exp', exp);
 
     var pb=document.getElementById('place-breakdown');
     var pk=Object.keys(byPlace);
@@ -3737,8 +4228,8 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       });
       var dayNet={};
       monthTx.forEach(function(t){
-        if(t.planned) return;
-        dayNet[t.date]=(dayNet[t.date]||0)+(t.type==='income'?1:-1)*effectiveAmount(t);
+        if(t.planned && !isAccruing(t)) return;
+        dayNet[t.date]=(dayNet[t.date]||0)+(t.type==='income'?1:-1)*earnedSoFar(t);
       });
       var lastDate=null;
       rs.innerHTML=monthTx.map(function(t){
@@ -3751,9 +4242,14 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
              + (n>=0?'+':'\u2212')+fmt(Math.abs(n)).slice(1)+'</span></div>';
         }
         var bits=[];
+        // For tiered shifts the hours and the rate they were priced at matter most,
+        // so they lead — the workplace name is the first thing truncation may eat.
+        if(isTieredHourly(t)){
+          bits.push(hoursOf(t)+' h');
+          bits.push(fmt(tierCache[t.placeId+'|'+t.catKey+'|'+t.date.slice(0,7)]||0)+'/h');
+        }
         if(t.type==='income') bits.push(t.placeName);
-        if(isTieredHourly(t)) bits.push(fmt(tierCache[t.placeId+'|'+t.catKey+'|'+t.date.slice(0,7)]||0)+'/h');
-        if(t.note) bits.push(t.note);
+        if(t.note && !isTieredHourly(t)) bits.push(t.note);
         if(!bits.length) bits.push(t.catLabel);
         var chip='';
         if(t.planned){
@@ -3770,7 +4266,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
           + '<div class="t2">'+chip+esc(bits.join(' · '))+'</div></div>'
           + '</div>'
           + '<span style="display:flex;align-items:center;gap:2px;white-space:nowrap">'
-          + '<span class="amt" style="color:'+(t.planned?'var(--ink-faint)':(t.type==='income'?'var(--pos)':'var(--neg)'))+'">'+fmtSigned(effectiveAmount(t),t.type)+'</span>'
+          + '<span class="amt" style="color:'+(t.planned?'var(--ink-faint)':(t.type==='income'?'var(--pos)':'var(--neg)'))+'">'+fmtSigned(earnedSoFar(t),t.type)+'</span>'
           + (t.planned?'<button type="button" class="icon-btn confirm-t" data-id="'+t.id+'" aria-label="Confirm this happened"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M5 13l4 4L19 7"/></svg></button>':'')
           + '<button type="button" class="icon-btn edit-t" data-id="'+t.id+'" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>'
           + '<button type="button" class="icon-btn del-t" data-id="'+t.id+'" aria-label="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'
@@ -3824,6 +4320,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   }
 
   loadData();
+  autoConfirmElapsed();
   initAll();
   if(settings.icsUrl) setTimeout(function(){ syncFromLink(true); },600);
 })();
