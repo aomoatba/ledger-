@@ -329,6 +329,49 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   padding:12px 8px 12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;
   box-shadow:0 8px 24px rgba(0,0,0,0.25);z-index:25;font-size:13px;font-weight:560;}
 .undo-bar button{background:none;border:none;color:var(--accent);font-weight:700;font-size:13px;padding:8px 10px;}
+/* Totals page */
+.donut-wrap{display:flex;align-items:center;gap:16px;}
+.donut-wrap svg{width:116px;height:116px;flex:none;}
+.legend-list{display:flex;flex-direction:column;gap:8px;min-width:0;flex:1;}
+.lg-row{display:flex;align-items:center;gap:8px;font-size:12.5px;min-width:0;}
+.lg-dot{width:9px;height:9px;border-radius:3px;flex:none;}
+.lg-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-weight:540;}
+.lg-val{font-weight:660;white-space:nowrap;letter-spacing:-0.01em;}
+.lg-pct{color:var(--ink-faint);font-size:11px;font-weight:600;width:34px;text-align:right;flex:none;}
+.donut-center{font-size:11px;fill:var(--ink-faint);font-weight:640;}
+.donut-total{font-size:15px;fill:var(--ink);font-weight:700;letter-spacing:-0.02em;}
+.ybar-row{display:flex;align-items:center;gap:9px;padding:5px 0;}
+.ybar-m{font-size:11px;color:var(--ink-faint);font-weight:640;width:26px;flex:none;}
+.ybar-track{flex:1;height:16px;border-radius:5px;background:var(--surface-2);position:relative;overflow:hidden;min-width:0;}
+.ybar-in{position:absolute;left:0;top:0;height:100%;background:var(--accent);opacity:.85;}
+.ybar-ex{position:absolute;left:0;top:0;height:100%;background:var(--neg);opacity:.5;}
+.ybar-v{font-size:11.5px;font-weight:640;white-space:nowrap;width:78px;text-align:right;flex:none;letter-spacing:-0.01em;}
+.st-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;gap:8px;}
+.st-row:last-child{border-bottom:none;}
+.st-row.head{font-size:10.5px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.05em;padding:8px 0;}
+.st-row.total{font-weight:700;border-top:1.5px solid var(--border);border-bottom:none;margin-top:2px;}
+.st-m{width:38px;flex:none;font-weight:600;}
+.st-n{flex:1;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:-0.01em;}
+
+/* Settings row that opens a sub-page */
+.settings-nav-card{width:100%;display:flex;align-items:center;gap:13px;text-align:left;
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  padding:15px 16px;margin-bottom:6px;box-shadow:var(--shadow);font-family:inherit;color:var(--ink);}
+.snc-icon{width:38px;height:38px;border-radius:12px;flex:none;background:var(--accent-soft);color:var(--accent);
+  display:flex;align-items:center;justify-content:center;}
+.snc-icon svg{width:19px;height:19px;}
+.snc-text{display:flex;flex-direction:column;min-width:0;flex:1;}
+.snc-title{font-size:15.5px;font-weight:640;letter-spacing:-0.015em;}
+.snc-sub{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+.snc-chev{color:var(--ink-faint);flex:none;display:flex;}
+.snc-chev svg{width:17px;height:17px;}
+.settings-nav-card:active{transform:scale(.985);}
+
+/* Sub-page header with a back button */
+.subpage-head{display:flex;align-items:center;gap:6px;margin:-4px 0 16px -6px;}
+.subpage-title{font-size:19px;font-weight:660;letter-spacing:-0.02em;}
+@media (min-width:820px){ .subpage-title{font-size:21px;} }
+
 .rate-row{padding:11px 0;border-bottom:1px solid var(--border);}
 .rate-row:first-child{padding-top:0;}
 .rate-row:last-child{border-bottom:none;padding-bottom:2px;}
@@ -572,7 +615,56 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   </div>
 
   <!-- WORKPLACES -->
+  <!-- TOTALS -->
+  <div id="view-totals" class="hidden">
+    <div class="monthnav">
+      <button type="button" class="navbtn" id="year-prev" aria-label="Previous year"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <span class="mlabel" id="year-label">—</span>
+      <button type="button" class="navbtn" id="year-next" aria-label="Next year"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+
+    <div class="cols"><div class="col">
+
+    <div class="hero">
+      <div class="cap">Net for the year</div>
+      <div class="big" id="yr-net">฿0</div>
+      <div class="split">
+        <div class="half"><div class="k">Income</div><div class="v" id="yr-inc" style="color:var(--pos)">฿0</div></div>
+        <div class="half"><div class="k">Expenses</div><div class="v" id="yr-exp" style="color:var(--neg)">฿0</div></div>
+      </div>
+      <div class="hero-planned" id="yr-extra"></div>
+    </div>
+
+    <div class="section-label">Month by month</div>
+    <div class="card"><div id="yr-bars"></div></div>
+
+    <div class="section-label">Where income came from</div>
+    <div class="card"><div class="donut-wrap"><div id="yr-donut"></div><div class="legend-list" id="yr-donut-legend"></div></div></div>
+
+    </div><div class="col">
+
+    <div class="section-label">Where money went</div>
+    <div class="card"><div class="donut-wrap"><div id="yr-exp-donut"></div><div class="legend-list" id="yr-exp-legend"></div></div></div>
+
+    <div class="section-label">Payment status</div>
+    <div class="card tight" id="yr-payments"><div class="empty">Nothing recorded</div></div>
+
+    <div class="section-label">Statement</div>
+    <div class="card tight" id="yr-table"><div class="empty">Nothing recorded this year</div></div>
+
+    <button type="button" class="btn btn-ghost" id="yr-csv" style="margin-top:4px">Export this year as CSV</button>
+    <div class="hint" id="yr-csv-msg" style="margin-top:8px">Opens as a spreadsheet file you can send to an accountant.</div>
+
+    </div></div>
+  </div>
+
   <div id="view-places" class="hidden">
+    <div class="subpage-head">
+      <button type="button" class="icon-btn" id="places-back" aria-label="Back to Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <span class="subpage-title">Workplaces</span>
+    </div>
     <div id="places-list"></div>
     <button type="button" class="btn btn-ghost" id="place-add-btn">+ Add a workplace</button>
     <div id="place-add-form" class="hidden card" style="margin-top:13px">
@@ -587,6 +679,15 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 
   <!-- SETTINGS -->
   <div id="view-settings" class="hidden">
+    <button type="button" class="settings-nav-card" id="open-workplaces">
+      <span class="snc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V6.5a1.5 1.5 0 0 1 1.5-1.5H13a1.5 1.5 0 0 1 1.5 1.5V20"/><path d="M14.5 10h4A1.5 1.5 0 0 1 20 11.5V20"/><path d="M2.5 20h19"/><path d="M9.2 8.5v4M7.2 10.5h4"/></svg></span>
+      <span class="snc-text">
+        <span class="snc-title">Workplaces</span>
+        <span class="snc-sub">Rates, categories, calendar matching</span>
+      </span>
+      <span class="snc-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+    </button>
+
     <div class="section-label">Accent colour</div>
     <div class="card"><div class="swatch-row" id="accent-swatches"></div></div>
 
@@ -645,12 +746,14 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       <div id="backup-panel" class="hidden">
         <div class="field"><label id="backup-label">Backup data</label><textarea id="backup-text" rows="7" spellcheck="false"></textarea></div>
         <div id="backup-msg" class="hint"></div>
+        <button type="button" class="btn btn-ghost hidden" id="backup-replace" style="margin-top:9px">Replace instead</button>
+        <button type="button" class="btn btn-ghost hidden" id="undo-restore" style="margin-top:9px">Undo last restore</button>
         <button type="button" class="btn btn-ghost hidden" id="backup-pick" style="margin-top:11px">Choose a backup file…</button>
         <input type="file" id="backup-file" accept="application/json,.json" style="display:none">
         <div style="display:flex;gap:9px;margin-top:11px">
           <button type="button" class="btn btn-ghost" id="backup-close">Close</button>
           <button type="button" class="btn btn-primary hidden" id="backup-copy">Copy</button>
-          <button type="button" class="btn btn-primary hidden" id="backup-restore">Restore</button>
+          <button type="button" class="btn btn-primary hidden" id="backup-restore">Merge in</button>
         </div>
       </div>
     </div>
@@ -698,9 +801,9 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 8.2v7.6M8.2 12h7.6"/></svg>
     New entry
   </button>
-  <button type="button" class="tab-btn" data-tab="places" data-title="Workplaces">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V6.5a1.5 1.5 0 0 1 1.5-1.5H13a1.5 1.5 0 0 1 1.5 1.5V20"/><path d="M14.5 10h4A1.5 1.5 0 0 1 20 11.5V20"/><path d="M2.5 20h19"/><path d="M9.2 8.5v4M7.2 10.5h4"/></svg>
-    Workplaces
+  <button type="button" class="tab-btn" data-tab="totals" data-title="Totals">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8a2 2 0 0 1 2 2v14a1 1 0 0 1-1.5.87L12 18.5l-4.5 2.37A1 1 0 0 1 6 20V6a2 2 0 0 1 2-2Z"/><path d="M9.5 8.5h5M9.5 12h5"/></svg>
+    Totals
   </button>
   <button type="button" class="tab-btn" data-tab="settings" data-title="Settings">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9 2 2 0 1 1-2.8 2.8 1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3 2 2 0 1 1-2.8-2.8 1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9 2 2 0 1 1 2.8-2.8 1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3 2 2 0 1 1 2.8 2.8 1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1z"/></svg>
@@ -710,7 +813,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 
 <script>
 (function(){
-  var LS_PLACES='ll-places-v1', LS_TX='ll-tx-v1', LS_SETTINGS='ll-settings-v1', LS_EXPCATS='ll-expcats-v1', LS_TPL='ll-templates-v1';
+  var LS_PLACES='ll-places-v1', LS_TX='ll-tx-v1', LS_SETTINGS='ll-settings-v1', LS_EXPCATS='ll-expcats-v1', LS_TPL='ll-templates-v1', LS_OTHERINC='ll-otherinc-v1';
   var LEGACY = {places:'doctor-tracker-places-v3', tx:'doctor-tracker-transactions-v2', expcats:'doctor-tracker-expcats-v1'};
 
   var places=[], transactions=[], expenseCategories=[], templates=[];
@@ -754,6 +857,19 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     plus:'<circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/>',
     chart:'<path d="M4 20V11M12 20V4M20 20v-6"/>'
   };
+  // Income that has no workplace — gifts, interest, anything you receive
+  // outside of a shift. Fully user-managed, same as expense categories.
+  var OTHER_INCOME_ID='__other_income__';
+  var otherIncomeCategories=[];
+  function defaultOtherIncomeCategories(){
+    return [
+      {key:'family',   label:'From family',  icon:'heart'},
+      {key:'interest', label:'Interest',      icon:'cash'},
+      {key:'gift',     label:'Gift',          icon:'star'},
+      {key:'other',    label:'Other',         icon:'tag'}
+    ];
+  }
+
   var EMOJI=['⏱️','🩺','💉','🫀','🦴','🩹','🏥','🚑',
              '🛏️','🏨','👟','🌑','☀️','📋','🧰','🧾',
              '🚗','⛽','🍜','☕','✈️','🚤','🏝️','💰',
@@ -831,23 +947,13 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   }
   function txInMonth(t,mk){ return t.date && t.date.slice(0,7)===mk; }
 
-  function sumMonthQty(placeId,catKey,field,mk){
-    var s=0;
-    transactions.forEach(function(t){
-      if(t.placeId===placeId && t.catKey===catKey && txInMonth(t,mk) && t.id!==editingTxId){
-        s += (t.meta && t.meta[field]) || 0;
-      }
-    });
-    return s;
-  }
-
   var FORMULAS={
     sairee_hourly:{
       fields:[{id:'hours', label:'Hours worked this shift', type:'number', step:'0.5'}],
       extra:function(place,vals,mk){
-        var prior=sumMonthQty(place.id,'hourly','hours',mk);
+        var prior=monthTierHours(place.id,'hourly',mk,editingTxId);
         var total=prior+(vals.hours||0);
-        var rate = total<=rv(place,'tier1max') ? rv(place,'tier1') : (total<=rv(place,'tier2max') ? rv(place,'tier2') : rv(place,'tier3'));
+        var rate=tierRateForHours(place,total);
         return {prior:prior, total:total, rate:rate};
       },
       calc:function(place,vals,x){ return (vals.hours||0)*x.rate; },
@@ -986,7 +1092,21 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     var c=(p.categories||[]).find(function(x){ return x.key===t.catKey; });
     return !!(c && c.formulaKey==='sairee_hourly');
   }
+  // Which pay tier the month lands in is based on ALL hours for the month —
+  // worked and planned together — since a scheduled shift is one you intend
+  // to work. This keeps the rate shown while entering a shift consistent
+  // with the rate shown afterwards, instead of one climbing past the other.
   function monthTierHours(placeId,catKey,mk,excludeId){
+    var h=0;
+    transactions.forEach(function(t){
+      if(t.placeId===placeId && t.catKey===catKey && txInMonth(t,mk) && t.id!==excludeId
+         && t.meta && t.meta.hours) h+=t.meta.hours;
+    });
+    return h;
+  }
+  // Hours already worked and confirmed — used only for progress display,
+  // never for deciding which tier rate applies.
+  function monthWorkedHours(placeId,catKey,mk,excludeId){
     var h=0;
     transactions.forEach(function(t){
       if(t.placeId===placeId && t.catKey===catKey && txInMonth(t,mk) && t.id!==excludeId
@@ -1061,8 +1181,13 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     return FORMULAS[cat.formulaKey]||FORMULAS.manual;
   }
   function catIcon(t){
-    var pl=t.placeId?placeById(t.placeId):null;
-    var list = t.type==='income' ? (pl?pl.categories||[]:[]) : expenseCategories;
+    var list;
+    if(t.type==='income'){
+      var pl = t.placeId?placeById(t.placeId):null;
+      list = pl ? (pl.categories||[]) : otherIncomeCategories;
+    }else{
+      list = expenseCategories;
+    }
     var c=list.find(function(x){ return x.key===t.catKey; });
     return c?c.icon:(t.type==='income'?'cash':'tag');
   }
@@ -1095,6 +1220,8 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     places.forEach(function(p){ if(!p.categories) p.categories=JSON.parse(JSON.stringify(TYPE_DEFAULT_CATEGORIES[p.type]||[])); });
     transactions=readLS(LS_TX,LEGACY.tx)||[];
     templates=readLS(LS_TPL)||[];
+    otherIncomeCategories=readLS(LS_OTHERINC);
+    if(!otherIncomeCategories||!otherIncomeCategories.length) otherIncomeCategories=defaultOtherIncomeCategories();
     expenseCategories=readLS(LS_EXPCATS,LEGACY.expcats);
     if(!expenseCategories||!expenseCategories.length) expenseCategories=defaultExpenseCats();
     var s=readLS(LS_SETTINGS);
@@ -1204,6 +1331,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   function saveSettings(){ writeLS(LS_SETTINGS,settings); }
   function saveExpCats(){ writeLS(LS_EXPCATS,expenseCategories); }
   function saveTemplates(){ writeLS(LS_TPL,templates); }
+  function saveOtherInc(){ writeLS(LS_OTHERINC,otherIncomeCategories); }
 
   var SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   var MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>';
@@ -1246,12 +1374,38 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     applySettings(); saveSettings(); renderThemePills();
   });
 
+  // Workplaces is reached from Settings rather than the tab bar, so it needs
+  // its own show/hide. The Settings tab button stays highlighted throughout,
+  // because Workplaces is a page inside Settings.
+  function showWorkplaces(){
+    document.getElementById('view-settings').classList.add('hidden');
+    var v=document.getElementById('view-places');
+    v.classList.remove('hidden');
+    document.getElementById('page-title').textContent='Settings';
+    if(!REDUCE_MOTION){
+      v.classList.remove('view-enter'); void v.offsetWidth; v.classList.add('view-enter');
+    }
+    window.scrollTo(0,0);
+  }
+  function showSettings(){
+    document.getElementById('view-places').classList.add('hidden');
+    var v=document.getElementById('view-settings');
+    v.classList.remove('hidden');
+    document.getElementById('page-title').textContent='Settings';
+    if(!REDUCE_MOTION){
+      v.classList.remove('view-enter'); void v.offsetWidth; v.classList.add('view-enter');
+    }
+    window.scrollTo(0,0);
+  }
+  document.getElementById('open-workplaces').addEventListener('click',showWorkplaces);
+  document.getElementById('places-back').addEventListener('click',showSettings);
+
   document.querySelectorAll('.tab-btn').forEach(function(btn){
     btn.addEventListener('click',function(){
       document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
       document.getElementById('page-title').textContent=btn.getAttribute('data-title');
-      ['summary','add','places','settings'].forEach(function(t){
+      ['summary','add','totals','places','settings'].forEach(function(t){ // 'places' has no tab; hidden here so it closes when switching tabs
         document.getElementById('view-'+t).classList.toggle('hidden', t!==btn.getAttribute('data-tab'));
       });
       var shown=document.getElementById('view-'+btn.getAttribute('data-tab'));
@@ -1260,7 +1414,13 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
         void shown.offsetWidth;
         shown.classList.add('view-enter');
       }
+      if(btn.getAttribute('data-tab')==='settings'){
+        // always land on Settings itself, never deep inside Workplaces
+        document.getElementById('view-places').classList.add('hidden');
+        document.getElementById('view-settings').classList.remove('hidden');
+      }
       if(btn.getAttribute('data-tab')==='add') refreshDayLogs();
+      if(btn.getAttribute('data-tab')==='totals') renderTotals();
       window.scrollTo(0,0);
     });
   });
@@ -1298,14 +1458,29 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     places.forEach(function(p){
       var o=document.createElement('option'); o.value=p.id; o.textContent=p.name; sel.appendChild(o);
     });
-    if(prev&&placeById(prev)) sel.value=prev;
+    var oth=document.createElement('option'); oth.value=OTHER_INCOME_ID; oth.textContent='Other income'; sel.appendChild(oth);
+    if(prev && (placeById(prev) || prev===OTHER_INCOME_ID)) sel.value=prev;
+  }
+
+  // Every category reader/writer below goes through this, so it is the one
+  // place that knows whether "Other income" or a real workplace is selected.
+  function currentIncomeSource(){
+    var val=document.getElementById('inc-place').value;
+    if(val===OTHER_INCOME_ID){
+      return { cats:otherIncomeCategories, place:null,
+        setCats:function(next){ otherIncomeCategories=next; saveOtherInc(); } };
+    }
+    var place=placeById(val);
+    if(!place) return null;
+    return { cats:place.categories||[], place:place,
+      setCats:function(next){ place.categories=next; savePlaces(); } };
   }
 
   function renderIncCatPills(){
-    var place=placeById(document.getElementById('inc-place').value);
+    var src=currentIncomeSource();
     var wrap=document.getElementById('inc-cat-pills');
-    if(!place){ wrap.innerHTML=''; return; }
-    var cats=place.categories||[];
+    if(!src){ wrap.innerHTML=''; return; }
+    var cats=src.cats;
     if(!currentIncCat||!cats.some(function(c){ return c.key===currentIncCat; })) currentIncCat=cats.length?cats[0].key:null;
     var html=cats.map(function(c){
       return '<button type="button" class="pill'+(c.key===currentIncCat?' active':'')+'" data-cat="'+c.key+'">'
@@ -1321,14 +1496,13 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       sp.addEventListener('click',function(e){
         e.stopPropagation();
         var key=sp.getAttribute('data-delcat');
-        place.categories=place.categories.filter(function(c){ return c.key!==key; });
-        savePlaces();
+        src.setCats(src.cats.filter(function(c){ return c.key!==key; }));
         if(currentIncCat===key) currentIncCat=null;
         renderIncCatPills(); renderIncFields();
       });
     });
     var add=document.getElementById('inc-add-cat-btn');
-    if(add) add.addEventListener('click',function(){ openIncCatForm(place); });
+    if(add) add.addEventListener('click',function(){ openIncCatForm(src); });
   }
 
   function refreshCatCalcUI(place){
@@ -1344,36 +1518,37 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     var warn=document.getElementById('inc-cat-norate');
     warn.classList.toggle('hidden', !(needsRate && !keys.length));
   }
-  function openIncCatForm(place){
+  function openIncCatForm(src){
     document.getElementById('inc-new-cat-label').value='';
     document.getElementById('inc-cat-calc').value='manual';
     document.getElementById('inc-cat-unit').value='';
     incSelectedIcon='tag';
     renderIconGrid('inc-icon-grid',function(){ return incSelectedIcon; },function(v){ incSelectedIcon=v; });
-    refreshCatCalcUI(place);
+    refreshCatCalcUI(src.place);
     document.getElementById('inc-add-cat-form').classList.remove('hidden');
   }
   document.getElementById('inc-cat-calc').addEventListener('change',function(){
-    refreshCatCalcUI(placeById(document.getElementById('inc-place').value));
+    var src=currentIncomeSource();
+    refreshCatCalcUI(src?src.place:null);
   });
   document.getElementById('inc-cat-cancel').addEventListener('click',function(){
     document.getElementById('inc-add-cat-form').classList.add('hidden');
   });
   document.getElementById('inc-cat-save').addEventListener('click',function(){
-    var place=placeById(document.getElementById('inc-place').value);
+    var src=currentIncomeSource();
     var label=document.getElementById('inc-new-cat-label').value.trim();
-    if(!label||!place) return;
+    if(!label||!src) return;
     var mode=document.getElementById('inc-cat-calc').value;
     var rateKey=document.getElementById('inc-cat-rate').value;
-    if(mode!=='manual' && !rateKey) mode='manual';
+    // "Other income" has no workplace rates to link to, so it always types the amount in.
+    if(mode!=='manual' && (!rateKey || !src.place)) mode='manual';
     var cat={key:uid(), label:label, icon:incSelectedIcon, formulaKey:mode};
     if(mode!=='manual'){
       cat.rateKey=rateKey;
       if(mode==='perUnit') cat.unitLabel=document.getElementById('inc-cat-unit').value.trim()||'Quantity';
     }
-    place.categories=place.categories||[];
-    place.categories.push(cat);
-    savePlaces(); currentIncCat=cat.key;
+    src.setCats(src.cats.concat([cat]));
+    currentIncCat=cat.key;
     document.getElementById('inc-add-cat-form').classList.add('hidden');
     renderIncCatPills(); renderIncFields();
   });
@@ -1384,10 +1559,10 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   });
 
   function renderIncFields(){
-    var place=placeById(document.getElementById('inc-place').value);
+    var src=currentIncomeSource();
     var wrap=document.getElementById('inc-dynamic-fields');
-    if(!place||!currentIncCat){ wrap.innerHTML=''; updateIncPreview(); return; }
-    var cat=(place.categories||[]).find(function(c){ return c.key===currentIncCat; });
+    if(!src||!currentIncCat){ wrap.innerHTML=''; updateIncPreview(); return; }
+    var cat=src.cats.find(function(c){ return c.key===currentIncCat; });
     if(!cat){ wrap.innerHTML=''; updateIncPreview(); return; }
     var def=formulaFor(cat);
     wrap.innerHTML=def.fields.map(function(f){
@@ -1434,9 +1609,9 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     return {amount:amount,note:note,meta:meta};
   }
   function updateIncPreview(){
-    var place=placeById(document.getElementById('inc-place').value);
-    var cat=(place&&currentIncCat)?(place.categories||[]).find(function(c){ return c.key===currentIncCat; }):null;
-    if(!place||!cat){ document.getElementById('inc-preview').textContent=fmt(0); return; }
+    var src=currentIncomeSource();
+    var cat=(src&&currentIncCat)?src.cats.find(function(c){ return c.key===currentIncCat; }):null;
+    if(!src||!cat){ document.getElementById('inc-preview').textContent=fmt(0); return; }
     var def=formulaFor(cat);
     var blocks=validBlocks();
     var hoursField=document.getElementById('dyn-hours');
@@ -1445,12 +1620,12 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
       var keep=hoursField.value, sum=0;
       blocks.forEach(function(b){
         hoursField.value=hoursBetween(b.start,b.end);
-        sum+=computeIncome(place,def).amount;
+        sum+=computeIncome(src.place,def).amount;
       });
       hoursField.value=keep;
       total=sum;
     }else{
-      total=computeIncome(place,def).amount;
+      total=computeIncome(src.place,def).amount;
     }
     document.getElementById('inc-preview').textContent=fmt(total);
   }
@@ -1532,31 +1707,33 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 
   document.getElementById('inc-save').addEventListener('click',function(){
     var err=document.getElementById('inc-error');
-    var place=placeById(document.getElementById('inc-place').value);
-    if(!place){ err.textContent='Pick a workplace first.'; err.classList.remove('hidden'); return; }
-    var cat=currentIncCat?(place.categories||[]).find(function(c){ return c.key===currentIncCat; }):null;
+    var src=currentIncomeSource();
+    if(!src){ err.textContent='Pick a workplace first.'; err.classList.remove('hidden'); return; }
+    var cat=currentIncCat?src.cats.find(function(c){ return c.key===currentIncCat; }):null;
     if(!cat){ err.textContent='Pick or create a category first.'; err.classList.remove('hidden'); return; }
     var def=formulaFor(cat);
-    var r=computeIncome(place,def);
+    var r=computeIncome(src.place,def);
     var blocks=validBlocks();
     var hoursField=document.getElementById('dyn-hours');
     var useBlocks = blocks.length>0 && hoursField;
     if(!useBlocks && (!r.amount||r.amount<=0)){ err.textContent='Enter the figures — the total is still ฿0.'; err.classList.remove('hidden'); return; }
     err.classList.add('hidden');
     var theDate=document.getElementById('inc-date').value||todayStr();
+    var placeId = src.place ? src.place.id : null;
+    var placeName = src.place ? src.place.name : 'Other income';
     if(useBlocks){
       // Each block is saved as its own shift, so the timeline and live clock stay accurate.
       blocks.forEach(function(b){
         hoursField.value=hoursBetween(b.start,b.end);
-        var rb=computeIncome(place,def);
+        var rb=computeIncome(src.place,def);
         transactions.push({id:uid(), date:theDate, type:'income',
-          placeId:place.id, placeName:place.name, catKey:cat.key, catLabel:cat.label,
+          placeId:placeId, placeName:placeName, catKey:cat.key, catLabel:cat.label,
           note:rb.note, amount:rb.amount, meta:rb.meta, planned:incPlanned, paid:false,
           startTime:b.start, endTime:b.end});
       });
     }else{
       transactions.push({id:uid(), date:theDate, type:'income',
-        placeId:place.id, placeName:place.name, catKey:cat.key, catLabel:cat.label, note:r.note, amount:r.amount,
+        placeId:placeId, placeName:placeName, catKey:cat.key, catLabel:cat.label, note:r.note, amount:r.amount,
         meta:r.meta, planned:incPlanned, paid:false, startTime:null, endTime:null});
     }
     saveTx();
@@ -1940,6 +2117,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     document.getElementById('backup-copy').classList.remove('hidden');
     document.getElementById('backup-restore').classList.add('hidden');
     document.getElementById('backup-pick').classList.add('hidden');
+    document.getElementById('backup-replace').classList.add('hidden');
     panel.classList.remove('hidden');
   });
   document.getElementById('backup-pick').addEventListener('click',function(){
@@ -1958,17 +2136,20 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     this.value='';
   });
   document.getElementById('import-btn').addEventListener('click',function(){
-    document.getElementById('backup-label').textContent='Choose a file or paste a backup, then Restore';
+    document.getElementById('backup-label').textContent='Choose a file or paste a backup, then Merge in';
     document.getElementById('backup-text').value='';
-    document.getElementById('backup-msg').textContent='Restoring replaces everything currently in the app.';
+    document.getElementById('backup-msg').textContent='Merge keeps everything already on this device and adds only what is missing. Replace wipes what is here first — use it only when moving to a new phone.';
     document.getElementById('backup-copy').classList.add('hidden');
     document.getElementById('backup-restore').classList.remove('hidden');
     document.getElementById('backup-pick').classList.remove('hidden');
+    document.getElementById('backup-replace').classList.remove('hidden');
     panel.classList.remove('hidden');
   });
   function backupPayload(){
-    return {app:'locum-ledger', version:1, savedAt:new Date().toISOString(),
-      places:places, transactions:transactions, expenseCategories:expenseCategories, settings:settings};
+    return {app:'locum-ledger', version:2, savedAt:new Date().toISOString(),
+      places:places, transactions:transactions,
+      expenseCategories:expenseCategories, otherIncomeCategories:otherIncomeCategories,
+      templates:templates, settings:settings};
   }
   function markBackedUp(){
     settings.lastBackup=new Date().toISOString();
@@ -2013,18 +2194,104 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     document.getElementById('backup-msg').textContent = ok?'Copied to clipboard.':'Select the text above and copy it manually.';
     if(ok) markBackedUp();
   });
-  document.getElementById('backup-restore').addEventListener('click',function(){
+  // Restoring used to be replace-only, which meant importing an older backup
+  // silently destroyed anything logged since. Merge is now the default: entries
+  // are matched on id, and anything the backup does not contain is left alone.
+  function mergeTransactions(incoming){
+    var byId={};
+    transactions.forEach(function(t){ byId[t.id]=t; });
+    var added=0, kept=0;
+    incoming.forEach(function(t){
+      if(!t || !t.id) return;
+      if(byId[t.id]){ kept++; return; }   // already present — keep what is on this device
+      byId[t.id]=t; added++;
+    });
+    var merged=Object.keys(byId).map(function(k){ return byId[k]; });
+    merged.sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); });
+    return {list:merged, added:added, kept:kept};
+  }
+  function mergeCategories(existing, incoming){
+    if(!incoming || !incoming.length) return existing;
+    var seen={};
+    existing.forEach(function(c){ seen[c.key]=true; });
+    var out=existing.slice();
+    incoming.forEach(function(c){ if(c && c.key && !seen[c.key]){ out.push(c); seen[c.key]=true; } });
+    return out;
+  }
+  function applyRestore(data, mode){
+    // Safety net: keep a snapshot of what was here before, so a wrong choice
+    // is never final.
+    try{
+      writeLS('ll-snapshot-before-restore', {savedAt:new Date().toISOString(),
+        places:places, transactions:transactions,
+        expenseCategories:expenseCategories, otherIncomeCategories:otherIncomeCategories,
+        settings:settings, templates:templates});
+    }catch(e){}
+
+    var summary;
+    if(mode==='replace'){
+      places=data.places&&data.places.length?data.places:defaultPlaces();
+      transactions=Array.isArray(data.transactions)?data.transactions:[];
+      expenseCategories=data.expenseCategories&&data.expenseCategories.length?data.expenseCategories:defaultExpenseCats();
+      if(data.otherIncomeCategories&&data.otherIncomeCategories.length) otherIncomeCategories=data.otherIncomeCategories;
+      if(data.templates) templates=data.templates;
+      if(data.settings) settings=Object.assign(settings,data.settings);
+      summary='Replaced everything with the backup — '+transactions.length+' entries.';
+    }else{
+      var m=mergeTransactions(data.transactions||[]);
+      transactions=m.list;
+      expenseCategories=mergeCategories(expenseCategories, data.expenseCategories);
+      otherIncomeCategories=mergeCategories(otherIncomeCategories, data.otherIncomeCategories);
+      // workplaces merge by id so custom rates on this device are not clobbered
+      var placeIds={};
+      places.forEach(function(p){ placeIds[p.id]=true; });
+      (data.places||[]).forEach(function(p){ if(p&&p.id&&!placeIds[p.id]){ places.push(p); placeIds[p.id]=true; } });
+      var tplNames={};
+      templates.forEach(function(t){ tplNames[t.name]=true; });
+      (data.templates||[]).forEach(function(t){ if(t&&t.name&&!tplNames[t.name]){ templates.push(t); tplNames[t.name]=true; } });
+      summary=m.added+' entries added, '+m.kept+' already here were kept untouched.';
+    }
+    savePlaces(); saveTx(); saveExpCats(); saveOtherInc(); saveTemplates(); saveSettings();
+    document.getElementById('backup-msg').textContent=summary+' You can undo this with "Undo last restore".';
+    document.getElementById('undo-restore').classList.remove('hidden');
+    initAll();
+  }
+  function readBackupField(){
     var msg=document.getElementById('backup-msg');
     var data;
     try{ data=JSON.parse(document.getElementById('backup-text').value); }
-    catch(e){ msg.textContent='That does not look like valid backup data.'; return; }
-    if(!data||!Array.isArray(data.transactions)){ msg.textContent='That does not look like valid backup data.'; return; }
-    places=data.places&&data.places.length?data.places:defaultPlaces();
-    transactions=data.transactions;
-    expenseCategories=data.expenseCategories&&data.expenseCategories.length?data.expenseCategories:defaultExpenseCats();
-    if(data.settings) settings=Object.assign(settings,data.settings);
-    savePlaces(); saveTx(); saveExpCats(); saveSettings();
-    msg.textContent='Restored.';
+    catch(e){ msg.textContent='That does not look like valid backup data.'; return null; }
+    if(!data||!Array.isArray(data.transactions)){ msg.textContent='That does not look like valid backup data.'; return null; }
+    return data;
+  }
+  document.getElementById('backup-restore').addEventListener('click',function(){
+    var data=readBackupField();
+    if(data) applyRestore(data,'merge');
+  });
+  document.getElementById('backup-replace').addEventListener('click',function(){
+    var b=this;
+    if(b.getAttribute('data-armed')!=='1'){
+      b.setAttribute('data-armed','1');
+      b.textContent='Tap again to replace everything';
+      setTimeout(function(){ b.removeAttribute('data-armed'); b.textContent='Replace instead'; },4000);
+      return;
+    }
+    b.removeAttribute('data-armed'); b.textContent='Replace instead';
+    var data=readBackupField();
+    if(data) applyRestore(data,'replace');
+  });
+  document.getElementById('undo-restore').addEventListener('click',function(){
+    var snap=readLS('ll-snapshot-before-restore');
+    if(!snap){ document.getElementById('backup-msg').textContent='No snapshot to go back to.'; return; }
+    places=snap.places||places;
+    transactions=snap.transactions||transactions;
+    expenseCategories=snap.expenseCategories||expenseCategories;
+    otherIncomeCategories=snap.otherIncomeCategories||otherIncomeCategories;
+    templates=snap.templates||templates;
+    if(snap.settings) settings=Object.assign(settings,snap.settings);
+    savePlaces(); saveTx(); saveExpCats(); saveOtherInc(); saveTemplates(); saveSettings();
+    document.getElementById('backup-msg').textContent='Went back to how things were before the restore.';
+    this.classList.add('hidden');
     initAll();
   });
 
@@ -2275,21 +2542,19 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     places.forEach(function(place){
       (place.categories||[]).forEach(function(cat){
         if(cat.formulaKey!=='sairee_hourly') return;
-        var actual=monthTierHours(place.id,cat.key,mk,null);
-        var planned=0;
-        transactions.forEach(function(t){
-          if(t.planned && t.placeId===place.id && t.catKey===cat.key && txInMonth(t,mk)) planned+=hoursOf(t);
-        });
-        if(actual<=0 && planned<=0) return;
+        var worked=monthWorkedHours(place.id,cat.key,mk,null);
+        var total=monthTierHours(place.id,cat.key,mk,null); // worked + planned — this decides the rate
+        var planned=total-worked;
+        if(total<=0) return;
         var t1=rv(place,'tier1max'), t2=rv(place,'tier2max');
-        var cur=tierRateForHours(place,actual);
+        var cur=tierRateForHours(place,total);
         var nextAt=null, nextRate=null;
-        if(actual<=t1){ nextAt=t1+1; nextRate=rv(place,'tier2'); }
-        else if(actual<=t2){ nextAt=t2+1; nextRate=rv(place,'tier3'); }
-        out.push({place:place, cat:cat, actual:actual, planned:planned,
+        if(total<=t1){ nextAt=t1+1; nextRate=rv(place,'tier2'); }
+        else if(total<=t2){ nextAt=t2+1; nextRate=rv(place,'tier3'); }
+        out.push({place:place, cat:cat, worked:worked, planned:planned, total:total,
           rate:cur, nextAt:nextAt, nextRate:nextRate,
-          needed: nextAt===null?0:Math.max(0,nextAt-actual),
-          uplift: nextAt===null?0:actual*(nextRate-cur)});
+          needed: nextAt===null?0:Math.max(0,nextAt-total),
+          uplift: nextAt===null?0:total*(nextRate-cur)});
       });
     });
     return out;
@@ -2314,7 +2579,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
   function dailyTotals(mk){
     var out={};
     transactions.forEach(function(t){
-      if(!txInMonth(t,mk)) return;
+      if(!txInMonth(t,mk) || t.planned) return;
       var d=parseInt(t.date.slice(8,10),10);
       if(!out[d]) out[d]={income:0,expense:0,count:0};
       var amt=effectiveAmount(t);
@@ -2391,7 +2656,7 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     transactions.forEach(function(t){
       if(t.type!=='income' || !t.planned || !txInMonth(t,mk)) return;
       var d=parseInt(t.date.slice(8,10),10);
-      out[d]=(out[d]||0)+t.amount;
+      out[d]=(out[d]||0)+effectiveAmount(t);
     });
     return out;
   }
@@ -2485,24 +2750,23 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     if(!list.length){ wrap.classList.add('hidden'); return; }
     wrap.classList.remove('hidden');
     document.getElementById('tier-cards').innerHTML=list.map(function(x){
-      var goal = x.nextAt===null ? x.actual : x.nextAt;
-      var pct = goal>0 ? Math.min(100, Math.round(x.actual/goal*100)) : 0;
+      var goal = x.nextAt===null ? x.total : x.nextAt;
+      var pct = goal>0 ? Math.min(100, Math.round(x.total/goal*100)) : 0;
       var html='<div class="tier-card">'
-        + '<div class="tier-top"><span class="tier-h">'+x.actual+' h</span>'
+        + '<div class="tier-top"><span class="tier-h">'+x.total+' h</span>'
         + '<span class="tier-rate">'+fmt(x.rate)+'/h</span></div>'
-        + '<div class="tier-sub">'+esc(x.place.name)+' this month</div>'
+        + '<div class="tier-sub">'+esc(x.place.name)+' this month'
+        + (x.planned>0 ? ' \u2014 '+x.worked+' h worked, '+x.planned+' h planned' : '')+'</div>'
         + '<div class="tier-bar"><i style="width:'+pct+'%"></i></div>';
       if(x.nextAt!==null){
         html += '<div class="tier-goal"><span>0</span><span>'+x.nextAt+' h → '+fmt(x.nextRate)+'/h</span></div>'
              +  '<div class="tier-prize">'+x.needed+' more hours unlocks '+fmt(x.nextRate)+'/h — worth '
-             +  '<strong>'+fmt(x.uplift)+'</strong> extra on the hours you have already worked.</div>';
+             +  '<strong>'+fmt(x.uplift)+'</strong> extra across the month'+(x.planned>0?' once your planned shifts happen':'')+'.</div>';
       }else{
         html += '<div class="tier-goal"><span>0</span><span>top rate reached</span></div>'
-             +  '<div class="tier-prize">You are on the highest tier for this month.</div>';
-      }
-      if(x.planned>0){
-        var proj=x.actual+x.planned;
-        html += '<div class="tier-sub" style="margin:9px 0 0">Including '+x.planned+' h planned: '+proj+' h at '+fmt(tierRateForHours(x.place,proj))+'/h</div>';
+             +  '<div class="tier-prize">'+(x.planned>0
+                  ? 'Your planned hours already put you on the highest tier for this month.'
+                  : 'You are on the highest tier for this month.')+'</div>';
       }
       return html+'</div>';
     }).join('');
@@ -3212,6 +3476,188 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     refreshDayLogs();
   });
 
+  // ---------- Totals: yearly statement ----------
+  var viewYear=new Date().getFullYear();
+  // Muted, warm palette that sits beside the accent without fighting it.
+  var SLICE_COLORS=['#C96442','#B4713D','#7A8450','#4A7C8C','#8A6BA8','#9A958B','#6F6B62','#3D7F5E'];
+
+  function inYear(t,y){ return t.date && parseInt(t.date.slice(0,4),10)===y; }
+
+  function yearData(y){
+    var months=[];
+    for(var m=0;m<12;m++) months.push({income:0,expense:0,planned:0});
+    var byPlace={}, byCat={}, paidTotal=0, outstanding=0, plannedTotal=0, plannedCount=0;
+    transactions.forEach(function(t){
+      if(!inYear(t,y)) return;
+      var mi=parseInt(t.date.slice(5,7),10)-1;
+      var amt=effectiveAmount(t);
+      if(t.planned){
+        if(t.type==='income'){ months[mi].planned+=amt; plannedTotal+=amt; plannedCount++; }
+        return;
+      }
+      if(t.type==='income'){
+        months[mi].income+=amt;
+        byPlace[t.placeName]=(byPlace[t.placeName]||0)+amt;
+        if(t.paid===true) paidTotal+=amt; else outstanding+=amt;
+      }else{
+        months[mi].expense+=amt;
+        byCat[t.catLabel]=(byCat[t.catLabel]||0)+amt;
+      }
+    });
+    var inc=months.reduce(function(a,m){ return a+m.income; },0);
+    var exp=months.reduce(function(a,m){ return a+m.expense; },0);
+    return {months:months, income:inc, expense:exp, net:inc-exp,
+      byPlace:byPlace, byCat:byCat, paid:paidTotal, outstanding:outstanding,
+      planned:plannedTotal, plannedCount:plannedCount};
+  }
+
+  // Donut built from stroke-dasharray arcs — no library, scales cleanly.
+  function donutSVG(entries,total){
+    var R=52, C=2*Math.PI*R, off=0;
+    var arcs=entries.map(function(e,i){
+      var frac=total>0?e.value/total:0;
+      var len=frac*C;
+      var seg='<circle cx="58" cy="58" r="'+R+'" fill="none" stroke="'+SLICE_COLORS[i%SLICE_COLORS.length]+'"'
+        + ' stroke-width="13" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'"'
+        + ' stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 58 58)"'
+        + (frac>0.02?' stroke-linecap="butt"':'')+'/>';
+      off+=len;
+      return seg;
+    }).join('');
+    return '<svg viewBox="0 0 116 116" aria-hidden="true">'
+      + '<circle cx="58" cy="58" r="'+R+'" fill="none" stroke="var(--surface-2)" stroke-width="13"/>'
+      + arcs
+      + '<text x="58" y="54" text-anchor="middle" class="donut-total">'+fmt(total)+'</text>'
+      + '<text x="58" y="69" text-anchor="middle" class="donut-center">total</text>'
+      + '</svg>';
+  }
+  function legendHTML(entries,total){
+    return entries.map(function(e,i){
+      var pct=total>0?Math.round(e.value/total*100):0;
+      return '<div class="lg-row">'
+        + '<span class="lg-dot" style="background:'+SLICE_COLORS[i%SLICE_COLORS.length]+'"></span>'
+        + '<span class="lg-name">'+esc(e.name)+'</span>'
+        + '<span class="lg-pct">'+pct+'%</span>'
+        + '<span class="lg-val">'+fmt(e.value)+'</span></div>';
+    }).join('');
+  }
+  function toEntries(obj){
+    return Object.keys(obj).map(function(k){ return {name:k, value:obj[k]}; })
+      .filter(function(e){ return e.value>0; })
+      .sort(function(a,b){ return b.value-a.value; });
+  }
+
+  function renderTotals(){
+    var d=yearData(viewYear);
+    document.getElementById('year-label').textContent=String(viewYear);
+    document.getElementById('yr-net').textContent=fmt(d.net);
+    document.getElementById('yr-inc').textContent=fmt(d.income);
+    document.getElementById('yr-exp').textContent=fmt(d.expense);
+    var extra=document.getElementById('yr-extra');
+    if(d.plannedCount){
+      extra.classList.remove('hidden');
+      extra.innerHTML='\u25CB '+d.plannedCount+' planned '+(d.plannedCount===1?'shift':'shifts')
+        +' not counted above \u00b7 worth <strong>'+fmt(d.planned)+'</strong>';
+    }else{ extra.classList.add('hidden'); }
+
+    // month-by-month bars
+    var peak=1;
+    d.months.forEach(function(m){ peak=Math.max(peak,m.income,m.expense); });
+    document.getElementById('yr-bars').innerHTML=d.months.map(function(m,i){
+      var w=Math.round(m.income/peak*100), we=Math.round(m.expense/peak*100);
+      var quiet=(m.income===0&&m.expense===0);
+      return '<div class="ybar-row">'
+        + '<span class="ybar-m">'+MONTHS[i].slice(0,3)+'</span>'
+        + '<span class="ybar-track">'
+        + (w>0?'<i class="ybar-in" style="width:'+w+'%"></i>':'')
+        + (we>0?'<i class="ybar-ex" style="width:'+we+'%"></i>':'')
+        + '</span>'
+        + '<span class="ybar-v" style="color:'+(quiet?'var(--ink-faint)':'var(--ink)')+'">'
+        + (quiet?'—':fmt(m.income-m.expense))+'</span></div>';
+    }).join('');
+
+    // income by workplace
+    var incEntries=toEntries(d.byPlace);
+    document.getElementById('yr-donut').innerHTML=donutSVG(incEntries,d.income);
+    document.getElementById('yr-donut-legend').innerHTML= incEntries.length
+      ? legendHTML(incEntries,d.income)
+      : '<div class="empty">No income recorded</div>';
+
+    // expenses by category
+    var expEntries=toEntries(d.byCat);
+    document.getElementById('yr-exp-donut').innerHTML=donutSVG(expEntries,d.expense);
+    document.getElementById('yr-exp-legend').innerHTML= expEntries.length
+      ? legendHTML(expEntries,d.expense)
+      : '<div class="empty">No expenses recorded</div>';
+
+    // payment status for the year
+    var pay=document.getElementById('yr-payments');
+    if(d.income<=0){ pay.innerHTML='<div class="empty">Nothing recorded</div>'; }
+    else{
+      var pct=Math.round(d.paid/d.income*100);
+      pay.innerHTML='<div class="row"><div class="lead"><div class="txt" style="width:100%">'
+        + '<div class="t1">Received</div>'
+        + '<div class="bar"><i style="width:'+Math.max(2,pct)+'%"></i></div></div></div>'
+        + '<span class="amt" style="color:var(--pos)">'+fmt(d.paid)+'</span></div>'
+        + '<div class="row"><div class="lead"><div class="txt"><div class="t1">Still outstanding</div>'
+        + '<div class="t2">'+(100-pct)+'% of the year\u2019s income</div></div></div>'
+        + '<span class="amt" style="color:'+(d.outstanding>0?'var(--accent)':'var(--ink-faint)')+'">'+fmt(d.outstanding)+'</span></div>';
+    }
+
+    // statement table
+    var tbl=document.getElementById('yr-table');
+    var anyRow=d.months.some(function(m){ return m.income||m.expense; });
+    if(!anyRow){ tbl.innerHTML='<div class="empty">Nothing recorded this year</div>'; }
+    else{
+      var rows='<div class="st-row head"><span class="st-m">Mth</span>'
+        + '<span class="st-n">Income</span><span class="st-n">Expenses</span><span class="st-n">Net</span></div>';
+      d.months.forEach(function(m,i){
+        if(!m.income && !m.expense) return;
+        rows+='<div class="st-row"><span class="st-m">'+MONTHS[i].slice(0,3)+'</span>'
+          + '<span class="st-n">'+fmt(m.income)+'</span>'
+          + '<span class="st-n" style="color:var(--ink-soft)">'+(m.expense?fmt(m.expense):'—')+'</span>'
+          + '<span class="st-n">'+fmt(m.income-m.expense)+'</span></div>';
+      });
+      rows+='<div class="st-row total"><span class="st-m">Year</span>'
+        + '<span class="st-n">'+fmt(d.income)+'</span>'
+        + '<span class="st-n">'+fmt(d.expense)+'</span>'
+        + '<span class="st-n">'+fmt(d.net)+'</span></div>';
+      tbl.innerHTML=rows;
+    }
+  }
+
+  document.getElementById('year-prev').addEventListener('click',function(){ viewYear--; renderTotals(); });
+  document.getElementById('year-next').addEventListener('click',function(){ viewYear++; renderTotals(); });
+
+  document.getElementById('yr-csv').addEventListener('click',function(){
+    var rows=[['Date','Type','Workplace','Category','Note','Amount','Status']];
+    transactions.filter(function(t){ return inYear(t,viewYear) && !t.planned; })
+      .sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); })
+      .forEach(function(t){
+        rows.push([t.date, t.type, t.placeName, t.catLabel, t.note||'',
+          Math.round(effectiveAmount(t)),
+          t.type==='income' ? (t.paid===true?'received':'outstanding') : 'paid']);
+      });
+    var csv=rows.map(function(r){
+      return r.map(function(c){
+        c=String(c==null?'':c);
+        return /[",\n]/.test(c) ? '"'+c.replace(/"/g,'""')+'"' : c;
+      }).join(',');
+    }).join('\n');
+    var msg=document.getElementById('yr-csv-msg');
+    try{
+      var blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url; a.download='locum-ledger-'+viewYear+'.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+      msg.textContent=(rows.length-1)+' rows exported for '+viewYear+'.';
+    }catch(e){
+      msg.textContent='Could not create the file on this browser.';
+    }
+  });
+
   function renderSummary(){
     invalidateTiers();
     document.getElementById('month-label').textContent=monthLabel(viewMonth);
@@ -3224,7 +3670,8 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     var monthTx=[];
     transactions.forEach(function(t){
       if(!txInMonth(t,viewMonth)) return;
-      monthTx.push(t);
+      monthTx.push(t); // planned entries still show in the list, greyed out
+      if(t.planned) return; // but never count toward confirmed totals below
       var amt=effectiveAmount(t);
       if(t.type==='income'){
         inc+=amt;
@@ -3236,7 +3683,9 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
     });
     var plannedTotal=0, plannedCount=0;
     transactions.forEach(function(t){
-      if(t.planned && t.type==='income' && txInMonth(t,viewMonth)){ plannedTotal+=t.amount; plannedCount++; }
+      // effectiveAmount, not the stored figure: a planned hourly shift is worth
+      // whatever the month's tier rate currently is, same as everywhere else.
+      if(t.planned && t.type==='income' && txInMonth(t,viewMonth)){ plannedTotal+=effectiveAmount(t); plannedCount++; }
     });
     var hp=document.getElementById('hero-planned');
     if(plannedCount){
