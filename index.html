@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- BUILD: 2026-09-19 · build 42 -->
 <title>Locum Ledger</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -100,7 +101,10 @@ body[data-theme="dark"] .glassy{box-shadow:inset 0 1px 0 rgba(255,255,255,.07), 
 .card::after,.hero::after,.today-card::after,.tier-card::after,.span-card::after{
   content:'';position:absolute;inset:0 0 auto 0;height:38%;pointer-events:none;z-index:0;
   background:linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0));
-  opacity:.65;}
+  opacity:.65;
+  /* follow the card's own corners — the live card sets overflow:visible so the
+     rising figure can escape, which would otherwise leave square corners here */
+  border-radius:inherit;}
 /* content must sit above the sheen, or blocks appear to bleed into each other */
 .card > *,.hero > *,.today-card > *,.tier-card > *,.span-card > *{position:relative;z-index:1;}
 body[data-theme="dark"] .card::after,body[data-theme="dark"] .hero::after,
@@ -214,7 +218,7 @@ body,.content{overflow-x:hidden;}
   border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);}
 .icon-opt.active{background:var(--accent);color:#FFF;border-color:var(--accent);}
 .icon-opt svg{width:17px;height:17px;}
-.today-card{overflow:visible;background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(255,255,255,.14), 0 1px 2px rgba(25,25,25,.05), 0 10px 26px rgba(25,25,25,.07);border-radius:20px;
+.today-card{overflow:hidden;background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(255,255,255,.14), 0 1px 2px rgba(25,25,25,.05), 0 10px 26px rgba(25,25,25,.07);border-radius:20px;
   padding:17px 19px;margin-bottom:13px;box-shadow:var(--shadow);}
 .today-card.live{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft), var(--shadow);}
 .today-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:2px;}
@@ -239,8 +243,9 @@ button.today-rate:active{background:var(--accent-soft);}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.8);}}
 @media (prefers-reduced-motion:reduce){.pulse{animation:none;}}
 /* ---- money floating up out of the live counter ---- */
-.today-money{position:relative;overflow:visible;}
-.coin{position:absolute;left:50%;bottom:100%;pointer-events:none;z-index:30;
+.today-money{position:relative;}
+.coin-layer{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden;}
+.coin{position:fixed;pointer-events:none;z-index:40;
   font-size:20px;font-weight:800;color:var(--note);white-space:nowrap;
   text-shadow:0 1px 0 rgba(255,255,255,.5);
   animation:coinFly 3.1s cubic-bezier(.22,.62,.3,1) forwards;}
@@ -348,6 +353,7 @@ body[data-theme="dark"] .coin{text-shadow:0 1px 0 rgba(0,0,0,.4);}
   padding:3px 8px;border-radius:7px;letter-spacing:0.03em;text-transform:uppercase;border:none;margin-right:7px;}
 .paychip.unpaid{background:var(--accent-soft);color:var(--accent);}
 .paychip.paid{background:rgba(61,127,94,0.13);color:var(--pos);}
+.paychip.diff{background:rgba(180,68,46,.14);color:var(--neg);}
 .paychip.plan{background:var(--surface-2);color:var(--ink-faint);}
 body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 .paychip svg{width:10px;height:10px;}
@@ -372,9 +378,58 @@ body[data-theme="dark"] .paychip.paid{background:rgba(111,191,149,0.16);}
 .cal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:7px;}
 .cal-head span{text-align:center;font-size:10px;font-weight:680;color:var(--ink-faint);letter-spacing:0.04em;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+/* the day panel under the calendar: full entries, editable in place */
+.cal-detail{font-size:12px;color:var(--ink-soft);margin-top:11px;text-align:center;}
+.cal-detail.open{text-align:left;background:var(--surface-2);border:1px solid var(--border);
+  border-radius:15px;padding:11px 12px;}
+.cd-hint{font-size:11.5px;color:var(--ink-faint);font-weight:560;}
+.cd-head{display:flex;align-items:baseline;justify-content:space-between;gap:9px;
+  padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.cd-day{font-size:12.5px;font-weight:700;color:var(--ink);}
+.cd-net{font-size:14px;font-weight:750;color:var(--pos);letter-spacing:-0.02em;
+  font-variant-numeric:tabular-nums;}
+.cd-net.neg{color:var(--neg);}
+.cd-off{font-size:11px;font-weight:640;color:var(--neg);padding:5px 0 2px;}
+.cd-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);}
+.cd-row:last-of-type{border-bottom:none;}
+.cd-row.planned{opacity:.72;}
+.cd-when{width:64px;flex:none;font-size:10.5px;font-weight:650;color:var(--ink-faint);
+  font-variant-numeric:tabular-nums;}
+.cd-what{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
+.cd-what b{font-size:12.5px;font-weight:620;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cd-what i{font-size:10.5px;font-style:normal;color:var(--ink-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cd-tag{font-size:8px;font-weight:750;text-transform:uppercase;letter-spacing:.05em;
+  padding:1.5px 5px;border-radius:5px;margin-left:6px;vertical-align:middle;}
+.cd-tag.paid{background:rgba(61,127,94,.14);color:var(--pos);}
+.cd-tag.unpaid{background:var(--accent-soft);color:var(--accent);}
+.cd-tag.plan{background:var(--surface-2);color:var(--ink-faint);border:1px solid var(--border);}
+.cd-amt{flex:none;font-size:12.5px;font-weight:700;white-space:nowrap;
+  font-variant-numeric:tabular-nums;letter-spacing:-0.02em;}
+.cd-btn{flex:none;width:26px;height:26px;border:none;background:none;color:var(--ink-faint);
+  display:flex;align-items:center;justify-content:center;border-radius:8px;padding:0;}
+.cd-btn svg{width:14px;height:14px;}
+.cd-btn.danger{color:var(--neg);}
+.cd-btn:active{background:var(--surface);transform:scale(.9);}
+.cd-empty{font-size:11.5px;color:var(--ink-faint);padding:8px 0 2px;
+  display:flex;align-items:center;justify-content:space-between;gap:9px;}
+.cd-add{border:1px dashed var(--border);background:none;color:var(--accent);
+  font-family:inherit;font-size:11.5px;font-weight:660;border-radius:10px;padding:7px 11px;}
+.cd-add.wide{width:100%;margin-top:9px;}
+.cd-add:active{background:var(--accent-soft);}
 .cal-cell{aspect-ratio:1;border:none;border-radius:9px;background:var(--surface-2);color:var(--ink-faint);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
   padding:3px 2px;font-family:inherit;line-height:1;overflow:hidden;}
+/* days off read clearly apart from worked days: a deeper red wash, a tinted
+   border, and a small cross tucked into the corner clear of the glyph */
+.cal-cell.dayoff{background:rgba(180,68,46,0.28)!important;
+  border:1px solid rgba(180,68,46,0.55);color:var(--neg);}
+body[data-theme="dark"] .cal-cell.dayoff{background:rgba(217,119,87,0.30)!important;
+  border-color:rgba(217,119,87,0.55);}
+.cal-cell.dayoff .cd{color:var(--neg);font-weight:750;opacity:1;}
+.cal-cell{position:relative;}
+.cal-cell .cx{position:absolute;top:2px;right:3px;font-size:7.5px;font-weight:800;
+  color:var(--neg);opacity:.9;line-height:1;}
+@media (min-width:820px){ .cal-cell .cx{font-size:9px;top:3px;right:4px;} }
 .cal-cell .cg{font-size:9px;line-height:1;opacity:.9;}
 .cal-cell .cg.off{opacity:1;}
 .cal-cell .cg.code{font-size:8.5px;font-weight:800;letter-spacing:-0.02em;color:var(--neg);}
@@ -579,11 +634,6 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
   <!-- OVERVIEW -->
   <div id="view-summary">
     <div class="cols"><div class="col">
-    <div class="monthnav">
-      <button type="button" class="navbtn" id="month-prev" aria-label="Previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <span class="mlabel" id="month-label">—</span>
-      <button type="button" class="navbtn" id="month-next" aria-label="Next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
-    </div>
 
     <div class="today-card" id="today-card">
       <div class="today-top">
@@ -596,6 +646,12 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
       <div class="today-sub" id="today-sub"></div>
       <div class="timeline" id="timeline"></div>
       <div class="today-foot" id="today-foot"></div>
+    </div>
+
+    <div class="monthnav">
+      <button type="button" class="navbtn" id="month-prev" aria-label="Previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <span class="mlabel" id="month-label">—</span>
+      <button type="button" class="navbtn" id="month-next" aria-label="Next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
     </div>
 
     <div class="span-row">
@@ -670,7 +726,6 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
         <div class="field-head"><label style="font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:0 0 0 2px">Quick shifts</label>
           <button type="button" class="linkbtn" id="tpl-manage">Manage</button></div>
         <div class="pillrow" id="tpl-pills" style="margin-top:7px"></div>
-        </div>
       </div>
       <div class="total-strip">
         <span class="k">Calculated total</span>
@@ -758,6 +813,7 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
             <button type="button" class="btn btn-ghost" id="rep-cancel">Cancel</button>
             <button type="button" class="btn btn-primary" id="rep-apply">Create shifts</button>
           </div>
+      </div>
 
       <div id="tpl-save-panel" class="hidden subpanel" style="margin-top:11px">
         <div class="field"><label for="tpl-name">Name this quick shift</label><input type="text" id="tpl-name" placeholder="e.g. Sikarin evening"></div>
@@ -793,7 +849,6 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     </div>
   </div>
 
-  <!-- WORKPLACES -->
   <!-- TOTALS -->
   <div id="view-totals" class="hidden">
     <div class="monthnav">
@@ -967,6 +1022,15 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
       </div>
     </div>
 
+    <div class="section-label">Version</div>
+    <div class="card">
+      <div class="rate-row" style="border-bottom:none">
+        <span class="rate-name">This build</span>
+        <span class="rate-val" id="build-stamp">2026-09-19 · build 42</span>
+      </div>
+      <div class="hint" style="margin:2px 0 0">If this does not match the newest file you uploaded, the browser is still showing a cached copy.</div>
+    </div>
+
     <div class="section-label">Danger zone</div>
     <div class="card">
       <button type="button" class="btn btn-danger" id="reset-btn">Erase all data</button>
@@ -989,6 +1053,9 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
       <button type="button" class="pill" id="txe-paid-yes">Received</button>
     </div>
   </div>
+  <div class="field hidden" id="txe-actual-field"><label for="txe-actual">Amount actually received</label>
+    <input type="number" id="txe-actual" min="0" inputmode="decimal" placeholder="same as calculated">
+    <div class="hint" id="txe-actual-hint"></div></div>
   <div id="txe-error" class="err hidden"></div>
   <div style="display:flex;gap:8px;margin-top:14px">
     <button type="button" class="btn btn-ghost" id="txe-cancel" style="flex:1">Cancel</button>
@@ -1279,6 +1346,7 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     slabForeign:'Slab — foreigner (฿)'
   };
 
+  function fmtPlain(v){ return Math.round(v).toLocaleString('en-US'); }
   function fmt(n){ return '฿'+Math.round(n||0).toLocaleString('en-US'); }
   function fmtSigned(n,type){ return (type==='income'?'+':'−')+'฿'+Math.round(Math.abs(n||0)).toLocaleString('en-US'); }
   function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
@@ -1350,6 +1418,13 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     var m=/^(\d{1,2}):(\d{2})$/.exec(v);
     if(!m) return null;
     return parseInt(m[1],10)*60+parseInt(m[2],10);
+  }
+  // Short clock text: 8, 8:30, 24. Leading zeros and :00 add nothing.
+  function hhShort(m){
+    m=Math.round(m);
+    if(m>=1440) return '24';
+    var h=Math.floor(m/60), mm=m%60;
+    return mm ? h+':'+String(mm).padStart(2,'0') : String(h);
   }
   function minToHHMM(m){
     m=((m%1440)+1440)%1440;
@@ -1573,7 +1648,6 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     return f;
   }
   function dayOffOf(d){ return daysOff()[d]||null; }
-  function isDayOff(d){ return !!dayOffOf(d); }
   function setDayOff(d,info){
     var m=daysOff();
     if(info) m[d]=info; else delete m[d];
@@ -1676,20 +1750,34 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
         document.getElementById('view-places').classList.add('hidden');
         document.getElementById('view-settings').classList.remove('hidden');
       }
-      if(btn.getAttribute('data-tab')==='add') refreshDayLogs();
+      if(btn.getAttribute('data-tab')==='add') setEntryMode(entryMode);
       if(btn.getAttribute('data-tab')==='totals'){ renderYrFilter(); renderTotals(); }
       window.scrollTo(0,0);
     });
   });
 
-  document.querySelectorAll('#type-toggle .seg-btn').forEach(function(b){
-    b.addEventListener('click',function(){
-      document.querySelectorAll('#type-toggle .seg-btn').forEach(function(x){ x.classList.remove('active'); });
-      b.classList.add('active');
-      var t=b.getAttribute('data-type');
-      document.getElementById('income-form').classList.toggle('hidden',t!=='income');
-      document.getElementById('expense-form').classList.toggle('hidden',t!=='expense');
+  // One place decides which entry form is on screen. Switching the forms comes
+  // FIRST so that if anything here ever fails, the highlight cannot end up
+  // saying "Expense" while the income form is still showing.
+  var entryMode='income';
+  function setEntryMode(mode){
+    entryMode = (mode==='expense') ? 'expense' : 'income';
+    var inc=document.getElementById('income-form');
+    var exp=document.getElementById('expense-form');
+    if(inc) inc.classList.toggle('hidden', entryMode!=='income');
+    if(exp) exp.classList.toggle('hidden', entryMode!=='expense');
+    document.querySelectorAll('#type-toggle .seg-btn').forEach(function(x){
+      x.classList.toggle('active', x.getAttribute('data-type')===entryMode);
     });
+    // close any panel belonging to the form we just left
+    ['dayoff-panel','tpl-save-panel','tpl-repeat-panel'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.classList.add('hidden');
+    });
+    refreshDayLogs();
+  }
+  document.querySelectorAll('#type-toggle .seg-btn').forEach(function(b){
+    b.addEventListener('click',function(){ setEntryMode(b.getAttribute('data-type')); });
   });
 
   document.getElementById('month-prev').addEventListener('click',function(){ viewMonth=shiftMonth(viewMonth,-1); selectedDay=null; renderSummary(); });
@@ -2922,8 +3010,26 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     openEditModal();
   }
   var editPaid=false;
+  function renderActualField(){
+    var wrap=document.getElementById('txe-actual-field');
+    if(!wrap) return;
+    var t=transactions.find(function(x){ return x.id===editingTxId; });
+    var show = !!t && t.type==='income' && !t.planned && editPaid;
+    wrap.classList.toggle('hidden', !show);
+    if(!show || !t) return;
+    var due=effectiveAmount(t);
+    document.getElementById('txe-actual').value=(t.actual==null?'':t.actual);
+    var h=document.getElementById('txe-actual-hint');
+    if(t.actual!=null && t.actual!==due){
+      var diff=t.actual-due;
+      h.textContent='Calculated '+fmt(due)+' \u00b7 '+(diff<0?'short by ':'over by ')+fmt(Math.abs(diff));
+    }else{
+      h.textContent='Leave empty if it matched the calculated '+fmt(due)+'.';
+    }
+  }
   function renderPaidToggle(){
     document.getElementById('txe-paid-yes').classList.toggle('active',editPaid);
+    renderActualField();
     document.getElementById('txe-paid-no').classList.toggle('active',!editPaid);
   }
   document.getElementById('txe-paid-yes').addEventListener('click',function(){ editPaid=true; renderPaidToggle(); });
@@ -2954,7 +3060,14 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     }
     err.classList.add('hidden');
     t.date=date; t.note=document.getElementById('txe-note').value.trim();
-    if(t.type==='income' && !t.planned) t.paid=editPaid;
+    if(t.type==='income' && !t.planned){
+      t.paid=editPaid;
+      // what actually landed can differ from the formula; record it so the
+      // figures follow the bank rather than the calculation
+      var av=document.getElementById('txe-actual').value.trim();
+      if(editPaid && av!=='' && parseFloat(av)>=0) t.actual=parseFloat(av);
+      else delete t.actual;
+    }
     invalidateTiers();
     if(tiered) t.amount=effectiveAmount(t); // keep the stored copy in step for exports
     saveTx();
@@ -3132,8 +3245,11 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
       var glyph='';
       if(offInfo){
         var g=dayOffGlyph(dstr2);
-        glyph='<span class="cg off'+(offInfo.type==='travel'?' code':'')+'">'+esc(g)+'</span>';
-        style=' style="background:rgba(180,68,46,0.14);color:var(--neg)"';
+        // a cross sits in the corner rather than behind the text, so nothing overlaps
+        glyph='<span class="cx">\u2715</span>'
+            + '<span class="cg off'+(offInfo.type==='travel'?' code':'')+'">'+esc(g)+'</span>';
+        cls+=' dayoff';
+        style='';
         label='';
       }
       else if(owner[d]) glyph='<span class="cg">'+placeIcon(owner[d])+'</span>';
@@ -3154,20 +3270,84 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     });
     showDayDetail(totals,maxA);
   }
+  // Tapping a day opens that day's entries right under the calendar, with edit
+  // and delete on each row, so a correction never means scrolling to hunt for it.
   function showDayDetail(totals,max){
     var el=document.getElementById('cal-detail');
-    if(selectedDay){
-      var t=totals[selectedDay];
-      var label=selectedDay+' '+MONTHS[parseInt(viewMonth.slice(5,7),10)-1].slice(0,3);
-      if(!t){ el.textContent=label+' · nothing logged'; return; }
-      var bits=[fmt(t.income)+' in'];
-      if(t.expense>0) bits.push(fmt(t.expense)+' out');
-      bits.push(t.count+(t.count===1?' entry':' entries'));
-      el.textContent=label+' · '+bits.join(' · ');
+    if(!selectedDay){
+      var worked=Object.keys(totals).filter(function(d){ return totals[d].income>0; }).length;
+      el.className='cal-detail';
+      el.innerHTML = worked
+        ? '<span class="cd-hint">'+worked+(worked===1?' day':' days')+' earning \u00b7 best '+fmt(max)+' \u00b7 tap a day to see it</span>'
+        : '<span class="cd-hint">Tap a day to see what happened</span>';
       return;
     }
-    var worked=Object.keys(totals).filter(function(d){ return totals[d].income>0; }).length;
-    el.textContent = worked ? (worked+(worked===1?' day':' days')+' earning · best '+fmt(max)) : 'Tap a day for detail';
+    var ds=viewMonth+'-'+String(selectedDay).padStart(2,'0');
+    var rows=transactions.filter(function(t){ return t.date===ds; })
+      .sort(function(a,b){ return (a.startTime||'~').localeCompare(b.startTime||'~'); });
+    var off=dayOffOf(ds);
+    var inc=0, exp=0;
+    rows.forEach(function(t){
+      if(t.planned && !isAccruing(t)) return;
+      var v=earnedSoFar(t);
+      if(t.type==='income') inc+=v; else exp+=v;
+    });
+    var label=dayLabel(ds);
+    var head='<div class="cd-head"><span class="cd-day">'+label+'</span>'
+      + '<span class="cd-net'+(inc-exp<0?' neg':'')+'">'+fmtSigned(Math.abs(inc-exp), inc-exp<0?'expense':'income')+'</span></div>';
+    if(off){
+      head+='<div class="cd-off">\u2715 Day off \u00b7 '
+        + (off.type==='travel' ? esc(off.code||'away') : esc((homeById(off.home)||{}).name||'home'))+'</div>';
+    }
+    if(!rows.length){
+      el.className='cal-detail open';
+      el.innerHTML=head+'<div class="cd-empty">Nothing logged'
+        + '<button type="button" class="cd-add" data-add="'+ds+'">Add an entry</button></div>';
+      wireDayDetail();
+      return;
+    }
+    var list=rows.map(function(t){
+      var when = (t.startTime&&t.endTime)
+        ? hhShort(hhmmToMin(t.startTime))+'\u2013'+hhShort(hhmmToMin(t.startTime)+shiftMinutes(t.startTime,t.endTime))
+        : '';
+      var tag = t.planned ? '<span class="cd-tag plan">planned</span>'
+        : (t.type==='income' ? (t.paid===true?'<span class="cd-tag paid">paid</span>':'<span class="cd-tag unpaid">unpaid</span>') : '');
+      return '<div class="cd-row'+(t.planned?' planned':'')+'">'
+        + '<span class="cd-when">'+when+'</span>'
+        + '<span class="cd-what"><b>'+esc(t.catLabel)+'</b>'+tag
+        + '<i>'+esc(t.type==='income'?t.placeName:(t.note||'expense'))+'</i></span>'
+        + '<span class="cd-amt" style="color:'+(t.planned?'var(--ink-faint)':(t.type==='income'?'var(--pos)':'var(--neg)'))+'">'
+        + fmtSigned(earnedSoFar(t),t.type)+'</span>'
+        + '<button type="button" class="cd-btn" data-edit="'+t.id+'" aria-label="Edit">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>'
+        + '<button type="button" class="cd-btn danger" data-del="'+t.id+'" aria-label="Delete">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>'
+        + '</div>';
+    }).join('');
+    el.className='cal-detail open';
+    el.innerHTML=head+list+'<button type="button" class="cd-add wide" data-add="'+ds+'">Add to this day</button>';
+    wireDayDetail();
+  }
+  function wireDayDetail(){
+    var el=document.getElementById('cal-detail');
+    el.querySelectorAll('[data-edit]').forEach(function(b){
+      b.addEventListener('click',function(e){ e.stopPropagation(); startEditTx(b.getAttribute('data-edit')); });
+    });
+    el.querySelectorAll('[data-del]').forEach(function(b){
+      b.addEventListener('click',function(e){ e.stopPropagation(); deleteTxWithUndo(b.getAttribute('data-del')); });
+    });
+    el.querySelectorAll('[data-add]').forEach(function(b){
+      b.addEventListener('click',function(e){
+        e.stopPropagation();
+        var d=b.getAttribute('data-add');
+        document.getElementById('inc-date').value=d;
+        document.getElementById('exp-date').value=d;
+        refreshDayLogs();
+        document.querySelectorAll('.tab-btn').forEach(function(x){
+          if(x.getAttribute('data-tab')==='add') x.click();
+        });
+      });
+    });
   }
 
   function cumulativeSeries(mk){
@@ -3359,8 +3539,12 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
       if(t.type==='income') bits.push(t.placeName);
       if(t.note) bits.push(t.note);
       var chip='';
-      if(t.planned) chip='<span class="paychip plan">Planned</span>';
-      else if(t.type==='income') chip = t.paid===true
+      if(t.actual!=null && !t.planned && Math.round(t.actual)!==Math.round(effectiveAmount(t))){
+        var dv=t.actual-effectiveAmount(t);
+        chip+='<span class="paychip diff">'+(dv<0?'\u2212':'+')+fmtPlain(Math.abs(dv))+'</span>';
+      }
+      if(t.planned) chip+='<span class="paychip plan">Planned</span>';
+      else if(t.type==='income') chip += t.paid===true
         ? '<span class="paychip paid">Paid</span>'
         : '<span class="paychip unpaid">Unpaid</span>';
       return '<div class="row'+(t.planned?' planned':'')+'">'
@@ -3781,7 +3965,7 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     var lift=15+running*12+(list.length>1?9:0);
     // midnight at the end of the day reads as 24:00, not 00:00
     var scale=marks.map(function(m){
-      var lbl = m>=1440 ? '24:00' : minToHHMM(m);
+      var lbl = hhShort(m);
       var side = pct(m)>94 ? ' right' : (pct(m)<6 ? ' left' : '');
       return '<span class="s-mk'+side+'" style="left:'+pct(m).toFixed(2)+'%">'+lbl+'</span>';
     }).join('');
@@ -3798,35 +3982,6 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
 
 
 
-  // The clock can be pinned to a chosen hourly rate. This only changes what the
-  // clock and the timeline projections show — logged entries keep the amount
-  // their workplace rules produced.
-  var CLOCK_RATES=[500,600,700,800,900];
-  function clockRateFor(tx){
-    var auto=perHourOf(tx);
-    return settings.clockRate ? settings.clockRate : auto;
-  }
-  function renderRatePicker(){
-    var wrap=document.getElementById('rate-picker');
-    wrap.innerHTML='<button type="button" class="pill'+(!settings.clockRate?' active':'')+'" data-rate="auto">Auto</button>'
-      + CLOCK_RATES.map(function(r){
-          return '<button type="button" class="pill'+(settings.clockRate===r?' active':'')+'" data-rate="'+r+'">'+fmt(r)+'/h</button>';
-        }).join('');
-    wrap.querySelectorAll('.pill').forEach(function(b){
-      b.addEventListener('click',function(){
-        var v=b.getAttribute('data-rate');
-        settings.clockRate = v==='auto' ? null : parseInt(v,10);
-        saveSettings();
-        renderRatePicker();
-        renderToday();
-      });
-    });
-  }
-  document.getElementById('today-rate').addEventListener('click',function(){
-    var w=document.getElementById('rate-picker');
-    w.classList.toggle('hidden');
-    if(!w.classList.contains('hidden')) renderRatePicker();
-  });
 
 
   var clockTimer=null;
@@ -3852,9 +4007,29 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     }catch(e){ actx=null; return false; }
     return true;
   }
+  var audioPending=[];
+  function flushAudio(){
+    var q=audioPending; audioPending=[];
+    q.forEach(function(fn){ try{ fn(); }catch(e){} });
+  }
   function resumeAudio(){
+    if(!audioReady()) return false;
+    if(actx.state==='running') return true;
+    // Safari hands back a suspended context and only starts it asynchronously.
+    // Sounds asked for in the meantime are queued rather than lost.
+    try{
+      var pr=actx.resume();
+      if(pr && pr.then) pr.then(flushAudio, function(){});
+      else flushAudio();
+    }catch(e){}
+    return actx.state==='running';
+  }
+  // Play now if the context is awake, otherwise as soon as it is.
+  function whenAudible(fn){
     if(!audioReady()) return;
-    if(actx.state==='suspended') actx.resume();
+    if(actx.state==='running'){ fn(); return; }
+    if(audioPending.length<6) audioPending.push(fn);
+    resumeAudio();
   }
   function setMasterVolume(){
     if(!masterGain) return;
@@ -3909,8 +4084,9 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
   }
   function playCoin(){
     if(!settings.sfx || settings.muted) return;
-    if(!audioReady()) return;
-    resumeAudio();
+    whenAudible(_playCoin);
+  }
+  function _playCoin(){
     var t=actx.currentTime;
     var base=2600+Math.random()*500;
 
@@ -3931,24 +4107,20 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
   // A short rising figure to confirm something was saved.
   function playSubmit(){
     if(!settings.sfx || settings.muted) return;
-    if(!audioReady()) return;
-    resumeAudio();
+    whenAudible(function(){
     var t=actx.currentTime;
     [523.25, 659.25, 783.99].forEach(function(f,i){
       blip(f, t+i*0.055, 0.2, 'triangle', 0.2);
     });
+    });
   }
   function playTick(freq){
     if(!settings.sfx || settings.muted) return;
-    if(!audioReady()) return;
-    resumeAudio();
-    blip(freq||740, actx.currentTime, 0.045, 'sine', 0.055);
+    whenAudible(function(){ blip(freq||740, actx.currentTime, 0.045, 'sine', 0.055); });
   }
   function playTap(){
     if(!settings.sfx || settings.muted) return;
-    if(!audioReady()) return;
-    resumeAudio();
-    blip(440, actx.currentTime, 0.06, 'sine', 0.08);
+    whenAudible(function(){ blip(440, actx.currentTime, 0.06, 'sine', 0.08); });
   }
   // A quiet, slowly drifting pad. Low gain by design — meant to sit under a shift.
   function startAmbient(){
@@ -4026,11 +4198,30 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     else playTick(740);
   });
 
-  // Any first tap unlocks audio on iOS.
-  document.addEventListener('click',function once(){
+  // iOS only lets audio start from inside a real touch, and only once a silent
+  // buffer has actually been played. Both touchend and click are wired because
+  // Safari is more reliable with the former.
+  var audioUnlocked=false;
+  function unlockAudio(){
+    if(audioUnlocked) return;
+    if(!audioReady()) return;
+    audioUnlocked=true;
+    try{
+      var buf=actx.createBuffer(1,1,actx.sampleRate);
+      var src=actx.createBufferSource();
+      src.buffer=buf;
+      src.connect(actx.destination);
+      src.start(0);
+    }catch(e){}
     resumeAudio();
     syncAmbient();
-    document.removeEventListener('click',once);
+  }
+  ['touchend','click','pointerup'].forEach(function(ev){
+    document.addEventListener(ev,unlockAudio,{passive:true});
+  });
+  // returning to the app can leave the context suspended
+  document.addEventListener('visibilitychange',function(){
+    if(!document.hidden) resumeAudio();
   });
   // Don't keep playing into a pocket.
   document.addEventListener('visibilitychange',function(){
@@ -4077,10 +4268,24 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     var host=document.getElementById('today-money');
     var val=document.getElementById('today-money-val');
     if(!host) return;
+    // Drawn on a fixed layer above the page rather than inside the card: the
+    // card has to clip its own contents so the frosted-glass corners stay
+    // rounded, which would otherwise cut the figure off as it rises.
+    var layer=document.getElementById('coin-layer');
+    if(!layer){
+      layer=document.createElement('div');
+      layer.id='coin-layer';
+      layer.className='coin-layer';
+      document.body.appendChild(layer);
+    }
+    var r;
+    try{ r=host.getBoundingClientRect(); }catch(e){ r={left:0,top:0,width:0,height:0}; }
     var c=document.createElement('span');
     c.className='coin';
+    c.style.left=(r.left+r.width/2)+'px';
+    c.style.top=r.top+'px';
     c.textContent='+\u0e3f'+(amount%1===0?String(amount):amount.toFixed(2));
-    host.appendChild(c);
+    layer.appendChild(c);
     setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); },1600);
     // no scale pulse here: it made the digits jitter while they were counting
   }
@@ -4135,39 +4340,6 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     });
     document.body.appendChild(svg);
     setTimeout(function(){ if(svg.parentNode) svg.parentNode.removeChild(svg); },1700);
-  }
-
-  function burstAt(x,y){
-    if(REDUCE_MOTION) return;
-    var ns='http://www.w3.org/2000/svg';
-    var svg=document.createElementNS(ns,'svg');
-    svg.setAttribute('class','burst');
-    svg.setAttribute('viewBox','0 0 200 200');
-    svg.style.left=x+'px';
-    svg.style.top=y+'px';
-    var ring=document.createElementNS(ns,'circle');
-    ring.setAttribute('cx','100'); ring.setAttribute('cy','100'); ring.setAttribute('r','6');
-    svg.appendChild(ring);
-    var rays=11;
-    for(var i=0;i<rays;i++){
-      var ang=(i/rays)*Math.PI*2 + Math.random()*0.18;
-      var inner=16+Math.random()*8, outer=inner+22+Math.random()*26;
-      var ln=document.createElementNS(ns,'line');
-      ln.setAttribute('x1',(100+Math.cos(ang)*inner).toFixed(1));
-      ln.setAttribute('y1',(100+Math.sin(ang)*inner).toFixed(1));
-      ln.setAttribute('x2',(100+Math.cos(ang)*outer).toFixed(1));
-      ln.setAttribute('y2',(100+Math.sin(ang)*outer).toFixed(1));
-      ln.style.animationDelay=(Math.random()*0.09).toFixed(3)+'s';
-      ln.style.transformOrigin='100px 100px';
-      svg.appendChild(ln);
-    }
-    document.body.appendChild(svg);
-    setTimeout(function(){ if(svg.parentNode) svg.parentNode.removeChild(svg); },900);
-  }
-  function burstFromElement(el){
-    if(!el) return;
-    var r=el.getBoundingClientRect();
-    burstAt(r.left+r.width/2, r.top+r.height/2);
   }
 
   function renderToday(){
@@ -4303,7 +4475,8 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
   // out pro rata, so the figures climb through the shift instead of jumping at
   // the end. Anything already confirmed simply counts in full.
   function earnedSoFar(t){
-    var full=effectiveAmount(t);
+    // a recorded actual payment overrides the calculated figure
+    var full=(t.actual!=null && !t.planned) ? t.actual : effectiveAmount(t);
     if(!t.planned) return full;
     if(!t.startTime || !t.endTime) return 0;
     var a=shiftStartAt(t), b=shiftEndAt(t);
@@ -4836,10 +5009,14 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
         if(t.note && !isTieredHourly(t)) bits.push(t.note);
         if(!bits.length) bits.push(t.catLabel);
         var chip='';
+        if(t.actual!=null && !t.planned && Math.round(t.actual)!==Math.round(effectiveAmount(t))){
+          var dv=t.actual-effectiveAmount(t);
+          chip+='<span class="paychip diff">'+(dv<0?'\u2212':'+')+fmtPlain(Math.abs(dv))+'</span>';
+        }
         if(t.planned){
-          chip='<span class="paychip plan">Planned</span>';
+          chip+='<span class="paychip plan">Planned</span>';
         }else if(t.type==='income'){
-          chip = t.paid===true
+          chip += t.paid===true
             ? '<button type="button" class="paychip paid pay-toggle" data-id="'+t.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>Paid</button>'
             : '<button type="button" class="paychip unpaid pay-toggle" data-id="'+t.id+'">Unpaid</button>';
         }
