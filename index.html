@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<!-- BUILD: 2026-09-19 · build 42 -->
+<!-- BUILD: 2026-09-19 · build 47 -->
 <title>Locum Ledger</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -26,10 +26,10 @@
   --note:#2E7D52;
   --neg:#B4442E;
   --shadow:0 1px 2px rgba(25,25,25,0.04), 0 6px 20px rgba(25,25,25,0.04);
-  --glass:0.72;                       /* set from Settings */
+  --glass:0.44;                       /* set from Settings */
   --glass-bg:255,255,255;
   --glass-edge:rgba(255,255,255,0.75);
-  --glass-blur:22px;
+  --glass-blur:38px;
   --tabbar-bg:#262624;
   --tabbar-ink:#8F8A81;
   --tabbar-active-ink:#FFFFFF;
@@ -69,15 +69,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Robot
    Panels are translucent and blur what is behind them, with a bright top edge
    so they read as glass rather than flat tint. A soft backdrop sits behind
    everything, otherwise there is nothing for the blur to pick up. */
-body::before{
-  content:'';position:fixed;inset:-10%;z-index:-2;pointer-events:none;
-  background:
-    radial-gradient(46% 34% at 14% 8%,  rgba(201,100,66,.16), transparent 70%),
-    radial-gradient(40% 30% at 88% 16%, rgba(122,132,80,.14), transparent 70%),
-    radial-gradient(52% 38% at 72% 88%, rgba(138,107,168,.13), transparent 70%),
-    radial-gradient(44% 32% at 20% 94%, rgba(74,124,140,.12), transparent 70%);
-  filter:blur(24px);
-}
+/* ---------- the layer glass refracts ----------
+   Soft coloured orbs drift slowly behind the whole app. Without something
+   with structure back here, a backdrop-filter has nothing to bend and the
+   panels just look like flat tint. */
+.mesh{position:fixed;inset:-20%;z-index:-2;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(46px) saturate(150%);opacity:.82;
+  will-change:transform;}
+.o1{width:52vw;height:52vw;left:-8%;top:-6%;background:radial-gradient(circle at 34% 32%,
+  color-mix(in srgb,var(--accent) 88%,#fff),transparent 68%);animation:drift1 34s ease-in-out infinite;}
+.o2{width:46vw;height:46vw;right:-10%;top:4%;background:radial-gradient(circle at 60% 40%,
+  #7A8450,transparent 66%);animation:drift2 41s ease-in-out infinite;}
+.o3{width:58vw;height:58vw;left:8%;bottom:-14%;background:radial-gradient(circle at 44% 56%,
+  #8A6BA8,transparent 66%);animation:drift3 47s ease-in-out infinite;}
+.o4{width:40vw;height:40vw;right:2%;bottom:6%;background:radial-gradient(circle at 50% 50%,
+  #4A7C8C,transparent 66%);animation:drift4 38s ease-in-out infinite;}
+.o6{width:44vw;height:44vw;left:52%;bottom:18%;background:radial-gradient(circle at 46% 46%,
+  #E0576B,transparent 64%);animation:drift1 44s ease-in-out infinite reverse;}
+.o7{width:38vw;height:38vw;left:-6%;top:44%;background:radial-gradient(circle at 52% 48%,
+  #3FA9A0,transparent 62%);animation:drift3 39s ease-in-out infinite;}
+.o5{width:34vw;height:34vw;left:34%;top:38%;background:radial-gradient(circle at 50% 50%,
+  color-mix(in srgb,var(--accent) 70%,#FFD9A0),transparent 64%);animation:drift2 52s ease-in-out infinite reverse;}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(7vw,5vh) scale(1.12)}66%{transform:translate(-4vw,9vh) scale(.94)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-8vw,7vh) scale(1.15)}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(6vw,-6vh) scale(1.08)}75%{transform:translate(-5vw,-3vh) scale(.96)}}
+@keyframes drift4{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5vw,-8vh) scale(1.1)}}
+/* a whisper of grain stops the blur looking like plastic */
+.grain{position:absolute;inset:0;opacity:.16;mix-blend-mode:overlay;
+  background-image:radial-gradient(rgba(255,255,255,.7) .5px, transparent .5px),
+                   radial-gradient(rgba(0,0,0,.5) .5px, transparent .5px);
+  background-size:3px 3px, 4px 4px;background-position:0 0, 1px 2px;}
+body[data-theme="dark"] .orb{opacity:.60;filter:blur(56px) saturate(140%);}
+body[data-theme="dark"] .grain{opacity:.10;}
+@media (prefers-reduced-motion:reduce){ .orb{animation:none;} }
+
 body[data-theme="dark"]::before{opacity:.55;}
 .glassy{
   background:rgba(var(--glass-bg), var(--glass));
@@ -92,7 +117,7 @@ body[data-theme="dark"] .glassy{box-shadow:inset 0 1px 0 rgba(255,255,255,.07), 
   /* no blur support: fall back to a solid panel so nothing turns unreadable */
   .glassy{background:var(--surface);}
 }
-.card{background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(255,255,255,.14), 0 1px 2px rgba(25,25,25,.05), 0 10px 26px rgba(25,25,25,.07);border-radius:18px;padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
+.card{border-radius:18px;padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
 .card.tight{padding:6px 17px;}
 .section-label{font-size:12px;font-weight:650;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.06em;margin:20px 4px 8px;}
 .section-label:first-child{margin-top:0;}
@@ -123,7 +148,7 @@ body[data-theme="dark"] .span-card::after{background:linear-gradient(180deg, rgb
 .span-card .v{font-size:22px;font-weight:680;letter-spacing:-0.025em;margin-top:3px;
   font-variant-numeric:tabular-nums;font-feature-settings:'tnum';}
 .span-card .s{font-size:10.5px;color:var(--ink-faint);font-weight:600;margin-top:2px;}
-.hero{background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(255,255,255,.14), 0 1px 2px rgba(25,25,25,.05), 0 10px 26px rgba(25,25,25,.07);border-radius:20px;padding:18px 20px;margin-bottom:13px;box-shadow:var(--shadow);}
+.hero{border-radius:20px;padding:18px 20px;margin-bottom:13px;box-shadow:var(--shadow);}
 .hero .cap{font-size:12.5px;color:var(--ink-soft);font-weight:550;}
 .hero .big{font-variant-numeric:tabular-nums;font-feature-settings:'tnum';font-size:36px;font-weight:680;letter-spacing:-0.035em;margin:4px 0 12px;line-height:1.05;}
 .hero .split{display:flex;gap:10px;}
@@ -218,7 +243,7 @@ body,.content{overflow-x:hidden;}
   border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);}
 .icon-opt.active{background:var(--accent);color:#FFF;border-color:var(--accent);}
 .icon-opt svg{width:17px;height:17px;}
-.today-card{overflow:hidden;background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(255,255,255,.14), 0 1px 2px rgba(25,25,25,.05), 0 10px 26px rgba(25,25,25,.07);border-radius:20px;
+.today-card{overflow:hidden;border-radius:20px;
   padding:17px 19px;margin-bottom:13px;box-shadow:var(--shadow);}
 .today-card.live{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft), var(--shadow);}
 .today-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:2px;}
@@ -333,7 +358,7 @@ body[data-theme="dark"] .coin{text-shadow:0 1px 0 rgba(0,0,0,.4);}
 .fl-node.n5{animation-delay:5.9s;}
 
 .hero-planned{font-size:12.5px;color:var(--ink-faint);font-weight:560;margin:2px 0 12px;letter-spacing:-0.005em;}
-.tier-card{background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);backdrop-filter:blur(var(--glass-blur)) saturate(190%) brightness(1.06);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(255,255,255,.14), 0 1px 2px rgba(25,25,25,.05), 0 10px 26px rgba(25,25,25,.07);border-radius:18px;padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
+.tier-card{border-radius:18px;padding:15px 17px;margin-bottom:13px;box-shadow:var(--shadow);}
 .tier-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:3px;}
 .tier-h{font-size:20px;font-weight:680;letter-spacing:-0.025em;}
 .tier-rate{font-size:12.5px;font-weight:640;color:var(--accent);}
@@ -473,6 +498,264 @@ body[data-theme="dark"] .cal-cell.dayoff{background:rgba(217,119,87,0.30)!import
   box-shadow:0 8px 24px rgba(0,0,0,0.25);z-index:25;font-size:13px;font-weight:560;}
 .undo-bar button{background:none;border:none;color:var(--accent);font-weight:700;font-size:13px;padding:8px 10px;}
 /* Totals page */
+/* ---- chromatic fringing: real glass splits light at its edges ---- */
+.card,.hero,.today-card,.tier-card,.span-card,.monthnav,.settings-nav-card{
+  isolation:isolate;
+}
+.card::before,.hero::before,.today-card::before,.tier-card::before,
+.span-card::before,.monthnav::before,.settings-nav-card::before{
+  /* replaced below with a wider, colour-split bevel */
+}
+.glassfringe{position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;z-index:3;
+  mix-blend-mode:screen;opacity:.5;
+  background:
+    linear-gradient(135deg, rgba(120,190,255,.55) 0%, transparent 16%),
+    linear-gradient(315deg, rgba(255,150,120,.5) 0%, transparent 16%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite:exclude;padding:1.5px;}
+
+/* ================= LIQUID GLASS =================
+   A pane of real glass has four things a flat tint does not: it refracts what
+   is behind it, it has thickness you can see at the edges, light catches its
+   top rim, and it casts a soft shadow onto the page. All four are built here
+   and shared by every panel. */
+.card,.hero,.today-card,.tier-card,.span-card,.monthnav,.settings-nav-card,.total-strip{
+  position:relative;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.06) 42%, rgba(255,255,255,.14)),
+    rgba(var(--glass-bg), var(--glass));
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(240%) brightness(1.14) contrast(1.06);
+  backdrop-filter:blur(var(--glass-blur)) saturate(240%) brightness(1.14) contrast(1.06);
+  border:.5px solid transparent;
+  background-clip:padding-box;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255,255,255,.75),          /* top rim catching light */
+    inset 0 -1px 0 0 rgba(255,255,255,.22),         /* bottom bounce */
+    inset 1px 0 0 0 rgba(255,255,255,.28),
+    inset -1px 0 0 0 rgba(255,255,255,.28),
+    0 1px 1px rgba(28,24,18,.04),
+    0 6px 16px rgba(28,24,18,.06),
+    0 18px 40px rgba(28,24,18,.07);
+}
+/* the bright bevel around the edge — this is what reads as thickness */
+.card::before,.hero::before,.today-card::before,.tier-card::before,
+.span-card::before,.monthnav::before,.settings-nav-card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;padding:1.6px;
+  background:linear-gradient(142deg,
+    rgba(255,255,255,1) 0%, rgba(190,225,255,.72) 12%, rgba(255,255,255,.30) 28%,
+    rgba(255,255,255,0) 50%, rgba(255,214,196,.28) 72%, rgba(255,255,255,.55) 88%,
+    rgba(255,255,255,.95) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite:exclude;pointer-events:none;z-index:2;
+}
+/* a soft specular sweep across the upper third */
+.card::after,.hero::after,.today-card::after,.tier-card::after,.span-card::after{
+  content:'';position:absolute;inset:0 0 auto 0;height:52%;border-radius:inherit;
+  background:linear-gradient(168deg,
+    rgba(255,255,255,.42) 0%, rgba(255,255,255,.12) 38%, rgba(255,255,255,0) 100%);
+  pointer-events:none;z-index:0;opacity:.9;
+}
+.card > *,.hero > *,.today-card > *,.tier-card > *,.span-card > *,
+.monthnav > *,.settings-nav-card > *{position:relative;z-index:1;}
+
+body[data-theme="dark"] .card,body[data-theme="dark"] .hero,
+body[data-theme="dark"] .today-card,body[data-theme="dark"] .tier-card,
+body[data-theme="dark"] .span-card,body[data-theme="dark"] .monthnav,
+body[data-theme="dark"] .settings-nav-card,body[data-theme="dark"] .total-strip{
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 42%, rgba(255,255,255,.05)),
+    rgba(var(--glass-bg), var(--glass));
+  box-shadow:
+    inset 0 1px 0 0 rgba(255,255,255,.16),
+    inset 0 -1px 0 0 rgba(255,255,255,.05),
+    inset 1px 0 0 0 rgba(255,255,255,.06),
+    inset -1px 0 0 0 rgba(255,255,255,.06),
+    0 2px 6px rgba(0,0,0,.28), 0 14px 34px rgba(0,0,0,.34);
+}
+body[data-theme="dark"] .card::before,body[data-theme="dark"] .hero::before,
+body[data-theme="dark"] .today-card::before,body[data-theme="dark"] .tier-card::before,
+body[data-theme="dark"] .span-card::before,body[data-theme="dark"] .monthnav::before,
+body[data-theme="dark"] .settings-nav-card::before{
+  background:linear-gradient(145deg, rgba(255,255,255,.34), rgba(255,255,255,.06) 40%,
+    rgba(255,255,255,0) 60%, rgba(255,255,255,.14) 100%);
+}
+body[data-theme="dark"] .card::after,body[data-theme="dark"] .hero::after,
+body[data-theme="dark"] .today-card::after,body[data-theme="dark"] .tier-card::after,
+body[data-theme="dark"] .span-card::after{
+  background:linear-gradient(168deg, rgba(255,255,255,.12), rgba(255,255,255,0) 70%);
+}
+
+/* the live card sits closest to the viewer, so it gets the deepest pane */
+.today-card{
+  -webkit-backdrop-filter:blur(calc(var(--glass-blur) * 1.5)) saturate(260%) brightness(1.18) contrast(1.08);
+  backdrop-filter:blur(calc(var(--glass-blur) * 1.5)) saturate(260%) brightness(1.18) contrast(1.08);
+  box-shadow:
+    inset 0 1.5px 0 0 rgba(255,255,255,.85),
+    inset 0 -1px 0 0 rgba(255,255,255,.24),
+    0 2px 3px rgba(28,24,18,.05),
+    0 10px 24px rgba(28,24,18,.08),
+    0 28px 60px rgba(28,24,18,.10);
+}
+.today-card.live{
+  box-shadow:
+    inset 0 1.5px 0 0 rgba(255,255,255,.85),
+    inset 0 -1px 0 0 rgba(255,255,255,.24),
+    0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent),
+    0 10px 28px color-mix(in srgb, var(--accent) 22%, transparent),
+    0 28px 64px rgba(28,24,18,.12);
+}
+
+/* floating bar: the heaviest frost in the app */
+.tabbar{
+  background:color-mix(in srgb, var(--tabbar-bg) 62%, transparent);
+  -webkit-backdrop-filter:blur(42px) saturate(250%) brightness(1.2) contrast(1.05);
+  backdrop-filter:blur(34px) saturate(220%) brightness(1.15);
+  border:.5px solid rgba(255,255,255,.14);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255,255,255,.22),
+    inset 0 -1px 0 0 rgba(255,255,255,.06),
+    0 8px 24px rgba(0,0,0,.24), 0 22px 54px rgba(0,0,0,.22);
+}
+.tab-btn.active{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 3px 10px color-mix(in srgb,var(--accent) 45%,transparent);
+}
+
+/* small surfaces get a lighter pane so they read as sitting on the glass */
+.total-strip,.subpanel,.pill,.seg-btn,.paychip,.cal-detail.open,
+input,select,textarea,.bar,.cal-cell,.blk{
+  -webkit-backdrop-filter:blur(18px) saturate(190%) brightness(1.06);
+  backdrop-filter:blur(18px) saturate(190%) brightness(1.06);
+}
+/* fields become little panes of their own */
+input,select,textarea{
+  background:linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,.08)),
+             rgba(var(--glass-bg), calc(var(--glass) * .72));
+  border:.5px solid rgba(255,255,255,.45);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1px 0 rgba(255,255,255,.18),
+             0 1px 2px rgba(28,24,18,.04);
+}
+body[data-theme="dark"] input,body[data-theme="dark"] select,body[data-theme="dark"] textarea{
+  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)),
+             rgba(var(--glass-bg), calc(var(--glass) * .8));
+  border-color:rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 1px 2px rgba(0,0,0,.3);
+}
+.cal-cell{border:.5px solid rgba(255,255,255,.35);}
+body[data-theme="dark"] .cal-cell{border-color:rgba(255,255,255,.08);}
+.pill.active,.seg-btn.active{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 2px 8px rgba(28,24,18,.10);
+}
+
+/* a pane lifts very slightly when pressed, like real glass under a finger */
+.card:active,.span-card:active,.settings-nav-card:active{
+  transform:scale(.995);
+  transition:transform .14s cubic-bezier(.3,1.2,.5,1);
+}
+
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .card,.hero,.today-card,.tier-card,.span-card,.monthnav,.settings-nav-card,.tabbar{
+    background:var(--surface);}
+  .mesh{opacity:.35;}
+}
+
+/* ---------- analysis blocks ---------- */
+.pay-preview{margin-top:13px;padding-top:11px;border-top:1px solid var(--border);}
+.pp-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:3px 0;
+  font-size:11.5px;color:var(--ink-soft);font-weight:560;}
+.pp-row b{font-size:13px;font-weight:720;color:var(--ink);font-variant-numeric:tabular-nums;}
+.pp-row b.short{color:var(--neg);} .pp-row b.over{color:var(--pos);} .pp-row b.ok{color:var(--pos);}
+.pay-head{font-size:10px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;
+  letter-spacing:.06em;margin:14px 0 4px;}
+.pay-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);}
+.pay-row:last-child{border-bottom:none;}
+.pay-when{width:50px;flex:none;font-size:10.5px;font-weight:650;color:var(--ink-faint);}
+.pay-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
+.pay-who b{font-size:12.5px;font-weight:620;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pay-who i{font-size:10px;font-style:normal;color:var(--ink-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pay-amt{flex:none;text-align:right;font-size:13px;font-weight:750;color:var(--pos);
+  font-variant-numeric:tabular-nums;letter-spacing:-0.02em;}
+.pay-amt i{display:block;font-size:10px;font-style:normal;font-weight:700;}
+.pay-amt i.short{color:var(--neg);} .pay-amt i.over{color:var(--accent);}
+
+.av-top{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.av-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+.av-col:last-child{align-items:flex-end;text-align:right;}
+.av-k{font-size:10px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em;}
+.av-v{font-size:17px;font-weight:720;letter-spacing:-0.03em;color:var(--ink-soft);
+  font-variant-numeric:tabular-nums;}
+.av-v.big{font-size:23px;font-weight:800;color:var(--ink);}
+.av-v.big.short{color:var(--neg);}
+.av-v.big.over{color:var(--pos);}
+.av-arrow{flex:none;color:var(--ink-faint);font-size:15px;}
+.av-bar{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;}
+.av-bar > i{display:block;height:100%;border-radius:4px;transition:width .55s cubic-bezier(.3,.9,.3,1);}
+.av-line{font-size:12px;font-weight:640;color:var(--ink-soft);margin-top:9px;}
+.av-line.neg{color:var(--neg);}
+.av-line.pos{color:var(--pos);}
+.av-counts{font-size:10.5px;color:var(--ink-faint);font-weight:580;margin-top:3px;}
+.av-list{margin-top:11px;padding-top:9px;border-top:1px solid var(--border);}
+.av-row{display:flex;align-items:center;gap:9px;width:100%;padding:7px 0;background:none;
+  border:none;border-bottom:1px solid var(--border);font-family:inherit;text-align:left;}
+.av-row:last-of-type{border-bottom:none;}
+.av-row:active{opacity:.6;}
+.av-when{width:52px;flex:none;font-size:10.5px;font-weight:650;color:var(--ink-faint);}
+.av-what{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
+.av-what b{font-size:12px;font-weight:620;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.av-what i{font-size:10px;font-style:normal;color:var(--ink-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.av-d{flex:none;font-size:12.5px;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;}
+.av-d.neg{color:var(--neg);} .av-d.pos{color:var(--pos);}
+.av-more{font-size:10.5px;color:var(--ink-faint);font-weight:580;padding-top:7px;}
+/* the tappable figure on a day row */
+button.cd-amt{background:none;border:none;font-family:inherit;padding:2px 3px;border-radius:7px;
+  position:relative;}
+button.cd-amt:active{background:var(--surface);}
+.cd-adj{position:absolute;top:0;right:-1px;width:5px;height:5px;border-radius:50%;
+  background:var(--neg);}
+
+.an-row{padding:11px 0;border-bottom:1px solid var(--border);}
+.an-row:last-of-type{border-bottom:none;}
+.an-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:7px;}
+.an-name{font-size:13px;font-weight:620;color:var(--ink);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.an-big{font-size:17px;font-weight:780;letter-spacing:-0.03em;white-space:nowrap;flex:none;
+  font-variant-numeric:tabular-nums;}
+.an-big i{font-size:10.5px;font-style:normal;font-weight:640;color:var(--ink-faint);margin-left:1px;}
+.an-bar{height:7px;border-radius:4px;background:var(--surface-2);overflow:hidden;}
+.an-bar > i{display:block;height:100%;border-radius:4px;
+  transition:width .55s cubic-bezier(.3,.9,.3,1);}
+.an-sub{font-size:10.5px;color:var(--ink-faint);font-weight:580;margin-top:5px;}
+.an-note{font-size:11px;color:var(--ink-soft);font-weight:580;line-height:1.45;
+  margin-top:11px;padding-top:10px;border-top:1px solid var(--border);}
+.an-note.warn{color:var(--neg);font-weight:640;}
+
+/* weekday columns */
+.dow-row{display:flex;align-items:flex-end;gap:5px;height:104px;}
+.dow{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  gap:4px;height:100%;min-width:0;}
+.dow-v{font-size:8.5px;font-weight:700;color:var(--ink-faint);white-space:nowrap;
+  letter-spacing:-0.02em;height:11px;}
+.dow-col{flex:1;width:100%;display:flex;align-items:flex-end;}
+.dow-col > i{display:block;width:100%;border-radius:5px 5px 2px 2px;background:var(--accent);
+  opacity:.4;transition:height .55s cubic-bezier(.3,.9,.3,1);}
+.dow.best .dow-col > i{opacity:1;}
+.dow.best .dow-v{color:var(--accent);}
+.dow-l{font-size:9.5px;font-weight:700;color:var(--ink-faint);}
+.dow.best .dow-l{color:var(--accent);}
+
+/* payment aging */
+.age-total{font-size:24px;font-weight:780;letter-spacing:-0.03em;margin-bottom:12px;
+  font-variant-numeric:tabular-nums;}
+.age-total span{display:block;font-size:11px;font-weight:580;color:var(--ink-faint);
+  letter-spacing:0;margin-top:2px;}
+.age-row{display:flex;align-items:center;gap:9px;padding:5px 0;}
+.age-l{width:88px;flex:none;font-size:10.5px;font-weight:600;color:var(--ink-soft);}
+.age-bar{flex:1;height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;min-width:0;}
+.age-bar > i{display:block;height:100%;border-radius:4px;
+  transition:width .55s cubic-bezier(.3,.9,.3,1);}
+.age-v{flex:none;font-size:11.5px;font-weight:700;white-space:nowrap;
+  font-variant-numeric:tabular-nums;letter-spacing:-0.02em;}
 .donut-wrap{display:flex;align-items:center;gap:16px;}
 .donut-wrap svg{width:116px;height:116px;flex:none;}
 .legend-list{display:flex;flex-direction:column;gap:8px;min-width:0;flex:1;}
@@ -622,6 +905,12 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
 </style>
 </head>
 <body data-theme="light">
+<div class="mesh" aria-hidden="true">
+  <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
+  <span class="orb o4"></span><span class="orb o5"></span>
+  <span class="orb o6"></span><span class="orb o7"></span>
+  <span class="grain"></span>
+</div>
 <div class="content">
   <div class="topbar">
     <h1 class="large-title" id="page-title">Overview</h1>
@@ -697,6 +986,27 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     </div><div class="col">
 
     <div class="section-label">Payments</div>
+    <div class="card" id="pay-record">
+      <button type="button" class="btn btn-ghost" id="pay-add">+ Record a payment received</button>
+      <div id="pay-form" class="hidden subpanel" style="margin-top:11px">
+        <div class="field"><label for="pay-place">From</label><select id="pay-place"></select></div>
+        <div style="display:flex;gap:9px">
+          <div class="field" style="flex:1;margin-bottom:0"><label for="pay-from">Covers from</label><input type="date" id="pay-from"></div>
+          <div class="field" style="flex:1;margin-bottom:0"><label for="pay-to">to</label><input type="date" id="pay-to"></div>
+        </div>
+        <div class="field" style="margin-top:13px"><label for="pay-amount">Amount received (one lump sum)</label>
+          <input type="number" id="pay-amount" min="0" inputmode="decimal" placeholder="0"></div>
+        <div class="field"><label for="pay-date">Date it arrived</label><input type="date" id="pay-date"></div>
+        <div class="pay-preview" id="pay-preview"></div>
+        <div style="display:flex;gap:9px;margin-top:13px">
+          <button type="button" class="btn btn-ghost" id="pay-cancel">Cancel</button>
+          <button type="button" class="btn btn-primary" id="pay-save">Save payment</button>
+        </div>
+      </div>
+      <div id="pay-list"></div>
+    </div>
+
+
     <div class="card tight" id="payments-card"><div class="empty">Nothing to collect</div></div>
 
     <div class="section-label">Hours by workplace</div>
@@ -890,6 +1200,18 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
       </div>
     </div>
 
+    <div class="section-label">Calculated vs actually paid</div>
+    <div class="card"><div id="an-actual"></div></div>
+
+    <div class="section-label">What your time is worth</div>
+    <div class="card"><div id="an-rate"></div></div>
+
+    <div class="section-label">Which days pay best</div>
+    <div class="card"><div id="an-weekday"></div></div>
+
+    <div class="section-label">Waiting to be paid</div>
+    <div class="card"><div id="an-aging"></div></div>
+
     <div class="section-label">Where income came from</div>
     <div class="card"><div class="donut-wrap"><div id="yr-donut"></div><div class="legend-list" id="yr-donut-legend"></div></div></div>
 
@@ -1026,7 +1348,7 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     <div class="card">
       <div class="rate-row" style="border-bottom:none">
         <span class="rate-name">This build</span>
-        <span class="rate-val" id="build-stamp">2026-09-19 · build 42</span>
+        <span class="rate-val" id="build-stamp">2026-09-19 · build 47</span>
       </div>
       <div class="hint" style="margin:2px 0 0">If this does not match the newest file you uploaded, the browser is still showing a cached copy.</div>
     </div>
@@ -1089,12 +1411,12 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
 
 <script>
 (function(){
-  var LS_PLACES='ll-places-v1', LS_TX='ll-tx-v1', LS_SETTINGS='ll-settings-v1', LS_EXPCATS='ll-expcats-v1', LS_TPL='ll-templates-v1', LS_OTHERINC='ll-otherinc-v1';
+  var LS_PLACES='ll-places-v1', LS_TX='ll-tx-v1', LS_SETTINGS='ll-settings-v1', LS_EXPCATS='ll-expcats-v1', LS_TPL='ll-templates-v1', LS_OTHERINC='ll-otherinc-v1', LS_PAY='ll-payments-v1';
   var LEGACY = {places:'doctor-tracker-places-v3', tx:'doctor-tracker-transactions-v2', expcats:'doctor-tracker-expcats-v1'};
 
-  var places=[], transactions=[], expenseCategories=[], templates=[];
+  var places=[], transactions=[], expenseCategories=[], templates=[], payments=[];
   var settings={accent:'#C96442', theme:'light', title:'Overview',
-                sfx:true, ambient:false, muted:false, volume:0.7, glass:0.72};
+                sfx:true, ambient:false, muted:false, volume:0.7, glass:0.44};
   var currentIncCat=null, currentExpCat=null;
   var incManageMode=false, expManageMode=false;
   var incSelectedIcon='tag', expSelectedIcon='tag';
@@ -1346,6 +1668,11 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     slabForeign:'Slab — foreigner (฿)'
   };
 
+  function shortDate(ds){
+    var p=(ds||'').split('-');
+    if(p.length<3) return ds||'';
+    return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1].slice(0,3);
+  }
   function fmtPlain(v){ return Math.round(v).toLocaleString('en-US'); }
   function fmt(n){ return '฿'+Math.round(n||0).toLocaleString('en-US'); }
   function fmtSigned(n,type){ return (type==='income'?'+':'−')+'฿'+Math.round(Math.abs(n||0)).toLocaleString('en-US'); }
@@ -1511,6 +1838,7 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     places.forEach(function(p){ if(!p.categories) p.categories=JSON.parse(JSON.stringify(TYPE_DEFAULT_CATEGORIES[p.type]||[])); });
     transactions=readLS(LS_TX,LEGACY.tx)||[];
     templates=readLS(LS_TPL)||[];
+    payments=readLS(LS_PAY)||[];
     otherIncomeCategories=readLS(LS_OTHERINC);
     if(!otherIncomeCategories||!otherIncomeCategories.length) otherIncomeCategories=defaultOtherIncomeCategories();
     expenseCategories=readLS(LS_EXPCATS,LEGACY.expcats);
@@ -1662,6 +1990,7 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
   }
 
   function saveOtherInc(){ writeLS(LS_OTHERINC,otherIncomeCategories); }
+  function savePayments(){ writeLS(LS_PAY,payments); }
 
   var SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   var MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>';
@@ -2622,9 +2951,9 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     });
   }
   function applyGlass(){
-    var v = settings.glass==null ? 0.72 : settings.glass;
+    var v = settings.glass==null ? 0.44 : settings.glass;
     document.documentElement.style.setProperty('--glass', String(v));
-    document.documentElement.style.setProperty('--glass-blur', (10+Math.round((1-v)*26))+'px');
+    document.documentElement.style.setProperty('--glass-blur', (20+Math.round((1-v)*40))+'px');
     var r=document.getElementById('glass-range');
     if(r) r.value=Math.round(v*100);
     var h=document.getElementById('glass-hint');
@@ -2690,7 +3019,7 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
   });
   function backupPayload(){
     return {app:'locum-ledger', version:2, savedAt:new Date().toISOString(),
-      places:places, transactions:transactions,
+      places:places, transactions:transactions, payments:payments,
       expenseCategories:expenseCategories, otherIncomeCategories:otherIncomeCategories,
       templates:templates, settings:settings};
   }
@@ -3014,7 +3343,9 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     var wrap=document.getElementById('txe-actual-field');
     if(!wrap) return;
     var t=transactions.find(function(x){ return x.id===editingTxId; });
-    var show = !!t && t.type==='income' && !t.planned && editPaid;
+    // always available on an income entry: you often know the real figure
+    // before you get round to ticking it as received
+    var show = !!t && t.type==='income' && !t.planned;
     wrap.classList.toggle('hidden', !show);
     if(!show || !t) return;
     var due=effectiveAmount(t);
@@ -3065,7 +3396,7 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
       // what actually landed can differ from the formula; record it so the
       // figures follow the bank rather than the calculation
       var av=document.getElementById('txe-actual').value.trim();
-      if(editPaid && av!=='' && parseFloat(av)>=0) t.actual=parseFloat(av);
+      if(av!=='' && parseFloat(av)>=0) t.actual=parseFloat(av);
       else delete t.actual;
     }
     invalidateTiers();
@@ -3316,8 +3647,12 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
         + '<span class="cd-when">'+when+'</span>'
         + '<span class="cd-what"><b>'+esc(t.catLabel)+'</b>'+tag
         + '<i>'+esc(t.type==='income'?t.placeName:(t.note||'expense'))+'</i></span>'
-        + '<span class="cd-amt" style="color:'+(t.planned?'var(--ink-faint)':(t.type==='income'?'var(--pos)':'var(--neg)'))+'">'
-        + fmtSigned(earnedSoFar(t),t.type)+'</span>'
+        + '<button type="button" class="cd-amt"'
+        + (t.type==='income'&&!t.planned?' data-actual="'+t.id+'"':'')
+        + ' style="color:'+(t.planned?'var(--ink-faint)':(t.type==='income'?'var(--pos)':'var(--neg)'))+'">'
+        + fmtSigned(earnedSoFar(t),t.type)
+        + (t.actual!=null&&Math.round(t.actual)!==Math.round(effectiveAmount(t))?'<i class="cd-adj"></i>':'')
+        + '</button>'
         + '<button type="button" class="cd-btn" data-edit="'+t.id+'" aria-label="Edit">'
         + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>'
         + '<button type="button" class="cd-btn danger" data-del="'+t.id+'" aria-label="Delete">'
@@ -3328,10 +3663,19 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     el.innerHTML=head+list+'<button type="button" class="cd-add wide" data-add="'+ds+'">Add to this day</button>';
     wireDayDetail();
   }
+  function openActualFor(id){
+    startEditTx(id);
+    var f=document.getElementById('txe-actual');
+    if(f){ try{ f.focus(); f.select(); }catch(e){} }
+  }
   function wireDayDetail(){
     var el=document.getElementById('cal-detail');
     el.querySelectorAll('[data-edit]').forEach(function(b){
       b.addEventListener('click',function(e){ e.stopPropagation(); startEditTx(b.getAttribute('data-edit')); });
+    });
+    // tapping the figure itself goes straight to "what actually arrived"
+    el.querySelectorAll('[data-actual]').forEach(function(b){
+      b.addEventListener('click',function(e){ e.stopPropagation(); openActualFor(b.getAttribute('data-actual')); });
     });
     el.querySelectorAll('[data-del]').forEach(function(b){
       b.addEventListener('click',function(e){ e.stopPropagation(); deleteTxWithUndo(b.getAttribute('data-del')); });
@@ -4671,7 +5015,185 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
       .sort(function(a,b){ return b.value-a.value; });
   }
 
+  // ---------- Analysis ----------
+  // Three questions the raw totals cannot answer: what an hour is actually
+  // worth at each place, which days of the week earn most, and how long money
+  // has been owed.
+  function analysisData(y){
+    var perPlace={}, perDow=[], aging=[];
+    for(var i=0;i<7;i++) perDow.push({inc:0,hrs:0,days:{}});
+    var now=Date.now();
+    transactions.forEach(function(t){
+      if(!inYear(t,y) || !passesFilter(t)) return;
+      if(t.type!=='income') return;
+      if(t.planned && !isAccruing(t)) return;
+      var v=earnedSoFar(t), h=hoursOf(t);
+      var nm=t.placeName||'Other';
+      var p=perPlace[nm]=perPlace[nm]||{inc:0,hrs:0,n:0};
+      p.inc+=v; p.hrs+=h; p.n++;
+      var d=new Date(t.date+'T00:00:00');
+      if(!isNaN(d)){
+        var k=(d.getDay()+6)%7;                 // 0 = Monday
+        perDow[k].inc+=v; perDow[k].hrs+=h; perDow[k].days[t.date]=1;
+      }
+      if(!t.planned && t.paid!==true && v>0){
+        var age=Math.floor((now-new Date(t.date+'T00:00:00').getTime())/86400000);
+        aging.push({name:nm, amount:v, age:isNaN(age)?0:age, date:t.date});
+      }
+    });
+    return {perPlace:perPlace, perDow:perDow, aging:aging};
+  }
+
+  // What the rules say you are owed, against what the bank actually shows.
+  // Reconcile the lump sums actually banked against what the rules calculated
+  // for the periods those payments covered.
+  function actualsSummary(y){
+    var due=0, got=0, checked=0, over=0, under=0, rows=[];
+    payments.forEach(function(p){
+      if(!inYear({date:p.date},y)) return;
+      if(yrPlaces && yrPlaces.indexOf(p.placeName)===-1) return;
+      if(yrFrom && p.date<yrFrom) return;
+      if(yrTo && p.date>yrTo) return;
+      var d=dueFor(p.placeId,p.from,p.to);
+      checked++; due+=d; got+=p.amount;
+      var gap=p.amount-d;
+      if(Math.round(gap)>0) over++; else if(Math.round(gap)<0) under++;
+      if(Math.round(gap)!==0)
+        rows.push({name:p.placeName, label:shortDate(p.from)+'\u2013'+shortDate(p.to),
+                   date:p.date, diff:gap, id:p.id});
+    });
+    rows.sort(function(a,b){ return Math.abs(b.diff)-Math.abs(a.diff); });
+    return {due:due, got:got, checked:checked, over:over, under:under, rows:rows};
+  }
+
+  function renderAnalysis(y){
+    var d=analysisData(y);
+
+    // --- calculated vs actually paid ---
+    var A=actualsSummary(y);
+    var aeEl=document.getElementById('an-actual');
+    if(!A.checked){
+      aeEl.innerHTML='<div class="empty">No payments recorded yet.<br>'
+        + '<span class="hint" style="margin:6px 0 0">On Overview, use \u201cRecord a payment received\u201d when a lump sum arrives.</span></div>';
+    }else{
+      var gap=A.got-A.due;
+      var pctp=A.due>0?(A.got/A.due*100):100;
+      aeEl.innerHTML='<div class="av-top">'
+        + '<div class="av-col"><span class="av-k">Calculated</span><span class="av-v">'+fmt(A.due)+'</span></div>'
+        + '<div class="av-arrow">\u2192</div>'
+        + '<div class="av-col"><span class="av-k">Actually paid</span>'
+        + '<span class="av-v big'+(gap<0?' short':(gap>0?' over':''))+'">'+fmt(A.got)+'</span></div>'
+        + '</div>'
+        + '<div class="av-bar"><i style="width:'+Math.min(100,pctp).toFixed(1)+'%;background:'
+        + (gap<0?'var(--neg)':'var(--pos)')+'"></i></div>'
+        + '<div class="av-line'+(gap<0?' neg':(gap>0?' pos':''))+'">'
+        + (Math.round(gap)===0
+            ? 'Every confirmed payment matched exactly.'
+            : (gap<0 ? 'Short by '+fmt(-gap) : 'Paid '+fmt(gap)+' more than calculated'))
+        + ' \u00b7 '+pctp.toFixed(1)+'% of what was due</div>'
+        + '<div class="av-counts">'+A.checked+' checked \u00b7 '
+        + (A.under?A.under+' short':'none short')
+        + (A.over?' \u00b7 '+A.over+' overpaid':'')+'</div>'
+        + (A.rows.length
+            ? '<div class="av-list">'+A.rows.slice(0,5).map(function(r){
+                return '<button type="button" class="av-row" data-jump="'+r.id+'">'
+                  + '<span class="av-when">'+esc(shortDate(r.date))+'</span>'
+                  + '<span class="av-what"><b>'+esc(r.name)+'</b><i>'+esc(r.label)+'</i></span>'
+                  + '<span class="av-d'+(r.diff<0?' neg':' pos')+'">'+(r.diff<0?'\u2212':'+')+fmtPlain(Math.abs(r.diff))+'</span>'
+                  + '</button>';
+              }).join('')
+              + (A.rows.length>5?'<div class="av-more">+'+(A.rows.length-5)+' more differ</div>':'')
+              + '</div>'
+            : '');
+      aeEl.querySelectorAll('[data-jump]').forEach(function(b){
+        b.addEventListener('click',function(){
+          document.querySelectorAll('.tab-btn').forEach(function(x){
+            if(x.getAttribute('data-tab')==='summary') x.click();
+          });
+        });
+      });
+    }
+
+    // --- what an hour is worth, per workplace ---
+    var rows=Object.keys(d.perPlace).map(function(nm){
+      var p=d.perPlace[nm];
+      return {name:nm, inc:p.inc, hrs:p.hrs, rate:p.hrs>0?p.inc/p.hrs:0, n:p.n};
+    }).filter(function(r){ return r.inc>0; })
+      .sort(function(a,b){ return b.rate-a.rate; });
+    var rEl=document.getElementById('an-rate');
+    if(!rows.length){ rEl.innerHTML='<div class="empty">Nothing to compare yet</div>'; }
+    else{
+      var peak=Math.max.apply(null,rows.map(function(r){ return r.rate; }))||1;
+      rEl.innerHTML=rows.map(function(r,i){
+        var w=Math.max(3,r.rate/peak*100);
+        return '<div class="an-row">'
+          + '<div class="an-top"><span class="an-name">'+esc(r.name)+'</span>'
+          + '<span class="an-big">'+(r.hrs>0?fmt(r.rate)+'<i>/h</i>':'<i>no hours logged</i>')+'</span></div>'
+          + '<div class="an-bar"><i style="width:'+w.toFixed(1)+'%;background:'
+          + SLICE_COLORS[i%SLICE_COLORS.length]+'"></i></div>'
+          + '<div class="an-sub">'+fmt(r.inc)+' over '+(r.hrs?r.hrs.toFixed(1)+' h':'\u2014')
+          + ' \u00b7 '+r.n+' entr'+(r.n===1?'y':'ies')+'</div></div>';
+      }).join('');
+      if(rows.length>1 && rows[0].hrs>0 && rows[rows.length-1].hrs>0){
+        var best=rows[0], worst=rows[rows.length-1];
+        var gap=best.rate-worst.rate;
+        if(gap>1) rEl.innerHTML+='<div class="an-note">An hour at '+esc(best.name)+' is worth '
+          + fmt(gap)+' more than at '+esc(worst.name)+'.</div>';
+      }
+    }
+
+    // --- which weekday pays best ---
+    var DOW=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    var wEl=document.getElementById('an-weekday');
+    var maxDow=Math.max.apply(null,d.perDow.map(function(x){ return x.inc; }))||0;
+    if(maxDow<=0){ wEl.innerHTML='<div class="empty">Not enough logged yet</div>'; }
+    else{
+      var bestIdx=0;
+      d.perDow.forEach(function(x,i){ if(x.inc>d.perDow[bestIdx].inc) bestIdx=i; });
+      wEl.innerHTML='<div class="dow-row">'+d.perDow.map(function(x,i){
+        var h=Math.max(4,x.inc/maxDow*100);
+        var n=Object.keys(x.days).length;
+        var avg=n?x.inc/n:0;
+        return '<div class="dow'+(i===bestIdx?' best':'')+'" title="'+esc(DOW[i])+'">'
+          + '<span class="dow-v">'+(x.inc>0?fmtTiny(x.inc):'')+'</span>'
+          + '<span class="dow-col"><i style="height:'+h.toFixed(1)+'%"></i></span>'
+          + '<span class="dow-l">'+DOW[i][0]+'</span></div>';
+      }).join('')+'</div>'
+      + '<div class="an-note">Best on '+DOW[bestIdx]+' \u00b7 '
+      + fmt(d.perDow[bestIdx].inc)+' across '+Object.keys(d.perDow[bestIdx].days).length+' day'
+      + (Object.keys(d.perDow[bestIdx].days).length===1?'':'s')+'</div>';
+    }
+
+    // --- money still owed, by how long ---
+    var aEl=document.getElementById('an-aging');
+    if(!d.aging.length){ aEl.innerHTML='<div class="empty">Everything has been paid</div>'; }
+    else{
+      var band=[{l:'under 30 days',max:30,v:0,n:0},{l:'30\u201360 days',max:60,v:0,n:0},
+                {l:'60\u201390 days',max:90,v:0,n:0},{l:'over 90 days',max:1e9,v:0,n:0}];
+      var total=0, oldest=null;
+      d.aging.forEach(function(x){
+        total+=x.amount;
+        if(!oldest || x.age>oldest.age) oldest=x;
+        for(var i=0;i<band.length;i++){ if(x.age<band[i].max){ band[i].v+=x.amount; band[i].n++; break; } }
+      });
+      aEl.innerHTML='<div class="age-total">'+fmt(total)+'<span>owed across '+d.aging.length+' entr'
+        + (d.aging.length===1?'y':'ies')+'</span></div>'
+        + band.filter(function(b){ return b.v>0; }).map(function(b,i){
+            var w=b.v/total*100;
+            var col=['#3D7F5E','#C9A227','#C96442','#B4442E'][band.indexOf(b)];
+            return '<div class="age-row"><span class="age-l">'+b.l+'</span>'
+              + '<span class="age-bar"><i style="width:'+w.toFixed(1)+'%;background:'+col+'"></i></span>'
+              + '<span class="age-v">'+fmt(b.v)+'</span></div>';
+          }).join('')
+        + (oldest && oldest.age>45
+            ? '<div class="an-note warn">Oldest is '+oldest.age+' days \u00b7 '+esc(oldest.name)
+              +' \u00b7 '+fmt(oldest.amount)+'</div>'
+            : '');
+    }
+  }
+
   function renderTotals(){
+    renderAnalysis(viewYear);
     var d=yearData(viewYear);
     var capEl=document.getElementById('yr-cap');
     if(capEl) capEl.textContent=(yrFrom||yrTo||yrPlaces)?'Net for the selection':'Net for the year';
@@ -4900,12 +5422,110 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     setText('span-week-sub',  wPlan>0 ? ('+'+fmt(wPlan)+' still to come') : (wOut>0 ? fmt(wOut)+' spent' : ''));
   }
 
+  // ---------- Payments received as a lump sum ----------
+  // A clinic pays once for a whole period, not entry by entry. A payment
+  // records what actually arrived; the entries it covers are marked paid and
+  // reconciled against what the rules calculated for that span.
+  function entriesCovered(placeId,from,to){
+    return transactions.filter(function(t){
+      return t.type==='income' && !t.planned && t.placeId===placeId
+        && t.date>=from && t.date<=to;
+    });
+  }
+  function dueFor(placeId,from,to){
+    return entriesCovered(placeId,from,to).reduce(function(a,t){ return a+effectiveAmount(t); },0);
+  }
+  function renderPayPlaces(){
+    var sel=document.getElementById('pay-place');
+    if(!sel) return;
+    sel.innerHTML=places.map(function(p){ return '<option value="'+p.id+'">'+esc(p.name)+'</option>'; }).join('');
+  }
+  function updatePayPreview(){
+    var el=document.getElementById('pay-preview');
+    if(!el) return;
+    var pid=document.getElementById('pay-place').value;
+    var from=document.getElementById('pay-from').value, to=document.getElementById('pay-to').value;
+    var amt=parseFloat(document.getElementById('pay-amount').value)||0;
+    if(!pid||!from||!to||to<from){ el.innerHTML='<span class="hint" style="margin:0">Pick the period this payment covers.</span>'; return; }
+    var list=entriesCovered(pid,from,to);
+    var due=list.reduce(function(a,t){ return a+effectiveAmount(t); },0);
+    var diff=amt-due;
+    el.innerHTML='<div class="pp-row"><span>Calculated for this period</span><b>'+fmt(due)+'</b></div>'
+      + '<div class="pp-row"><span>'+list.length+' entr'+(list.length===1?'y':'ies')+' covered</span>'
+      + '<b class="'+(amt<=0?'':(Math.round(diff)===0?'ok':(diff<0?'short':'over')))+'">'
+      + (amt>0 ? (Math.round(diff)===0?'matches exactly':(diff<0?'short by '+fmt(-diff):fmt(diff)+' more')) : '\u2014')
+      + '</b></div>';
+  }
+  ['pay-place','pay-from','pay-to','pay-amount'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){ el.addEventListener('change',updatePayPreview); el.addEventListener('input',updatePayPreview); }
+  });
+  document.getElementById('pay-add').addEventListener('click',function(){
+    var f=document.getElementById('pay-form');
+    if(!f.classList.contains('hidden')){ f.classList.add('hidden'); return; }
+    renderPayPlaces();
+    var mk=viewMonth;
+    document.getElementById('pay-from').value=mk+'-01';
+    document.getElementById('pay-to').value=mk+'-'+String(daysInMonth(mk)).padStart(2,'0');
+    document.getElementById('pay-date').value=todayStr();
+    document.getElementById('pay-amount').value='';
+    f.classList.remove('hidden');
+    updatePayPreview();
+    try{ f.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
+  });
+  document.getElementById('pay-cancel').addEventListener('click',function(){
+    document.getElementById('pay-form').classList.add('hidden');
+  });
+  document.getElementById('pay-save').addEventListener('click',function(){
+    var pid=document.getElementById('pay-place').value;
+    var from=document.getElementById('pay-from').value, to=document.getElementById('pay-to').value;
+    var amt=parseFloat(document.getElementById('pay-amount').value)||0;
+    var when=document.getElementById('pay-date').value||todayStr();
+    if(!pid||!from||!to||amt<=0) { updatePayPreview(); return; }
+    var list=entriesCovered(pid,from,to);
+    var due=list.reduce(function(a,t){ return a+effectiveAmount(t); },0);
+    payments.push({id:uid(), placeId:pid, placeName:(placeById(pid)||{}).name||'', from:from, to:to,
+      amount:amt, date:when, due:Math.round(due), count:list.length});
+    // everything the payment covers counts as settled
+    list.forEach(function(t){ t.paid=true; });
+    savePayments(); saveTx();
+    document.getElementById('pay-form').classList.add('hidden');
+    playSubmit();
+    renderSummary();
+  });
+  function renderPayList(){
+    var el=document.getElementById('pay-list');
+    if(!el) return;
+    var mine=payments.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); }).slice(0,6);
+    if(!mine.length){ el.innerHTML=''; return; }
+    el.innerHTML='<div class="pay-head">Recent payments</div>'+mine.map(function(p){
+      var d=p.amount-(p.due||0);
+      return '<div class="pay-row"><span class="pay-when">'+esc(shortDate(p.date))+'</span>'
+        + '<span class="pay-who"><b>'+esc(p.placeName)+'</b><i>'+esc(shortDate(p.from))+'\u2013'+esc(shortDate(p.to))
+        + ' \u00b7 '+p.count+' entr'+(p.count===1?'y':'ies')+'</i></span>'
+        + '<span class="pay-amt">'+fmt(p.amount)
+        + (Math.round(d)!==0?'<i class="'+(d<0?'short':'over')+'">'+(d<0?'\u2212':'+')+fmtPlain(Math.abs(d))+'</i>':'')
+        + '</span>'
+        + '<button type="button" class="cd-btn danger" data-delpay="'+p.id+'" aria-label="Delete">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
+    }).join('');
+    el.querySelectorAll('[data-delpay]').forEach(function(b){
+      b.addEventListener('click',function(){
+        var id=b.getAttribute('data-delpay');
+        payments=payments.filter(function(x){ return x.id!==id; });
+        savePayments(); renderSummary();
+      });
+    });
+  }
+
   function renderSummary(){
     invalidateTiers();
     document.getElementById('month-label').textContent=monthLabel(viewMonth);
     renderToday();
     renderSpans();
     renderHoursByPlace();
+    renderPayList();
+    dressGlass();
     renderTierCards();
     renderPayments();
     renderHeatmap();
@@ -5062,6 +5682,20 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
     }
   }
 
+  // Real glass splits light into colour at its rim. One thin element per pane
+  // paints that fringe; it is decorative only and never intercepts a tap.
+  function dressGlass(){
+    var sel='.card,.hero,.today-card,.tier-card,.span-card,.monthnav,.settings-nav-card';
+    document.querySelectorAll(sel).forEach(function(el){
+      if(el.__fringed) return;
+      el.__fringed=1;
+      var f=document.createElement('span');
+      f.className='glassfringe';
+      f.setAttribute('aria-hidden','true');
+      el.appendChild(f);
+    });
+  }
+
   function initAll(){
     applySettings();
     document.getElementById('app-title-input').value=settings.title||'Overview';
@@ -5083,6 +5717,7 @@ input.emoji-in{width:64px;flex:none;text-align:center;font-size:18px;padding:7px
   loadData();
   autoConfirmElapsed();
   initAll();
+  dressGlass();
   if(settings.icsUrl) setTimeout(function(){ syncFromLink(true); },600);
 })();
 </script>
