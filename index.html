@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<!-- BUILD: 2026-09-19 · build 67 -->
+<!-- BUILD: 2026-09-19 · build 76 -->
 <title>Locum Ledger</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1409,6 +1409,68 @@ input:focus,select:focus,textarea:focus{outline:none;
   .dn-seg:first-of-type,.cal-cell.sel,.tier-bar > i::after,.paychip.diff,
   .av-d.neg,.led-n.got:not(.full),.btn-primary.ready,.empty{animation:none !important;}
 }
+
+/* ============ CALM ============
+   Anything that looped on a timer has been switched off. Motion now happens
+   only in response to something the person did: a tap, a save, a screen
+   change. Nothing moves on its own while you are reading. */
+.ls-c b.neg,.led-note b.neg,.age-total,
+.an-note.warn,
+.today-card.live,.today-card.live .rate-line,.today-card.live .today-rate,
+.paychip.unpaid,.paychip.diff,.av-d.neg,.led-n.got:not(.full),
+.dn-seg:first-of-type,.dn,.dn:not(:has(.dn-seg.on)),
+.cal-cell.sel,.cal-cell.today,.cal-cell.peak::after,
+.tier-bar > i::after,
+.btn-primary.ready,.btn-primary::before,
+.empty,
+.sm-bar::after,.age-bar::after,
+.s-bar.live::after,.s-now,
+.dow.best .dow-col > i,
+.tl-draw,
+.today-card.live .cap .pulse{
+  animation:none !important;
+}
+/* the live dot simply stays lit rather than beating */
+.today-card.live .cap .pulse{opacity:1;}
+/* the biggest donut slice keeps its emphasis without the glow cycling */
+.dn-seg:first-of-type{animation:arcSweep .9s cubic-bezier(.2,.85,.3,1) both !important;}
+/* the running-total line still draws itself once, then holds still */
+.tl-draw{animation:drawLine 1.5s cubic-bezier(.3,.8,.3,1) forwards !important;}
+.tl-dot{animation:dotIn .4s 1.2s both !important;}
+/* today keeps its ring, just not a pulsing one */
+.cal-cell.today{box-shadow:0 0 0 2px var(--accent), 0 4px 12px color-mix(in srgb,var(--accent) 26%,transparent);}
+.cal-cell.sel{box-shadow:0 0 0 2.5px var(--ink), 0 6px 16px rgba(28,24,18,.22);}
+/* and the live card keeps a steady accent edge */
+.today-card.live{box-shadow:inset 0 1.5px 0 0 rgba(255,255,255,.85),
+  0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent),
+  0 10px 28px color-mix(in srgb,var(--accent) 22%,transparent);}
+
+/* Nothing in the app may animate on a timer. Motion is a response to an
+   action, never ambient — a figure that drifts while you are trying to read
+   it is noise, and on a phone it also costs battery for no benefit. */
+.age-bar::after,
+.age-total,
+.av-d.neg,
+.btn-primary::before,
+.cal-cell.today,
+.led-n.got:not(.full),
+.led-note b.neg,
+.o1,
+.o3,
+.o5,
+.o6,
+.pulse,
+.s-bar.live::after,
+.sm-bar::after,
+.tl-draw,
+and nothing loops unless the thing it marks is genuinely live. */  /* ---- 1. money that is still owed to you pulls the eye ---- */ .ls-c b.neg{
+  animation-iteration-count:1 !important;
+  animation-duration:0s !important;
+}
+
+/* the timeline is rebuilt whenever the day changes; an entrance animation on
+   its parts would replay each time, so they simply appear */
+.s-stack,.s-bar,.s-mk{animation:none !important;}
 </style>
 </head>
 <body data-theme="light">
@@ -1830,7 +1892,7 @@ input:focus,select:focus,textarea:focus{outline:none;
     <div class="card">
       <div class="rate-row" style="border-bottom:none">
         <span class="rate-name">This build</span>
-        <span class="rate-val" id="build-stamp">2026-09-19 · build 67</span>
+        <span class="rate-val" id="build-stamp">2026-09-19 · build 76</span>
       </div>
       <div class="hint" style="margin:2px 0 0">If this does not match the newest file you uploaded, the browser is still showing a cached copy.</div>
     </div>
@@ -2385,7 +2447,7 @@ if(c && t.catLabel!==c.label){ t.catLabel=c.label; changed=true; }
 if(changed){ savePlaces(); saveTx(); saveExpCats(); }
 }
 function savePlaces(){ writeLS(LS_PLACES,places); }
-function saveTx(){ invalidateTiers(); writeLS(LS_TX,transactions); }
+function saveTx(){ invalidateTiers(); invalidateSettle(); writeLS(LS_TX,transactions); }
 function saveSettings(){ writeLS(LS_SETTINGS,settings); }
 function saveExpCats(){ writeLS(LS_EXPCATS,expenseCategories); }
 function saveTemplates(){ writeLS(LS_TPL,templates); }
@@ -2424,7 +2486,7 @@ var h=info.home?homeById(info.home):null;
 return (h&&h.emoji) || homes()[0].emoji || '\u{1F3E0}';
 }
 function saveOtherInc(){ writeLS(LS_OTHERINC,otherIncomeCategories); }
-function savePayments(){ writeLS(LS_PAY,payments); }
+function savePayments(){ writeLS(LS_PAY,payments);  invalidateSettle(); }
 function saveMonthExpenses(){ writeLS(LS_MEXP,monthExpenses); }
 function monthExpense(mk){ return Number(monthExpenses[mk])||0; }
 function yearExpense(y){
@@ -3895,7 +3957,7 @@ function dailyTotals(mk){
 var out={};
 transactions.forEach(function(t){
 if(!txInMonth(t,mk)) return;
-if(t.planned && !isAccruing(t)) return;   // future shifts still do not count
+if(t.planned && !isAccruing(t)) return;
 var d=parseInt(t.date.slice(8,10),10);
 if(!out[d]) out[d]={income:0,expense:0,count:0};
 var amt=earnedSoFar(t);
@@ -4150,50 +4212,114 @@ var W=320,H=124,PL=3,PR=3,PT=24,PB=20;
 var n=cur.length, maxV=Math.max(total, projected, 1);
 function xAt(i,len){ return PL + (len<=1?0:(i/(len-1))*(W-PL-PR)); }
 function yAt(v){ return H-PB - (v/maxV)*(H-PT-PB); }
-var line='', area='';
-for(var i=0;i<n;i++){
+// The orange line is what has actually happened: day 1 up to today. From
+// today onward the month has not been lived yet, so it continues in grey —
+// solid for days already logged, dashed for what is only planned.
+var cutIdx=Math.max(0,Math.min(n-1,cutoff-1));
+var line='', area='', tail='';
+for(var i=0;i<=cutIdx;i++){
 var x=xAt(i,n), y=yAt(cur[i]);
 line += (i?' L':'M')+x.toFixed(1)+','+y.toFixed(1);
 }
-if(n) area = line + ' L'+xAt(n-1,n).toFixed(1)+','+(H-PB)+' L'+PL+','+(H-PB)+' Z';
-var plLine='';
-for(var k=0;k<combined.length;k++){
-plLine += (k?' L':'M')+xAt(k,combined.length).toFixed(1)+','+yAt(combined[k]).toFixed(1);
+if(line) area = line + ' L'+xAt(cutIdx,n).toFixed(1)+','+(H-PB)+' L'+PL+','+(H-PB)+' Z';
+// the grey continuation of what is already banked but dated later in the month
+for(var j=cutIdx;j<n;j++){
+var xj=xAt(j,n), yj=yAt(cur[j]);
+tail += (j===cutIdx?'M':' L')+xj.toFixed(1)+','+yj.toFixed(1);
 }
+if(cutIdx>=n-1) tail='';
+// The projection is drawn as a continuation of the solid line: it starts at
+// exactly the point the orange line stops and adds only the planned work from
+// today onward, so the two read as one path rather than two parallel ones.
+var plLine='', projected2=total;
+if(n){
+var base=cur[cutIdx];
+var running=base;
+plLine='M'+xAt(cutIdx,n).toFixed(1)+','+yAt(base).toFixed(1);
+// Planned shifts dated earlier in the month that were never confirmed still
+// count towards the month's projection; they are picked up here so the line
+// ends on the true figure for the last day rather than an understated one.
+var carry=Math.max(0, combined[cutIdx]-cur[cutIdx]);
+for(var k=cutIdx+1;k<n;k++){
+running += (combined[k]-combined[k-1]);
+if(k===cutIdx+1) running += carry;
+plLine += ' L'+xAt(k,n).toFixed(1)+','+yAt(running).toFixed(1);
+}
+if(n-1<=cutIdx) running += carry;   // already at the last day
+projected2=running;
+}
+// Both end labels are placed together. The orange one sits centred over its
+// dot; near the right-hand edge it tucks inward so it cannot run off, and if
+// the two figures would overlap the planned one lifts clear above it.
+var dotX=n?xAt(cutIdx,n):PL, dotY=n?yAt(cur[cutIdx]):H-PB;
+var orangeAnchor='middle', orangeX=dotX, orangeY=Math.max(12, dotY-10);
+var halfW=30;                       // roughly half the width of "฿247,829"
+if(dotX-halfW<PL){ orangeAnchor='start'; orangeX=PL; }
+else if(dotX+halfW>W-PR){ orangeAnchor='end'; orangeX=W-PR; }
+var planY=Math.max(10, yAt(projected2)-7);
+// if the planned figure would sit on top of the orange one, push it up
+if(Math.abs(planY-orangeY)<13 && Math.abs((W-PR)-orangeX)<halfW*2){
+planY=Math.max(10, orangeY-14);
+}
+// and if the orange label is itself near the top, drop it under its dot instead
+if(orangeY<=13 && dotY+16<H-PB){ orangeY=dotY+15; }
 var svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;overflow:visible" aria-label="Earnings so far and projected">'
 + '<defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">'
 + '<stop offset="0%" stop-color="'+accentRGBA(0.26)+'"/><stop offset="100%" stop-color="'+accentRGBA(0)+'"/>'
 + '</linearGradient></defs>'
 + '<line x1="'+PL+'" y1="'+(H-PB)+'" x2="'+(W-PR)+'" y2="'+(H-PB)+'" stroke="var(--border)" stroke-width="1"/>';
-if(plLine && projected>total){
-svg += '<path d="'+plLine+'" fill="none" stroke="var(--ink-faint)" stroke-width="2" stroke-dasharray="4 4"'
-+  ' opacity=".75" stroke-linecap="round" stroke-linejoin="round"/>'
-+  '<circle cx="'+xAt(combined.length-1,combined.length).toFixed(1)+'" cy="'+yAt(projected).toFixed(1)+'" r="3" fill="var(--ink-faint)"/>'
-+  '<text x="'+(W-PR)+'" y="'+Math.max(10,yAt(projected)-6).toFixed(1)+'" text-anchor="end"'
+// The planned projection continues from today in grey dashes, so it reads as
+// "what is still to come" rather than competing with the solid orange line of
+// what has actually been earned.
+if(plLine && projected2>total+1){
+svg += '<path d="'+plLine+'" fill="none" stroke="var(--ink-faint)" stroke-width="1.8"'
++  ' stroke-dasharray="5 4" opacity=".7" stroke-linecap="round" stroke-linejoin="round"/>'
++  '<circle cx="'+xAt(n-1,n).toFixed(1)+'" cy="'+yAt(projected2).toFixed(1)+'" r="3" fill="var(--ink-faint)"/>'
++  '<text x="'+(W-PR)+'" y="'+planY.toFixed(1)+'" text-anchor="end"'
 +  ' font-size="10" font-weight="700" fill="var(--ink-soft)"'
-+  ' stroke="var(--surface)" stroke-width="3.5" paint-order="stroke">'+fmt(projected)+'</text>';
++  ' stroke="var(--surface)" stroke-width="3.5" paint-order="stroke">'+fmt(projected2)+'</text>';
 }
 if(n && total>0){
 svg += '<path d="'+area+'" fill="url(#tg)"/>'
 +  '<path class="tl-draw" d="'+line+'" fill="none" stroke="'+accentRGBA(1)+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'
-+  '<circle class="tl-dot" cx="'+xAt(n-1,n).toFixed(1)+'" cy="'+yAt(total).toFixed(1)+'" r="3.6" fill="'+accentRGBA(1)+'"/>'
-+  '<text x="'+(W-PR)+'" y="'+Math.max(12, yAt(total)-9).toFixed(1)+'" text-anchor="end"'
++  '<circle class="tl-dot" cx="'+xAt(cutIdx,n).toFixed(1)+'" cy="'+yAt(cur[cutIdx]).toFixed(1)+'" r="3.6" fill="'+accentRGBA(1)+'"/>'
++  '<text x="'+orangeX.toFixed(1)+'" y="'+orangeY.toFixed(1)+'"'
++  ' text-anchor="'+orangeAnchor+'"'
 +  ' font-size="10.5" font-weight="750" fill="'+accentRGBA(1)+'"'
-+  ' stroke="var(--surface)" stroke-width="3.5" paint-order="stroke">'+fmt(total)+'</text>';
++  ' stroke="var(--surface)" stroke-width="3.5" paint-order="stroke">'+fmt(cur[cutIdx])+'</text>';
 }
-svg += '<text x="'+PL+'" y="'+(H-5)+'" font-size="9" font-weight="600" fill="var(--ink-faint)">1</text>'
-+  '<text x="'+(W-PR)+'" y="'+(H-5)+'" font-size="9" font-weight="600" fill="var(--ink-faint)" text-anchor="end">'+daysInMonth(viewMonth)+'</text>'
-+  '</svg>';
+// day numbers across the foot, with today called out
+var lastDay=daysInMonth(viewMonth);
+var marks=[1];
+[5,10,15,20,25].forEach(function(dd){ if(dd<lastDay-2) marks.push(dd); });
+marks.push(lastDay);
+if(isCurrentMonth){
+var td=cutoff;
+marks=marks.filter(function(dd){ return Math.abs(dd-td)>2; });
+marks.push(td);
+}
+marks.sort(function(a,b){ return a-b; });
+marks.forEach(function(dd){
+var xx=xAt(dd-1,n>1?n:lastDay);
+var isToday=isCurrentMonth && dd===cutoff;
+svg += '<text x="'+xx.toFixed(1)+'" y="'+(H-5)+'"'
++ ' text-anchor="'+(dd===1?'start':(dd===lastDay?'end':'middle'))+'"'
++ ' font-size="'+(isToday?'9.5':'9')+'" font-weight="'+(isToday?'750':'600')+'"'
++ ' fill="'+(isToday?accentRGBA(1):'var(--ink-faint)')+'">'+dd+'</text>';
+if(isToday){
+svg += '<line x1="'+xx.toFixed(1)+'" y1="'+(H-PB)+'" x2="'+xx.toFixed(1)+'" y2="'+(H-PB+4)+'"'
++ ' stroke="'+accentRGBA(1)+'" stroke-width="1.5" stroke-linecap="round"/>';
+}
+});
+svg += '</svg>';
 if(!total){
 svg += '<div class="hint" style="text-align:center;margin-top:2px">No earnings logged this month yet</div>';
 }
 document.getElementById('trend-chart').innerHTML=svg;
+// The line already carries both figures, so the caption underneath was just
+// repeating itself.
 var legend=document.getElementById('trend-legend');
-if(legend){
-legend.classList.toggle('hidden', !(projected>total));
-if(projected>total) legend.innerHTML='<span style="color:'+accentRGBA(1)+'">\u25CF earned '+fmt(total)+'</span>'
-+ '  <span style="color:var(--ink-soft)">\u25CC with planned '+fmt(projected)+'</span>';
-}
+if(legend){ legend.classList.add('hidden'); legend.innerHTML=''; }
 }
 function renderTierCards(){
 var list=tierProgress(viewMonth);
@@ -4731,7 +4857,9 @@ bars+='<span class="s-bar'+(live?' live':(done?' done':(t.planned?' plan':'')))
 + '" style="left:'+pct(a).toFixed(2)+'%;width:'+Math.max(2,pct(to)-pct(a)).toFixed(2)+'%"></span>';
 var pay=clockRateFor(t)*(span/60);
 var mine=bucket[i]||[];
-dayTotal += pay + mine.reduce(function(acc,x){ return acc+earnedSoFar(x); },0);
+// full value, not the per-second accrual: a figure that ticks here would
+// rewrite the whole strip every second and make it flicker
+dayTotal += pay + mine.reduce(function(acc,x){ return acc+effectiveAmount(x); },0);
 var sum=dayTotal;
 var lines=mine.slice(0,4).map(function(x){
 var v=Math.round(earnedSoFar(x));
@@ -4977,12 +5105,15 @@ document.addEventListener('visibilitychange',function(){
 if(document.hidden) stopAmbient(); else syncAmbient();
 });
 var countTimers={};
+var suppressBump=false;
 function countTo(el,target,formatter){
 if(!el) return;
 var key=el.getAttribute('id')||el.className;
 if(el.__val===target){ el.textContent=formatter(target); return; }
 // one quiet lift so a change is noticed without hunting for it
-if(el.__val!==undefined && !REDUCE_MOTION){
+// The clock rewrites these figures every second; lifting the card each time
+// makes the screen jitter. The lift is only for a change you caused.
+if(el.__val!==undefined && !REDUCE_MOTION && !suppressBump){
 var host=el.closest ? (el.closest('.span-card')||el.closest('.hero')||el) : el;
 host.classList.remove('bumped');
 void host.offsetWidth;
@@ -5234,8 +5365,43 @@ if(isNaN(d)) return null;
 d.setMinutes(hhmmToMin(t.startTime));
 return d;
 }
+// ---- what a shift is really worth ----
+// Once a lump payment has landed for a period, that transfer is the truth:
+// the entries it covers are scaled to match what actually arrived, pro rata.
+// Anything not yet paid keeps its calculated figure, which is still the best
+// estimate available.
+var settleMap=null, settleStamp='';
+function settleKey(){
+return payments.length+':'+transactions.length+':'
++ payments.map(function(p){ return p.id+'@'+p.amount; }).join(',');
+}
+function buildSettleMap(){
+var k=settleKey();
+if(settleMap && settleStamp===k) return settleMap;
+var map={};
+payments.forEach(function(pmt){
+var list=entriesCovered(pmt.placeId, pmt.from, pmt.to);
+var due=list.reduce(function(a,t){ return a+effectiveAmount(t); },0);
+if(due<=0 || !(pmt.amount>0)) return;
+var ratio=pmt.amount/due;
+list.forEach(function(t){
+// if two payments overlap the same entry, the later one wins
+map[t.id]=effectiveAmount(t)*ratio;
+});
+});
+settleMap=map; settleStamp=k;
+return map;
+}
+function invalidateSettle(){ settleMap=null; settleStamp=''; }
+function settledAmount(t){
+if(t.planned) return effectiveAmount(t);
+if(t.actual!=null) return t.actual;          // a figure typed in by hand wins
+var m=buildSettleMap();
+return (t.id in m) ? m[t.id] : effectiveAmount(t);
+}
+
 function earnedSoFar(t){
-var full=(t.actual!=null && !t.planned) ? t.actual : effectiveAmount(t);
+var full=settledAmount(t);
 if(!t.planned) return full;
 if(!t.startTime || !t.endTime) return 0;
 var a=shiftStartAt(t), b=shiftEndAt(t);
@@ -5367,7 +5533,8 @@ transactions.forEach(function(t){
 if(!inYear(t,y)) return;
 if(!passesFilter(t)) return;
 var mi=parseInt(t.date.slice(5,7),10)-1;
-var amt=effectiveAmount(t);
+// the real transfer where one has landed, the calculation where it has not
+var amt=settledAmount(t);
 if(t.planned){
 if(t.type!=='income') return;
 var got=earnedSoFar(t);                 // part already worked counts as income
@@ -5909,6 +6076,10 @@ if(!el) return;
 if(el.textContent!==txt) el.textContent=txt;   // no write, no repaint
 }
 function tickFigures(){
+suppressBump=true;
+try{ tickFiguresInner(); } finally { suppressBump=false; }
+}
+function tickFiguresInner(){
 var mk=viewMonth, inc=0, exp=0;
 transactions.forEach(function(t){
 if(!txInMonth(t,mk)) return;
