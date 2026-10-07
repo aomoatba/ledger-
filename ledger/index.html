@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- LEDGER web app · build 1 · 2026-10-07 -->
+<title>LEDGER</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="LEDGER">
+<meta name="theme-color" content="#FAF9F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1F1E1D" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<style>
+html,body{margin:0;padding:0}
+[hidden]{display:none!important}
+img{max-width:100%}
+/* Layout: Locum Ledger's language — warm paper ground with drifting colour orbs, frosted glass cards, floating dark tab bar (sidebar on desktop), 480px column → 2 columns ≥1100px */
+:root{
+  --bg:#FAF9F5; --surface:#FFFFFF; --surface-2:#F0EEE6; --ink:#191919; --ink-soft:#6F6B62; --ink-faint:#9A958B;
+  --border:rgba(25,25,25,0.08); --accent:#C96442; --accent-soft:rgba(201,100,66,0.11);
+  --pos:#3D7F5E; --pos-soft:rgba(61,127,94,.13); --neg:#B4442E; --neg-soft:rgba(180,68,46,.10); --warn:#B4713D; --warn-soft:rgba(180,113,61,.13);
+  --need:#4A7C8C; --want:#B4713D; --save:#7A8450; --debt:#8A6BA8;
+  --shadow:0 1px 2px rgba(25,25,25,0.04),0 6px 20px rgba(25,25,25,0.04);
+  --glass:.44; --glass-bg:255,255,255; --glass-edge:rgba(255,255,255,0.75);
+  --tabbar-bg:#262624; --tabbar-ink:#8F8A81; --tabbar-active-ink:#FFFFFF;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Noto Sans Thai","Thonburi",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1F1E1D; --surface:#2B2A28; --surface-2:#333230; --ink:#F5F4EF; --ink-soft:#A8A399; --ink-faint:#7C776E;
+  --border:rgba(255,255,255,0.10); --accent:#D97757; --accent-soft:rgba(217,119,87,0.18);
+  --pos:#6FBF95; --pos-soft:rgba(111,191,149,.16); --neg:#E8836B; --neg-soft:rgba(232,131,107,.16); --warn:#E0A36E; --warn-soft:rgba(224,163,110,.16);
+  --need:#79AFC0; --want:#E0A36E; --save:#AAB57A; --debt:#B79AD4;
+  --shadow:0 1px 2px rgba(0,0,0,0.3),0 6px 20px rgba(0,0,0,0.25);
+  --glass-bg:44,43,41; --glass-edge:rgba(255,255,255,0.10); --tabbar-bg:#333230; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1F1E1D; --surface:#2B2A28; --surface-2:#333230; --ink:#F5F4EF; --ink-soft:#A8A399; --ink-faint:#7C776E;
+  --border:rgba(255,255,255,0.10); --accent:#D97757; --accent-soft:rgba(217,119,87,0.18);
+  --pos:#6FBF95; --pos-soft:rgba(111,191,149,.16); --neg:#E8836B; --neg-soft:rgba(232,131,107,.16); --warn:#E0A36E; --warn-soft:rgba(224,163,110,.16);
+  --need:#79AFC0; --want:#E0A36E; --save:#AAB57A; --debt:#B79AD4;
+  --shadow:0 1px 2px rgba(0,0,0,0.3),0 6px 20px rgba(0,0,0,0.25);
+  --glass-bg:44,43,41; --glass-edge:rgba(255,255,255,0.10); --tabbar-bg:#333230; color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:14.5px;line-height:1.45;overflow-x:hidden}
+.tn{font-variant-numeric:tabular-nums;font-feature-settings:'tnum'}
+button,input,select{font-family:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ambient mesh */
+.mesh{position:fixed;inset:-20%;z-index:-2;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(46px) saturate(150%);opacity:.72}
+.o1{width:52vw;height:52vw;left:-8%;top:-6%;background:radial-gradient(circle at 34% 32%,var(--accent),transparent 68%);animation:d1 34s ease-in-out infinite}
+.o2{width:46vw;height:46vw;right:-10%;top:4%;background:radial-gradient(circle at 60% 40%,#7A8450,transparent 66%);animation:d2 41s ease-in-out infinite}
+.o3{width:58vw;height:58vw;left:8%;bottom:-14%;background:radial-gradient(circle at 44% 56%,#8A6BA8,transparent 66%);animation:d3 47s ease-in-out infinite}
+.o4{width:40vw;height:40vw;right:2%;bottom:6%;background:radial-gradient(circle at 50% 50%,#4A7C8C,transparent 66%);animation:d4 38s ease-in-out infinite}
+.o5{width:38vw;height:38vw;left:-6%;top:44%;background:radial-gradient(circle at 52% 48%,#3FA9A0,transparent 62%);animation:d3 39s ease-in-out infinite reverse}
+@keyframes d1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(7vw,5vh) scale(1.12)}66%{transform:translate(-4vw,9vh) scale(.94)}}
+@keyframes d2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-8vw,7vh) scale(1.15)}}
+@keyframes d3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(6vw,-6vh) scale(1.08)}75%{transform:translate(-5vw,-3vh) scale(.96)}}
+@keyframes d4{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5vw,-8vh) scale(1.1)}}
+.grain{position:absolute;inset:0;opacity:.14;mix-blend-mode:overlay;background-image:radial-gradient(rgba(255,255,255,.7) .5px,transparent .5px),radial-gradient(rgba(0,0,0,.5) .5px,transparent .5px);background-size:3px 3px,4px 4px;background-position:0 0,1px 2px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .orb{opacity:.5;filter:blur(56px) saturate(140%)}}
+:root[data-theme="dark"] .orb{opacity:.5;filter:blur(56px) saturate(140%)}
+@media (prefers-reduced-motion:reduce){.orb{animation:none}}
+
+/* glass */
+.glassy{background:rgba(var(--glass-bg),var(--glass));-webkit-backdrop-filter:blur(38px) saturate(190%) brightness(1.06);backdrop-filter:blur(38px) saturate(190%) brightness(1.06);border:1px solid var(--glass-edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 1px 2px rgba(25,25,25,.05),0 10px 28px rgba(25,25,25,.07)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glassy{background:var(--surface)}}
+
+.content{max-width:480px;margin:0 auto;padding-inline:18px;padding-block:calc(env(safe-area-inset-top,0px) + 22px) calc(env(safe-area-inset-bottom,0px) + 128px);min-height:100vh}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}
+.large-title{font-size:30px;font-weight:650;letter-spacing:-0.025em;margin:0}
+.brandcap{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+.icon-btn{border:none;background:none;padding:7px;color:var(--ink-faint);display:inline-flex;border-radius:9px}
+.icon-btn svg{width:19px;height:19px}
+
+.card,.hero{border-radius:18px;padding:15px 17px;margin-bottom:13px;position:relative}
+.hero{border-radius:20px;padding:18px 20px}
+.section-label{font-size:12px;font-weight:650;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em;margin:20px 4px 8px;display:flex;justify-content:space-between;gap:8px}
+.section-label span{text-transform:none;letter-spacing:0;font-weight:550}
+.hero .cap{font-size:12.5px;color:var(--ink-soft);font-weight:560}
+.hero .big{font-size:36px;font-weight:680;letter-spacing:-0.035em;margin:4px 0 12px;line-height:1.05}
+.split{display:flex;gap:10px}
+.half{flex:1;background:var(--surface-2);border-radius:13px;padding:10px 12px;min-width:0}
+.half .k{font-size:11.5px;color:var(--ink-soft);margin-bottom:2px}
+.half .v{font-size:17px;font-weight:640;letter-spacing:-0.02em}
+.half .d{font-size:11px;font-weight:600;margin-top:2px}
+.up{color:var(--pos)}.down{color:var(--neg)}.faint{color:var(--ink-faint)}.soft{color:var(--ink-soft)}
+
+.span-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:13px}
+.span-card{border-radius:18px;padding:14px 15px}
+.span-card .k{font-size:11.5px;color:var(--ink-soft);font-weight:600}
+.span-card .v{font-size:22px;font-weight:680;letter-spacing:-0.025em;margin-top:3px}
+.span-card .s{font-size:10.5px;color:var(--ink-faint);font-weight:600;margin-top:2px}
+
+.monthnav{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;border-radius:18px;padding:5px;margin-bottom:13px;text-align:center}
+.monthnav .mlabel{font-size:15px;font-weight:600;letter-spacing:-0.01em}
+.navbtn{border:none;background:none;color:var(--ink-soft);padding:8px 12px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.navbtn svg{width:17px;height:17px}
+
+.row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);gap:10px}
+.row:last-child{border-bottom:none}
+.lead{display:flex;align-items:center;gap:11px;min-width:0;flex:1}
+.txt{min-width:0;flex:1}
+.t1{font-size:14.5px;font-weight:530;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t2{font-size:12px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.t2.wrap{white-space:normal}
+.amt{font-size:14.5px;font-weight:620;white-space:nowrap;letter-spacing:-0.01em;text-align:right}
+.amt small{display:block;font-size:11px;font-weight:600;color:var(--ink-faint)}
+.avatar{width:34px;height:34px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+.avatar svg{width:17px;height:17px}
+.avatar.neg{background:var(--neg-soft);color:var(--neg)}
+.avatar.warn{background:var(--warn-soft);color:var(--warn)}
+.avatar.pos{background:var(--pos-soft);color:var(--pos)}
+.bar{height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden;margin-top:6px;position:relative}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.bar>i.over{background:var(--neg)}
+.bar>b{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.45}
+.stack{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--surface-2);margin:4px 0 6px}
+.stack>span{height:100%}
+.tag{font-size:9px;font-weight:750;text-transform:uppercase;letter-spacing:.05em;padding:2px 6px;border-radius:5px;border:none;vertical-align:middle}
+.tag.paid{background:var(--pos-soft);color:var(--pos)}
+.tag.unpaid{background:var(--accent-soft);color:var(--accent)}
+.tag.over{background:var(--neg-soft);color:var(--neg)}
+.tag.near{background:var(--warn-soft);color:var(--warn)}
+.tag.ok{background:var(--pos-soft);color:var(--pos)}
+.empty{font-size:13.5px;color:var(--ink-faint);text-align:center;padding:14px 0}
+
+.progress{height:8px;border-radius:5px;background:var(--surface-2);overflow:hidden;margin:10px 0 6px}
+.progress>i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 60%,#FFD9A0))}
+
+.field{margin-bottom:12px;min-width:0}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:0 0 6px 2px}
+input,select{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:11px 12px;font-size:16px;-webkit-appearance:none;appearance:none}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239A958B' stroke-width='2' stroke-linecap='round'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:34px}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 8px}
+.btn{width:100%;border:none;border-radius:14px;padding:13px;font-size:15px;font-weight:640;letter-spacing:-0.01em}
+.btn-primary{background:var(--accent);color:#FFF}
+.btn-ghost{background:var(--surface-2);color:var(--ink);border:1px solid var(--border)}
+.btn-danger{background:none;color:var(--neg);border:1px solid var(--border)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btnrow{display:flex;gap:9px}
+.hint{font-size:12px;color:var(--ink-faint);margin:8px 2px 0;line-height:1.5}
+.segmented{display:flex;background:var(--surface-2);border:1px solid var(--border);border-radius:13px;padding:3px;margin-bottom:13px}
+.seg-btn{flex:1;border:none;background:none;padding:9px 6px;border-radius:10px;font-size:13.5px;font-weight:620;color:var(--ink-soft)}
+.seg-btn.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(25,25,25,.1)}
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:24px 14px;border:1.5px dashed var(--border);border-radius:16px;cursor:pointer}
+.drop.on{border-color:var(--accent);background:var(--accent-soft)}
+.drop svg{width:26px;height:26px;color:var(--accent)}
+.editor{background:var(--surface-2);border-radius:13px;padding:11px 12px 1px;margin:0 0 10px}
+.editor .field label{font-size:11.5px}
+.editor input,.editor select{background:var(--surface);padding:9px 10px;font-size:15px}
+.banner{border-radius:14px;padding:11px 14px;margin-bottom:13px;font-size:13px;background:var(--warn-soft);color:var(--warn);font-weight:560;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.banner button{border:none;background:var(--surface);color:var(--ink);border-radius:9px;padding:6px 10px;font-size:12.5px;font-weight:600;flex:none}
+.steps .row .avatar{font-weight:700;font-size:14px}
+svg text{fill:var(--ink-faint);font-size:10.5px;font-weight:600;font-family:var(--font)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;color:var(--ink-soft);font-weight:560;margin-top:6px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle}
+
+/* tab bar */
+.tabbar{position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;background:color-mix(in srgb,var(--tabbar-bg) 70%,transparent);-webkit-backdrop-filter:blur(30px) saturate(220%) brightness(1.15);backdrop-filter:blur(30px) saturate(220%) brightness(1.15);border:.5px solid rgba(255,255,255,.14);border-radius:22px;padding:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 8px 24px rgba(0,0,0,.24),0 22px 54px rgba(0,0,0,.2);z-index:20;max-width:480px;margin:0 auto}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;padding:8px 2px;border-radius:16px;color:var(--tabbar-ink);font-size:10.5px;font-weight:600;letter-spacing:-0.01em;min-width:0}
+.tab-btn svg{width:20px;height:20px}
+.tab-btn.active{color:var(--tabbar-active-ink);background:var(--accent);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 3px 10px color-mix(in srgb,var(--accent) 45%,transparent)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 96px);background:var(--tabbar-bg);color:#FFF;padding:10px 16px;border-radius:14px;font-size:13.5px;font-weight:560;z-index:30;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100% - 32px)}
+
+.cols{display:block}
+.col{min-width:0}
+@media (min-width:820px){
+  .content{max-width:1040px;padding-inline:32px;padding-block:36px 56px;padding-left:272px}
+  .large-title{font-size:33px}
+  .card,.hero{border-radius:22px}
+  .card{padding:18px 20px}.hero{padding:22px 24px}.hero .big{font-size:40px}
+  .tabbar{left:24px;right:auto;top:24px;bottom:24px;width:216px;flex-direction:column;justify-content:flex-start;gap:5px;padding:16px 12px;max-width:none;margin:0}
+  .tab-btn{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;width:100%;padding:13px 15px;font-size:14.5px;border-radius:14px}
+  .tab-brand{display:block!important}
+  .toast{bottom:28px;left:auto;right:32px;transform:none}
+  #view-import,#view-settings,#view-income .narrow{max-width:600px}
+}
+@media (min-width:1100px){
+  .content{max-width:1280px}
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 26px;align-items:start}
+  .col>.section-label:first-child{margin-top:0}
+}
+</style>
+</head>
+<body>
+<div class="mesh" aria-hidden="true"><span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><span class="orb o4"></span><span class="orb o5"></span><span class="grain"></span></div>
+
+<div class="content">
+  <div class="topbar">
+    <div><div class="brandcap">LEDGER</div><h1 class="large-title" id="pageTitle">ภาพรวม</h1></div>
+    <span style="display:flex;gap:2px"><button type="button" class="icon-btn" id="widgetBtn" aria-label="อัปเดต widget" title="อัปเดต widget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="17" height="7" rx="2"/></svg></button><button type="button" class="icon-btn" id="themeBtn" aria-label="สลับธีมมืด/สว่าง"></button></span>
+  </div>
+
+  <div class="banner" id="sampleBanner" hidden><span>กำลังดูข้อมูลตัวอย่าง ตัวเลขสมมติ ไม่ได้บันทึก</span><button id="exitSample">ออก</button></div>
+  <div class="banner" id="dbBanner" hidden><span>เบราว์เซอร์นี้ไม่ยอมให้เก็บข้อมูล (โหมดส่วนตัว?) ข้อมูลจะหายเมื่อปิดหน้า</span></div>
+  <div class="banner" id="backupBanner" hidden><span id="backupBannerTxt"></span><button data-goto="settings">สำรองข้อมูล</button></div>
+
+  <div class="monthnav glassy" id="monthNav">
+    <button class="navbtn" id="prevM" aria-label="เดือนก่อน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <div class="mlabel" id="monthLabel">—</div>
+    <button class="navbtn" id="nextM" aria-label="เดือนถัดไป"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="view-overview">
+    <div id="emptyState" hidden>
+      <div class="hero glassy">
+        <div class="cap">ยินดีต้อนรับสู่ LEDGER</div>
+        <div class="big" style="font-size:26px;margin-bottom:6px">รายรับจาก Locum Ledger<br>รายจ่ายจาก Meowjot</div>
+        <div class="hint" style="margin:0">ยังไม่มีข้อมูลเดือนไหน ทำ 3 ขั้นนี้แล้วภาพรวมจะขึ้นเอง</div>
+      </div>
+      <div class="card glassy steps">
+        <div class="row"><div class="lead"><div class="avatar">1</div><div class="txt"><div class="t1">Backup จาก Locum Ledger</div><div class="t2 wrap">Settings → Backup → Save a file แล้วนำเข้าที่แท็บ นำเข้า</div></div></div></div>
+        <div class="row"><div class="lead"><div class="avatar">2</div><div class="txt"><div class="t1">Export จาก Meowjot</div><div class="t2 wrap">ไฟล์ Excel/CSV ลากมาวางที่แท็บเดียวกัน</div></div></div></div>
+        <div class="row"><div class="lead"><div class="avatar">3</div><div class="txt"><div class="t1">จัดกลุ่มและตั้งงบ</div><div class="t2 wrap">จำเป็น · อยากได้ · ออม-ลงทุน · หนี้ ในแท็บรายจ่าย</div></div></div></div>
+      </div>
+      <div class="btnrow"><button class="btn btn-primary" data-goto="import">นำเข้าไฟล์แรก</button><button class="btn btn-ghost" id="trySample">ดูตัวอย่าง</button></div>
+    </div>
+
+    <div id="overviewBody" class="cols">
+      <div class="col">
+        <div class="hero glassy">
+          <div class="cap" id="heroCap">คงเหลือเดือนนี้</div>
+          <div class="big tn" id="sNet">฿0</div>
+          <div class="split">
+            <div class="half"><div class="k">รายรับ</div><div class="v tn" id="sIncome">฿0</div><div class="d tn" id="dIncome"></div></div>
+            <div class="half"><div class="k">รายจ่าย</div><div class="v tn" id="sExpense">฿0</div><div class="d tn" id="dExpense"></div></div>
+          </div>
+        </div>
+        <div class="span-row">
+          <div class="span-card glassy"><div class="k">ออม-ลงทุน</div><div class="v tn" id="sSave">—</div><div class="s tn" id="sSaveB"></div></div>
+          <div class="span-card glassy"><div class="k">ค่ากะค้างรับ</div><div class="v tn" id="sPend">฿0</div><div class="s" id="sPendB"></div></div>
+        </div>
+        <div class="section-label">แจ้งเตือน<span id="alertCount"></span></div>
+        <div class="card glassy" id="alerts"></div>
+        <div class="section-label">สรุปตามกลุ่ม<span>% ของรายรับ</span></div>
+        <div class="card glassy"><div class="stack" id="gbar"></div><div id="groupRows"></div></div>
+      </div>
+      <div class="col">
+        <div class="section-label">ความคืบหน้าเกษียณ<span id="retNote"></span></div>
+        <div class="card glassy">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><span class="tn" style="font-size:24px;font-weight:680;letter-spacing:-.03em" id="retVal">—</span><span class="tn soft" style="font-size:12.5px;font-weight:600" id="retTarget"></span></div>
+          <div class="progress"><i id="retBar" style="width:0%"></i></div>
+          <div class="hint" style="margin:0 2px 12px" id="retDelta"></div>
+          <div class="grid3">
+            <div class="field"><label for="aPort">พอร์ต</label><input id="aPort" type="number" inputmode="decimal" placeholder="0"></div>
+            <div class="field"><label for="aCard">หนี้บัตร</label><input id="aCard" type="number" inputmode="decimal" placeholder="0"></div>
+            <div class="field"><label for="aCar">หนี้รถ</label><input id="aCar" type="number" inputmode="decimal" placeholder="0"></div>
+          </div>
+          <button class="btn btn-ghost" id="saveAssets">บันทึกยอดสิ้นเดือน</button>
+        </div>
+        <div class="section-label">รายสัปดาห์<span id="weekNote"></span></div>
+        <div class="card glassy" id="weekRows"></div>
+        <div class="section-label">6 เดือนล่าสุด</div>
+        <div class="card glassy" id="trend"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCOME -->
+  <div id="view-income" hidden>
+    <div class="cols">
+      <div class="col">
+        <div class="hero glassy">
+          <div class="cap">รายรับเดือนนี้</div>
+          <div class="big tn" id="iTotal">฿0</div>
+          <div class="split">
+            <div class="half"><div class="k">ชั่วโมง</div><div class="v tn" id="iHours">0</div></div>
+            <div class="half"><div class="k">เฉลี่ย/ชม.</div><div class="v tn" id="iRate">—</div></div>
+            <div class="half"><div class="k">รอโอน</div><div class="v tn" id="iPending">฿0</div></div>
+          </div>
+        </div>
+        <div class="section-label">ตามที่ทำงาน</div>
+        <div class="card glassy" id="placeRows"></div>
+      </div>
+      <div class="col">
+        <div class="section-label">รายการ<span>แตะป้ายเพื่อสลับ paid / unpaid</span></div>
+        <div class="card glassy" id="incRows"></div>
+        <div class="section-label">เพิ่มรายรับเอง</div>
+        <form class="card glassy narrow" id="incForm">
+          <div class="grid2">
+            <div class="field"><label for="inDate">วันที่</label><input id="inDate" type="date" required></div>
+            <div class="field"><label for="inSrc">ที่ทำงาน</label><input id="inSrc" list="srcList" value="Sairee Clinic" required><datalist id="srcList"></datalist></div>
+            <div class="field"><label for="inHrs">ชั่วโมง</label><input id="inHrs" type="number" step="0.5" min="0" inputmode="decimal"></div>
+            <div class="field"><label for="inAmt">บาท</label><input id="inAmt" type="number" min="0" inputmode="decimal" required></div>
+          </div>
+          <div class="segmented" role="radiogroup" aria-label="สถานะ"><button type="button" class="seg-btn active" data-st="pending">ยังไม่ได้รับ</button><button type="button" class="seg-btn" data-st="paid">ได้รับแล้ว</button></div>
+          <button class="btn btn-primary" type="submit">เพิ่ม</button>
+          <div class="hint">ใช้กับรายได้ที่ไม่ได้อยู่ใน Locum Ledger กะจากแอปให้นำเข้าจาก backup จะได้ไม่ซ้ำ</div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPENSE -->
+  <div id="view-expense" hidden>
+    <div class="cols">
+      <div class="col">
+        <div class="hero glassy">
+          <div class="cap">รายจ่ายเดือนนี้</div>
+          <div class="big tn" id="eTotal">฿0</div>
+          <div class="split">
+            <div class="half"><div class="k">งบรวม</div><div class="v tn" id="eBudget">—</div></div>
+            <div class="half"><div class="k">% รายรับ</div><div class="v tn" id="ePct">—</div></div>
+          </div>
+        </div>
+        <div class="section-label">หมวด<span>แตะเพื่อตั้งกลุ่มและงบ</span></div>
+        <div id="catGroups"></div>
+      </div>
+      <div class="col">
+        <div class="section-label">รายการ<span><select id="expFilter" aria-label="กรองหมวด" style="width:auto;padding:4px 30px 4px 10px;font-size:12.5px;border-radius:9px;background-position:right 8px center"></select></span></div>
+        <div class="card glassy" id="expRows"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORT -->
+  <div id="view-import" hidden>
+    <div class="segmented" id="impSeg"><button class="seg-btn active" data-kind="locum">รายรับ · Locum Ledger</button><button class="seg-btn" data-kind="meowjot">รายจ่าย · Meowjot</button></div>
+    <div class="card glassy" id="llSync" hidden>
+      <div class="row" style="padding-top:2px"><div class="lead"><div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V6.5A1.5 1.5 0 0 1 5.5 5H13a1.5 1.5 0 0 1 1.5 1.5V20"/><path d="M14.5 10h4A1.5 1.5 0 0 1 20 11.5V20"/><path d="M2.5 20h19M9.2 8.5v4M7.2 10.5h4"/></svg></div><div class="txt"><div class="t1">พบ Locum Ledger ในเครื่องนี้</div><div class="t2" id="llSyncInfo"></div></div></div></div>
+      <button class="btn btn-primary" id="llSyncBtn" style="margin-top:8px">ดึงรายรับจาก Locum Ledger</button>
+    </div>
+    <label class="card glassy drop" id="drop" for="file">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></svg>
+      <b id="dropTitle">ลากไฟล์ backup .json มาวาง</b>
+      <span class="hint" style="margin:0" id="dropHint">Locum Ledger → Settings → Backup → Save a file · หรือ CSV จาก Totals</span>
+      <input id="file" type="file" accept=".xlsx,.xls,.csv,.json,text/csv,application/json" hidden>
+    </label>
+    <div id="mapPanel" hidden>
+      <div class="section-label">ตรวจก่อนบันทึก<span id="mapInfo"></span></div>
+      <div class="card glassy">
+        <div class="grid2" id="mapFields"></div>
+        <div class="hint" id="mapHint" style="margin-top:0"></div>
+        <div id="mapPreview" style="margin-top:6px"></div>
+      </div>
+      <div class="card glassy" style="padding:13px 16px"><div class="hint tn" id="impSummary" style="margin:0 0 11px;color:var(--ink-soft);font-weight:560"></div>
+        <div class="btnrow"><button class="btn btn-primary" id="doImport">บันทึกเข้า LEDGER</button><button class="btn btn-ghost" id="cancelImport">ยกเลิก</button></div></div>
+    </div>
+    <div class="section-label">นำเข้าล่าสุด</div>
+    <div class="card glassy" id="impLog"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="view-settings" hidden>
+    <div class="section-label">เป้าหมาย</div>
+    <div class="card glassy">
+      <div class="field"><label for="setRet">เป้าพอร์ตเกษียณ (บาท)</label><input id="setRet" type="number" min="0"></div>
+      <div class="field"><label for="setInst">รายการผ่อนที่รู้แล้ว ไม่ต้องเตือน (คั่นด้วย ,)</label><input id="setInst" placeholder="ผ่อนรถ"></div>
+      <div class="field"><label for="setInv">คำในโน้ต Meowjot ที่นับเป็นการลงทุน (รายการ Transfers) คั่นด้วย ,</label><input id="setInv" placeholder="BTC, TSLA, Meta"></div>
+      <button class="btn btn-primary" id="saveSettings">บันทึก</button>
+      <div class="hint" id="retFormula"></div>
+    </div>
+    <div class="section-label">Widget</div>
+    <div class="card glassy">
+      <div class="hint" style="margin:0 2px 6px">ส่งตารางกะ เรท และยอดรายจ่ายไปให้ widget บน iPhone (Scriptable) และ Mac (Übersicht) นาฬิกาเงินคำนวณสดจากเวลากะ อัปเดตใหม่เมื่อเพิ่มกะหรือนำเข้ารายจ่าย</div>
+      <div class="hint" id="widgetAge" style="margin:0 2px 11px;color:var(--ink-soft);font-weight:560"></div>
+      <button class="btn btn-primary" id="widgetBtn2">ส่งข้อมูลไป widget</button>
+      <div class="hint" id="widgetHow"></div>
+    </div>
+    <div class="section-label">สำรองข้อมูล</div>
+    <div class="card glassy">
+      <div class="hint" style="margin:0 2px 6px">ข้อมูลทั้งหมดอยู่ในเบราว์เซอร์นี้เท่านั้น ล้างข้อมูลเว็บหรือเปลี่ยนมือถือแล้วหาย เซฟไฟล์เก็บไว้เป็นระยะ</div>
+      <div class="hint" id="backupAge" style="margin:0 2px 11px;color:var(--ink-soft);font-weight:560"></div>
+      <div class="btnrow"><button class="btn btn-primary" id="saveBackup">เซฟไฟล์ backup</button><button class="btn btn-ghost" id="restoreBtn">กู้คืน</button></div>
+      <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+      <div class="hint" id="restoreMsg"></div>
+      <button class="btn btn-danger" id="restoreConfirm" hidden style="margin-top:9px">แทนที่ข้อมูลทั้งหมดด้วยไฟล์นี้</button>
+    </div>
+    <div class="section-label">ข้อมูล</div>
+    <div class="card glassy">
+      <div class="hint" style="margin:0 2px 11px">ลบรายรับ รายจ่าย และยอดสินทรัพย์ของเดือนที่เลือกอยู่</div>
+      <button class="btn btn-danger" id="delMonth">ลบข้อมูลเดือนนี้</button>
+      <button class="btn btn-primary" id="delConfirm" hidden style="margin-top:9px;background:var(--neg)">ยืนยันลบ</button>
+    </div>
+  </div>
+</div>
+
+<nav class="tabbar" aria-label="เมนู">
+  <div class="tab-brand" hidden style="padding:4px 15px 14px"><div class="brandcap" style="color:var(--tabbar-active-ink)">LEDGER</div><div style="font-size:11.5px;color:var(--tabbar-ink);font-weight:560;margin-top:2px">Locum Ledger × Meowjot</div></div>
+  <button class="tab-btn active" data-tab="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V11M12 20V4M20 20v-6"/></svg>ภาพรวม</button>
+  <button class="tab-btn" data-tab="income"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="19" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/></svg>รายรับ</button>
+  <button class="tab-btn" data-tab="expense"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11l-1 12.5a1.5 1.5 0 0 1-1.5 1.5H9a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>รายจ่าย</button>
+  <button class="tab-btn" data-tab="import"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></svg>นำเข้า</button>
+  <button class="tab-btn" data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>ตั้งค่า</button>
+</nav>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+"use strict";
+const DEFAULT_INVEST_KW=["BTC","ETH","crypto","Binance","Dime","TSLA","Tesla","Meta","Palantir","PLTR","SpaceX","SPCX","Xpeng","Xiaomi","Alibaba","BABA","NVDA","Nvidia","AAPL","Apple stock","GOOGL","AMD","AMZN","AVGO","CRWD","หุ้น","ลงทุน","กองทุน","T-Bill","Treasury","ETF"];
+const TH_M=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const TH_FULL=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+const GROUPS={need:{n:"จำเป็น",c:"var(--need)"},want:{n:"อยากได้",c:"var(--want)"},save:{n:"ออม-ลงทุน",c:"var(--save)"},debt:{n:"หนี้",c:"var(--debt)"},skip:{n:"ไม่นับ (โอน/ซ้ำ)",c:"var(--ink-faint)"}};
+const ALLG=["need","want","save","debt","skip"];
+const GKEYS=["need","want","save","debt"];
+const TITLES={overview:"ภาพรวม",income:"รายรับ",expense:"รายจ่าย",import:"นำเข้า",settings:"ตั้งค่า"};
+const IC={
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  cash:'<rect x="2.5" y="6.5" width="19" height="11" rx="2"/><circle cx="12" cy="12" r="2.6"/>',
+  car:'<path d="M5 11l1.4-4.2A2 2 0 0 1 8.3 5.5h7.4a2 2 0 0 1 1.9 1.3L19 11"/><rect x="3" y="11" width="18" height="6" rx="2"/><circle cx="7.5" cy="17.5" r="1.4"/><circle cx="16.5" cy="17.5" r="1.4"/>',
+  food:'<path d="M6 2v7a2 2 0 0 0 4 0V2M8 9v13M16 2v20"/>',
+  coffee:'<path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9.5h1.8a2.2 2.2 0 0 1 0 4.4H17"/>',
+  bag:'<path d="M6.5 8h11l-1 12.5a1.5 1.5 0 0 1-1.5 1.5H9a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  heart:'<path d="M12 20.5s-7.5-4.4-9.7-8.7C.5 8.2 3 4.5 6.8 4.5c2 0 3.8 1.4 5.2 3 1.4-1.6 3.2-3 5.2-3 3.8 0 6.3 3.7 4.5 7.3-2.2 4.3-9.7 8.7-9.7 8.7z"/>',
+  users:'<circle cx="9" cy="8" r="3.4"/><path d="M2.5 20c0-3.6 3-5.9 6.5-5.9s6.5 2.3 6.5 5.9"/><path d="M16.5 5.2a3.4 3.4 0 0 1 0 6.6M18 14.5c2.2.7 3.5 2.5 3.5 5"/>',
+  tag:'<path d="M20.4 13.6 10.8 4H4v6.8l9.6 9.6a1.5 1.5 0 0 0 2.1 0l4.7-4.7a1.5 1.5 0 0 0 0-2.1Z"/><circle cx="7.5" cy="7.5" r="1.1"/>',
+  bolt:'<path d="M13 2 4.5 14h6L9 22l9.5-13h-6L13 2Z"/>',
+  home:'<path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/>',
+  phone:'<path d="M7 3.5h10a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 19V5A1.5 1.5 0 0 1 7 3.5Z"/><path d="M10.5 17.5h3"/>',
+  chart:'<path d="M4 20V11M12 20V4M20 20v-6"/>',
+  hospital:'<path d="M4 20V6.5A1.5 1.5 0 0 1 5.5 5H13a1.5 1.5 0 0 1 1.5 1.5V20"/><path d="M14.5 10h4A1.5 1.5 0 0 1 20 11.5V20"/><path d="M2.5 20h19M9.2 8.5v4M7.2 10.5h4"/>',
+  shield:'<path d="M12 2.5 4.5 5.6v6c0 4.4 3.1 8.4 7.5 9.9 4.4-1.5 7.5-5.5 7.5-9.9v-6z"/>',
+  plane:'<path d="M21 15.5 3 10.2l3-2.1 4.6 1.2 4.4-3.1a2 2 0 0 1 2.6 3l-3 3.6z"/><path d="M7 19h10"/>',
+  doc:'<path d="M14 2.5H6.5a1.5 1.5 0 0 0-1.5 1.5v16a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5V8Z"/><path d="M14 2.5V8h5.5"/>',
+  moon:'<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'
+};
+const svg=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+(IC[k]||IC.tag)+'</svg>';
+const $=id=>document.getElementById(id);
+const fmt=n=>(Math.round(n||0)).toLocaleString("th-TH");
+const baht=n=>(n<0?"−฿":"฿")+fmt(Math.abs(n));
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pct=(a,b)=>b?a/b*100:0;
+const clean=s=>{s=String(s??"").trim();return s==="-"||s==="–"?"":s};
+function catIcon(c){const t=c.toLowerCase();
+  if(/ผ่อนรถ|รถ|น้ำมัน|car|เดินทาง|เรือ|taxi|grab/.test(t))return"car";if(/กาแฟ|coffee|คาเฟ่|ชา/.test(t))return"coffee";
+  if(/อาหาร|ข้าว|กิน|food|ขนม/.test(t))return"food";if(/เช่า|คอนโด|ที่พัก|rent|บ้าน/.test(t))return"home";
+  if(/โทร|มือถือ|phone|เน็ต/.test(t))return"phone";if(/ลงทุน|dime|binance|btc|หุ้น|ออม|treasury|กองทุน/.test(t))return"chart";
+  if(/ครอบครัว|พ่อ|แม่|family/.test(t))return"users";if(/ยา|สุขภาพ|หมอ|health/.test(t))return"heart";
+  if(/บัตร|หนี้|loan|ผ่อน/.test(t))return"cash";if(/เที่ยว|travel|บิน/.test(t))return"plane";if(/ช้อป|shop|ซื้อ/.test(t))return"bag";return"tag"}
+
+function todayKey(){return new Date(Date.now()+7*3600e3).toISOString().slice(0,7)}
+function mLabel(k){const [y,m]=k.split("-").map(Number);return TH_M[m-1]+" "+(y+543)}
+function mFull(k){const [y,m]=k.split("-").map(Number);return TH_FULL[m-1]+" "+(y+543)}
+function dLabel(d){const p=d.split("-");return +p[2]+" "+TH_M[+p[1]-1]}
+function shiftKey(k,d){let [y,m]=k.split("-").map(Number);m+=d;while(m<1){m+=12;y--}while(m>12){m-=12;y++}return y+"-"+String(m).padStart(2,"0")}
+
+let db=null,months={},settings=defaultSettings(),real={months:{},settings:null},sample=false;
+let cur=todayKey(),tab="overview",touchedMonth=false,openCat=null,incSt="pending",impKind="locum";
+function defaultSettings(){return{budgets:{},groups:{},retireTarget:6000000,knownInstallments:["ผ่อนรถ"],maps:{},investKeywords:DEFAULT_INVEST_KW.slice()}}
+function investRe(){const kw=(settings.investKeywords&&settings.investKeywords.length?settings.investKeywords:DEFAULT_INVEST_KW).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"));return new RegExp("(^|[^a-z])("+kw.join("|")+")([^a-z]|$)","i")}
+
+/* theme toggle (per-viewer convenience) */
+function applyTheme(t){if(t)document.documentElement.setAttribute("data-theme",t);else document.documentElement.removeAttribute("data-theme");
+  const dark=t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches;$("themeBtn").innerHTML=svg(dark?"sun":"moon")}
+let theme=null;try{theme=localStorage.getItem("ledger-theme")}catch(e){}
+applyTheme(theme);
+$("themeBtn").addEventListener("click",()=>{const dark=document.documentElement.getAttribute("data-theme")?document.documentElement.getAttribute("data-theme")==="dark":matchMedia("(prefers-color-scheme: dark)").matches;theme=dark?"light":"dark";applyTheme(theme);try{localStorage.setItem("ledger-theme",theme)}catch(e){}});
+
+/* grouping */
+const RULES=[
+  ["debt",/ผ่อน|หนี้|บัตร|สินเชื่อ|loan|credit|installment|ค่างวด/i],
+  ["save",/ลงทุน|ออม|dime|binance|btc|bitcoin|หุ้น|กองทุน|treasury|t-?bill|invest|saving/i],
+  ["need",/home|utilit|อาหาร|ข้าว|กิน|food|ค่าเช่า|ที่พัก|คอนโด|rent|โทรศัพท์|มือถือ|phone|เน็ต|internet|ยา|สุขภาพ|หมอ|health|เดินทาง|รถ|เรือ|transport|ครอบครัว|พ่อ|แม่|family|น้ำ|ไฟ|ของใช้|grocer|ซักผ้า/i]];
+function groupOf(cat){if(settings.groups[cat])return settings.groups[cat];if(/^(-|–|ไม่ระบุหมวด|)$/.test(String(cat).trim()))return"skip";for(const [g,re] of RULES)if(re.test(cat))return g;return"want"}
+
+function M(k){return months[k]||{income:[],expenses:[],assets:{},meta:{}}}
+function sum(a,f){return a.reduce((s,x)=>s+(+f(x)||0),0)}
+function stats(k){const m=M(k);const inc=sum(m.income,x=>x.a);const byCat={},byG={need:0,want:0,save:0,debt:0,skip:0};
+  m.expenses.forEach(e=>{byCat[e.c]=(byCat[e.c]||0)+e.a;byG[groupOf(e.c)]+=e.a});const exp=byG.need+byG.want+byG.save+byG.debt;
+  const invested=byG.save+sum(m.invest||[],x=>x.a);
+  return{inc,exp,net:inc-exp,byCat,byG,invested,hours:sum(m.income,x=>x.h),pending:sum(m.income.filter(x=>x.st!=="paid"),x=>x.a)}}
+function hasData(k){const m=months[k];return!!m&&(m.income.length||m.expenses.length||Object.keys(m.assets||{}).length)}
+
+/* writes */
+const chains={};
+function queue(path,fn){chains[path]=(chains[path]||Promise.resolve()).then(fn).catch(e=>{toast(e&&e.code==="quota_exceeded"?"พื้นที่เก็บข้อมูลเต็ม ลบเดือนเก่าก่อน":"บันทึกไม่สำเร็จ ลองอีกครั้ง");console.error(e)});return chains[path]}
+function saveMonth(k){months[k]=JSON.parse(JSON.stringify(M(k)));persistMonths();render();return Promise.resolve()}
+function saveSettings(){persistSettings();render();return Promise.resolve()}
+
+/* render */
+function delta(a,b,invert){if(!b)return'<span class="faint">ไม่มีเดือนก่อน</span>';const d=(a-b)/Math.abs(b)*100;const good=invert?d<=0:d>=0;return'<span class="'+(good?"up":"down")+'">'+(d>=0?"▲ ":"▼ ")+Math.abs(d).toFixed(1)+"%</span>"}
+function render(){
+  $("monthLabel").textContent=mFull(cur);
+  const anyData=Object.keys(months).some(hasData);
+  $("emptyState").hidden=anyData;$("overviewBody").hidden=!anyData;$("sampleBanner").hidden=!sample;
+  $("monthNav").hidden=(tab==="overview"&&!anyData)||tab==="import"||tab==="settings";
+  if(tab==="overview"&&anyData)renderOverview();
+  if(tab==="income")renderIncome();
+  if(tab==="expense")renderExpense();
+  if(tab==="import")renderImportLog();
+  if(tab==="settings")renderSettings();
+}
+
+function computeAlerts(k){
+  const m=M(k),st=stats(k),out=[];
+  for(const [c,b] of Object.entries(settings.budgets)){if(b>0&&(st.byCat[c]||0)>b)out.push(["neg","bolt","เกินงบ · "+c,`ใช้ ${baht(st.byCat[c])} จากงบ ${baht(b)}`,"+"+baht(st.byCat[c]-b)])}
+  const known=(settings.knownInstallments||[]).map(s=>s.trim().toLowerCase()).filter(Boolean);
+  m.expenses.forEach(e=>{const t=(e.c+" "+(e.n||"")).toLowerCase();
+    if(/กดเงินสด|เบิกเงินสด|cash\s*advance/.test(t))out.push(["neg","cash","กดเงินสดบัตร",dLabel(e.d)+" · "+e.c+(e.n?" · "+e.n:""),baht(e.a)]);
+    else if(/ผ่อน|installment|แบ่งจ่าย|0%/.test(t)&&!known.some(kw=>t.includes(kw)))out.push(["warn","clock","ผ่อนรายการใหม่?",dLabel(e.d)+" · "+e.c+(e.n?" · "+e.n:""),baht(e.a)])});
+  if(st.inc&&st.exp>st.inc)out.push(["neg","bolt","ใช้เกินรายรับ",`รายจ่าย ${baht(st.exp)} มากกว่ารายรับ`,"−"+baht(st.exp-st.inc).replace("฿","฿")]);
+  if(st.pending>0)out.push(["warn","clock","ค่ากะยังไม่เข้า",m.income.filter(x=>x.st!=="paid").length+" รายการ รอโอน",baht(st.pending)]);
+  if(!m.income.length&&m.expenses.length)out.push(["","doc","ยังไม่มีรายรับเดือนนี้","นำเข้า backup จาก Locum Ledger เพื่อให้ % ถูก",""]);
+  return out}
+function rowHTML(av,avCls,t1,t2,amt,extra){return`<div class="row"><div class="lead"><div class="avatar ${avCls}">${av}</div><div class="txt"><div class="t1">${t1}</div>${t2?`<div class="t2">${t2}</div>`:""}${extra||""}</div></div>${amt!=null?`<div class="amt tn">${amt}</div>`:""}</div>`}
+
+function renderOverview(){
+  const st=stats(cur),pk=shiftKey(cur,-1),pv=hasData(pk)?stats(pk):null;
+  $("heroCap").textContent="คงเหลือ "+mFull(cur);
+  $("sNet").textContent=baht(st.net);$("sNet").style.color=st.net<0?"var(--neg)":"";
+  $("sIncome").textContent=baht(st.inc);$("sExpense").textContent=baht(st.exp);
+  $("dIncome").innerHTML=delta(st.inc,pv&&pv.inc);$("dExpense").innerHTML=delta(st.exp,pv&&pv.exp,true);
+  $("sSave").textContent=st.inc?pct(st.invested,st.inc).toFixed(1)+"%":"—";$("sSaveB").textContent=baht(st.invested)+" ของรายรับ"+((M(cur).invest||[]).length?" · รวมโอนไปลงทุน":"");
+  $("sPend").textContent=baht(st.pending);$("sPend").style.color=st.pending?"var(--accent)":"";$("sPendB").textContent=st.pending?"ยังไม่โอนเข้า":"ได้รับครบแล้ว";
+  const al=computeAlerts(cur);$("alertCount").textContent=al.length?al.length+" รายการ":"";
+  $("alerts").innerHTML=al.length?al.map(a=>rowHTML(svg(a[1]),a[0],esc(a[2]),esc(a[3]),a[4]?`<span class="${a[0]==="neg"?"down":""}">${esc(a[4])}</span>`:null)).join(""):rowHTML(svg("shield"),"pos","เดือนนี้เรียบร้อย","ไม่มีหมวดเกินงบ ไม่มีกดเงินสด ไม่มีผ่อนใหม่",null);
+  const base=Math.max(st.inc,st.exp)||1;
+  $("gbar").innerHTML=GKEYS.map(g=>`<span style="width:${pct(st.byG[g],base)}%;background:${GROUPS[g].c}"></span>`).join("");
+  $("groupRows").innerHTML=GKEYS.map(g=>{const p=pv?pv.byG[g]:null;const d=p==null?null:st.byG[g]-p;const good=g==="save"?d>=0:d<=0;
+    return`<div class="row"><div class="lead"><span class="dot" style="background:${GROUPS[g].c};width:10px;height:10px;border-radius:3px"></span><div class="txt"><div class="t1">${GROUPS[g].n}</div><div class="t2 tn">${st.inc?pct(st.byG[g],st.inc).toFixed(1)+"% ของรายรับ":"—"}${d==null?"":` · <span class="${d===0?"":good?"up":"down"}">${d>0?"+":d<0?"−":""}฿${fmt(Math.abs(d))} vs ${mLabel(pk)}</span>`}</div></div></div><div class="amt tn">${baht(st.byG[g])}</div></div>`}).join("")
+    +(st.byG.skip?`<div class="row"><div class="lead"><span class="dot" style="background:var(--ink-faint);width:10px;height:10px;border-radius:3px"></span><div class="txt"><div class="t1">ไม่นับ</div><div class="t2">โอนระหว่างบัญชี / ไม่มีหมวด · ตรวจในแท็บรายจ่าย</div></div></div><div class="amt tn faint" style="text-decoration:line-through">${baht(st.byG.skip)}</div></div>`:"")
+    +(st.inc>st.exp?`<div class="row"><div class="lead"><span class="dot" style="background:var(--surface-2);border:1px solid var(--border);width:10px;height:10px;border-radius:3px"></span><div class="txt"><div class="t1">คงเหลือ</div><div class="t2 tn">${pct(st.net,st.inc).toFixed(1)}% ของรายรับ</div></div></div><div class="amt tn">${baht(st.net)}</div></div>`:"");
+  renderWeeks();renderRetire();renderTrend();
+}
+function renderWeeks(){
+  const m=M(cur);const [y,mo]=cur.split("-").map(Number);const days=new Date(y,mo,0).getDate();const weeks=[];let w=null;
+  for(let d=1;d<=days;d++){const dow=(new Date(y,mo-1,d).getDay()+6)%7;if(!w||dow===0){w={s:d,e:d,amt:0};weeks.push(w)}w.e=d}
+  m.expenses.filter(e=>{const g=groupOf(e.c);return g==="need"||g==="want"}).forEach(e=>{const d=+e.d.slice(8,10);const wk=weeks.find(x=>d>=x.s&&d<=x.e);if(wk)wk.amt+=e.a});
+  const bud=Object.entries(settings.budgets).filter(([c,b])=>b>0&&["need","want"].includes(groupOf(c))).reduce((s,[,b])=>s+b,0);
+  const scale=Math.max(...weeks.map(x=>Math.max(x.amt,bud?bud/days*(x.e-x.s+1):0)),1)*1.05;
+  $("weekNote").textContent=bud?"ขีด = งบช่วงนั้น":"จำเป็น + อยากได้";
+  $("weekRows").innerHTML=weeks.map(x=>{const wb=bud?bud/days*(x.e-x.s+1):0,over=wb&&x.amt>wb;
+    return`<div class="row" style="display:block"><div style="display:flex;justify-content:space-between;gap:8px"><span class="t1">${x.s}–${x.e} ${TH_M[mo-1]}</span><span class="amt tn ${over?"down":""}">${baht(x.amt)}</span></div><div class="bar"><i class="${over?"over":""}" style="width:${x.amt/scale*100}%"></i>${wb?`<b style="left:${wb/scale*100}%"></b>`:""}</div></div>`}).join("");
+}
+function latestAssets(k){for(let i=0;i<36;i++){const kk=shiftKey(k,-i);const a=months[kk]&&months[kk].assets;if(a&&a.portfolio!=null)return{k:kk,a}}return null}
+function renderRetire(){
+  const t=+settings.retireTarget||0,la=latestAssets(cur),a=M(cur).assets||{};
+  $("aPort").value=a.portfolio??"";$("aCard").value=a.card??"";$("aCar").value=a.car??"";
+  if(!la){$("retVal").textContent="—";$("retTarget").textContent="เป้า ฿"+fmt(t);$("retBar").style.width="0%";$("retDelta").textContent="ใส่มูลค่าพอร์ตสิ้นเดือน (Dime + Binance + T-Bill) เพื่อเริ่มติดตาม";$("retNote").textContent="";return}
+  const v=+la.a.portfolio;$("retVal").textContent=baht(v);$("retTarget").textContent=(t?pct(v,t).toFixed(1):0)+"% ของ ฿"+fmt(t);
+  $("retBar").style.width=Math.min(100,t?pct(v,t):0)+"%";$("retNote").textContent=la.k===cur?"":"ยอดล่าสุด "+mLabel(la.k);
+  const prev=latestAssets(shiftKey(la.k,-1));
+  let s=prev?`${mLabel(prev.k)} → ${mLabel(la.k)}: ${v-prev.a.portfolio>=0?"+":"−"}฿${fmt(Math.abs(v-prev.a.portfolio))}`:"เดือนแรกที่บันทึก";
+  if(la.a.card)s+=` · หนี้บัตร ฿${fmt(la.a.card)}`;if(la.a.car)s+=` · หนี้รถ ฿${fmt(la.a.car)}`;$("retDelta").textContent=s;
+}
+function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x||1)));const n=x/p;return(n<=1?1:n<=2?2:n<=5?5:10)*p}
+function renderTrend(){
+  const ks=[];for(let i=5;i>=0;i--)ks.push(shiftKey(cur,-i));const data=ks.map(k=>({k,...stats(k)}));
+  const max=Math.max(...data.map(d=>Math.max(d.inc,d.exp)),1),step=niceStep(max/3),top=Math.ceil(max/step)*step;
+  const W=440,H=190,L=40,B=24,T=8,R=4,cw=(W-L-R)/6,bw=Math.min(16,cw/3.4),y=v=>T+(H-T-B)*(1-v/top);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block" role="img" aria-label="รายรับและรายจ่าย 6 เดือน">`;
+  for(let v=0;v<=top+1;v+=step)s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--border)" stroke-width="1"/><text x="${L-6}" y="${y(v)+3.5}" text-anchor="end">${v>=1000?(v/1000).toLocaleString("th-TH")+"k":v}</text>`;
+  data.forEach((d,i)=>{const cx=L+cw*i+cw/2,on=d.k===cur;
+    s+=`<rect x="${cx-bw-1.5}" y="${y(d.inc)}" width="${bw}" height="${Math.max(0,y(0)-y(d.inc))}" rx="4" fill="var(--pos)" opacity="${on?1:.55}"><title>รายรับ ฿${fmt(d.inc)}</title></rect>`;
+    s+=`<rect x="${cx+1.5}" y="${y(d.exp)}" width="${bw}" height="${Math.max(0,y(0)-y(d.exp))}" rx="4" fill="${d.inc&&d.exp>d.inc?"var(--neg)":"var(--accent)"}" opacity="${on?1:.55}"><title>รายจ่าย ฿${fmt(d.exp)}</title></rect>`;
+    s+=`<text x="${cx}" y="${H-6}" text-anchor="middle" style="${on?"fill:var(--ink)":""}">${TH_M[+d.k.slice(5)-1]}</text>`});
+  $("trend").innerHTML=s+`</svg><div class="legend"><span><span class="dot" style="background:var(--pos)"></span>รายรับ</span><span><span class="dot" style="background:var(--accent)"></span>รายจ่าย</span><span><span class="dot" style="background:var(--neg)"></span>ใช้เกินรายรับ</span></div>`;
+}
+
+/* income */
+function renderIncome(){
+  const m=M(cur),st=stats(cur);
+  $("iTotal").textContent=baht(st.inc);$("iHours").textContent=st.hours?(+st.hours.toFixed(1)).toLocaleString("th-TH"):"0";
+  const ha=sum(m.income.filter(x=>x.h>0),x=>x.a);$("iRate").textContent=st.hours?"฿"+fmt(ha/st.hours):"—";
+  $("iPending").textContent=baht(st.pending);$("iPending").style.color=st.pending?"var(--accent)":"";
+  const by={};m.income.forEach(x=>{const b=by[x.s]=by[x.s]||{a:0,h:0,p:0,n:0};b.a+=x.a;b.h+=x.h||0;b.n++;if(x.st!=="paid")b.p+=x.a});
+  const mx=Math.max(...Object.values(by).map(b=>b.a),1);
+  $("placeRows").innerHTML=Object.keys(by).length?Object.entries(by).sort((a,b)=>b[1].a-a[1].a).map(([s,b])=>`<div class="row" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="lead"><div class="avatar">${svg("hospital")}</div><div class="txt"><div class="t1">${esc(s)}</div><div class="t2 tn">${b.n} รายการ${b.h?` · ${+b.h.toFixed(1)} ชม. · ฿${fmt(b.a/b.h)}/ชม.`:""}</div></div></div><div class="amt tn">${baht(b.a)}${b.p?`<small style="color:var(--accent)">รอ ${baht(b.p)}</small>`:""}</div></div><div class="bar"><i style="width:${b.a/mx*100}%"></i></div></div>`).join(""):'<div class="empty">ยังไม่มีรายรับเดือนนี้</div>';
+  const srcs=[...new Set(Object.values(months).flatMap(mm=>mm.income.map(x=>x.s)).concat(["Sairee Clinic"]))];
+  $("srcList").innerHTML=srcs.map(s=>`<option value="${esc(s)}">`).join("");
+  if(!$("inDate").value){const t=new Date(Date.now()+7*3600e3).toISOString().slice(0,10);$("inDate").value=t.slice(0,7)===cur?t:cur+"-01"}
+  const rows=m.income.map((x,i)=>({...x,i})).sort((a,b)=>a.d<b.d?1:-1);
+  $("incRows").innerHTML=rows.length?rows.map(x=>`<div class="row"><div class="lead"><div class="avatar ${x.o==="locum"?"":"pos"}">${svg(x.o==="locum"?"hospital":"cash")}</div><div class="txt"><div class="t1">${esc(x.s)} <button class="tag ${x.st==="paid"?"paid":"unpaid"}" data-toggle="${x.i}">${x.st==="paid"?"paid":"unpaid"}</button></div><div class="t2 tn">${dLabel(x.d)}${x.c?" · "+esc(x.c):""}${x.h?` · ${x.h} ชม.`:""}${x.o==="locum"?"":" · กรอกเอง"}</div></div></div><div class="amt tn">${baht(x.a)}${x.o!=="locum"?`<small><button class="tag over" data-delinc="${x.i}">ลบ</button></small>`:""}</div></div>`).join(""):'<div class="empty">นำเข้า backup จาก Locum Ledger หรือเพิ่มเองด้านล่าง</div>';
+}
+$("incRows").addEventListener("click",e=>{const t=e.target.closest("[data-toggle],[data-delinc]");if(!t)return;const m=M(cur);months[cur]=m;
+  if(t.dataset.toggle!=null){const x=m.income[+t.dataset.toggle];x.st=x.st==="paid"?"pending":"paid"}else m.income.splice(+t.dataset.delinc,1);saveMonth(cur)});
+document.querySelectorAll("#incForm .seg-btn").forEach(b=>b.addEventListener("click",()=>{incSt=b.dataset.st;document.querySelectorAll("#incForm .seg-btn").forEach(x=>x.classList.toggle("active",x===b))}));
+$("incForm").addEventListener("submit",e=>{e.preventDefault();const d=$("inDate").value,a=+$("inAmt").value;if(!d||!a)return;const k=d.slice(0,7);const m=M(k);months[k]=m;
+  m.income.push({d,s:$("inSrc").value.trim()||"Sairee Clinic",h:+$("inHrs").value||0,a,st:incSt,o:"manual"});$("inAmt").value="";$("inHrs").value="";cur=k;saveMonth(k).then(()=>toast("เพิ่มรายรับแล้ว"))});
+
+/* expense */
+function renderExpense(){
+  const m=M(cur),st=stats(cur);
+  const cats=[...new Set(Object.keys(st.byCat).concat(Object.keys(settings.budgets).filter(c=>settings.budgets[c]>0)))];
+  const totalB=Object.values(settings.budgets).reduce((s,b)=>s+(+b||0),0);
+  $("eTotal").textContent=baht(st.exp);$("eBudget").textContent=totalB?"฿"+fmt(totalB):"—";$("ePct").textContent=st.inc?pct(st.exp,st.inc).toFixed(1)+"%":"—";
+  let h="";
+  ALLG.forEach(gk=>{const cs=cats.filter(c=>groupOf(c)===gk).sort((a,b)=>(st.byCat[b]||0)-(st.byCat[a]||0));if(!cs.length)return;
+    h+=`<div class="section-label" style="margin-top:14px"><span style="text-transform:uppercase;letter-spacing:.06em;font-weight:650"><span class="dot" style="background:${GROUPS[gk].c}"></span>${GROUPS[gk].n}</span><span class="tn">${baht(st.byG[gk])}${gk==="skip"?" · ไม่รวมในยอด":st.inc?" · "+pct(st.byG[gk],st.inc).toFixed(1)+"%":""}</span></div><div class="card glassy"${gk==="skip"?' style="opacity:.85"':""}>`;
+    cs.forEach(c=>{const a=st.byCat[c]||0,b=+settings.budgets[c]||0,u=b?pct(a,b):null;
+      h+=`<div class="row" style="display:block;cursor:pointer" data-cat="${esc(c)}" role="button" tabindex="0" aria-expanded="${openCat===c}"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="lead"><div class="avatar" style="background:color-mix(in srgb,${GROUPS[gk].c} 14%,transparent);color:${GROUPS[gk].c}">${svg(catIcon(c))}</div><div class="txt"><div class="t1">${esc(c)}</div><div class="t2 tn">${b?`งบ ฿${fmt(b)} · <span class="tag ${u>100?"over":u>85?"near":"ok"}">${u.toFixed(0)}%</span>`:"ยังไม่ตั้งงบ"}</div></div></div><div class="amt tn">${baht(a)}</div></div>${b?`<div class="bar"><i class="${u>100?"over":""}" style="width:${Math.min(100,u)}%"></i></div>`:""}</div>`;
+      if(openCat===c)h+=`<div class="editor"><div class="grid2"><div class="field"><label for="edG">กลุ่ม</label><select id="edG">${ALLG.map(k=>`<option value="${k}"${k===gk?" selected":""}>${GROUPS[k].n}</option>`).join("")}</select></div><div class="field"><label for="edB">งบ/เดือน (บาท)</label><input id="edB" type="number" min="0" inputmode="decimal" value="${b||""}" placeholder="ไม่คุม"></div></div><div class="btnrow" style="margin-bottom:11px"><button class="btn btn-primary" id="edSave" style="padding:10px">บันทึก</button><button class="btn btn-ghost" id="edCancel" style="padding:10px">ปิด</button></div></div>`});
+    h+="</div>"});
+  $("catGroups").innerHTML=h||'<div class="card glassy"><div class="empty">ยังไม่มีรายจ่ายเดือนนี้ — นำเข้าไฟล์จาก Meowjot</div></div>';
+  const f=$("expFilter"),fv=f.value;f.innerHTML='<option value="">ทุกหมวด</option>'+Object.keys(st.byCat).sort().map(c=>`<option${c===fv?" selected":""}>${esc(c)}</option>`).join("");
+  const rows=m.expenses.filter(e=>!f.value||e.c===f.value).sort((a,b)=>a.d<b.d?1:-1);
+  let last="";$("expRows").innerHTML=rows.length?rows.slice(0,300).map(e=>{const g=groupOf(e.c);const hd=e.d!==last?(last=e.d,`<div class="section-label" style="margin:10px 0 0">${dLabel(e.d)}</div>`):"";
+    return hd+`<div class="row"><div class="lead"><div class="avatar" style="background:color-mix(in srgb,${GROUPS[g].c} 14%,transparent);color:${GROUPS[g].c}">${svg(catIcon(e.c))}</div><div class="txt"><div class="t1">${esc(clean(e.n)||e.c)}</div><div class="t2">${esc(e.c)}${g==="skip"?" · ไม่นับ":""}</div></div></div><div class="amt tn"${g==="skip"?' style="text-decoration:line-through;color:var(--ink-faint)"':""}>${baht(e.a)}</div></div>`}).join(""):'<div class="empty">ไม่มีรายการ</div>';
+}
+$("catGroups").addEventListener("click",e=>{
+  if(e.target.closest("#edSave")){const c=openCat;settings.groups[c]=$("edG").value;const b=+$("edB").value||0;if(b>0)settings.budgets[c]=b;else delete settings.budgets[c];openCat=null;saveSettings().then(()=>toast("บันทึก "+c+" แล้ว"));return}
+  if(e.target.closest("#edCancel")){openCat=null;renderExpense();return}
+  const r=e.target.closest("[data-cat]");if(r){openCat=openCat===r.dataset.cat?null:r.dataset.cat;renderExpense()}});
+$("catGroups").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&e.target.dataset.cat){e.preventDefault();e.target.click()}});
+$("expFilter").addEventListener("change",renderExpense);
+
+$("saveAssets").addEventListener("click",()=>{const m=M(cur);months[cur]=m;const n=id=>$(id).value===""?undefined:+$(id).value;
+  m.assets={portfolio:n("aPort"),card:n("aCard"),car:n("aCar")};Object.keys(m.assets).forEach(k=>m.assets[k]===undefined&&delete m.assets[k]);saveMonth(cur).then(()=>toast("บันทึกยอด "+mLabel(cur)+" แล้ว"))});
+
+/* settings */
+function renderSettings(){if(typeof renderBackupBanner==="function")renderBackupBanner();if(typeof renderWidgetAge==="function")renderWidgetAge();$("setRet").value=settings.retireTarget||"";$("setInst").value=(settings.knownInstallments||[]).join(", ");$("setInv").value=(settings.investKeywords||DEFAULT_INVEST_KW).join(", ");
+  $("retFormula").textContent="ค่าเริ่มต้น ฿6,000,000 = (ใช้จ่าย 75,000 − รายได้ part-time 55,000) × 12 × 25 เท่า ตามกฎถอน 4% เป็นค่ากลางของช่วงเป้า ปรับตามจริงได้";$("delConfirm").hidden=true;$("delMonth").textContent="ลบข้อมูล "+mFull(cur)}
+$("saveSettings").addEventListener("click",()=>{settings.retireTarget=+$("setRet").value||0;settings.knownInstallments=$("setInst").value.split(",").map(s=>s.trim()).filter(Boolean);settings.investKeywords=$("setInv").value.split(",").map(s=>s.trim()).filter(Boolean);saveSettings().then(()=>toast("บันทึกแล้ว"))});
+$("delMonth").addEventListener("click",()=>{$("delConfirm").hidden=false;$("delConfirm").textContent="ยืนยันลบ "+mFull(cur)});
+$("delConfirm").addEventListener("click",()=>{delete months[cur];persistMonths();render();toast("ลบแล้ว")});
+
+/* import */
+const FIELDS={
+  meowjot:[["date","วันที่",/วันที่|date|วัน/i,true],["amount","จำนวนเงิน",/จำนวน|ยอด|amount|เงิน|ราคา|บาท/i,true],["category","หมวดหมู่",/หมวด|category|ประเภทย่อย/i,true],["note","โน้ต",/โน้ต|บันทึก|note|รายละเอียด|memo|คำอธิบาย/i,false],["type","รายรับ/รายจ่าย",/ประเภท|type|รายรับ.*จ่าย/i,false]],
+  locum:[["date","วันที่",/^date$|วันที่|วัน|shift/i,true],["amount","ยอดเงิน",/^amount$|จำนวน|ยอด|รายได้|ค่าแรง|pay|total|รวม|บาท/i,true],["hours","ชั่วโมง",/ชั่วโมง|ชม|hour|hrs/i,false],["source","ที่ทำงาน",/workplace|คลินิก|clinic|สถานที่|แหล่ง|source|site|รพ/i,false],["status","สถานะจ่าย",/^status$|สถานะ|โอน/i,false],["type","income/expense",/^type$|ประเภท/i,false],["category","หมวด",/^category$|หมวด/i,false]]};
+let imp=null;
+function setKind(k){impKind=k;document.querySelectorAll("#impSeg .seg-btn").forEach(b=>b.classList.toggle("active",b.dataset.kind===k));
+  $("dropTitle").textContent=k==="locum"?"ลากไฟล์ backup .json มาวาง":"ลากไฟล์ export จาก Meowjot มาวาง";
+  $("dropHint").textContent=k==="locum"?"Locum Ledger → Settings → Backup → Save a file · หรือ CSV จาก Totals":"Excel (.xlsx) หรือ .csv — แถวรายรับใน Meowjot จะถูกข้าม";}
+document.querySelectorAll("#impSeg .seg-btn").forEach(b=>b.addEventListener("click",()=>{setKind(b.dataset.kind);imp=null;$("mapPanel").hidden=true}));
+const drop=$("drop");
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("on")}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("on")}));
+drop.addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f)readFile(f)});
+$("file").addEventListener("change",e=>{const f=e.target.files[0];if(f)readFile(f);e.target.value=""});
+function readFile(f){
+  if(/\.json$/i.test(f.name)||f.type==="application/json"){const r=new FileReader();r.onload=()=>{let data;try{data=JSON.parse(r.result)}catch(e){toast("ไฟล์ JSON อ่านไม่ได้");return}
+      if(!data||data.app!=="locum-ledger"||!Array.isArray(data.transactions)){toast("ไฟล์นี้ไม่ใช่ backup ของ Locum Ledger");return}
+      setKind("locum");imp={kind:"locum",file:f.name,json:data,headers:[],rows:[],map:{}};drawMap()};r.readAsText(f);return}
+  if(!window.XLSX){toast("โหลดตัวอ่านไฟล์ไม่สำเร็จ รีเฟรชหน้าแล้วลองใหม่");return}
+  const r=new FileReader();r.onload=()=>{try{
+    const wb=XLSX.read(new Uint8Array(r.result),{type:"array",cellDates:false,codepage:65001,raw:/\.(csv|txt)$/i.test(f.name)});const ws=wb.Sheets[wb.SheetNames[0]];
+    const aoa=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:""});
+    let hi=0;for(let i=0;i<Math.min(15,aoa.length);i++){if(aoa[i].filter(v=>typeof v==="string"&&v.trim()&&isNaN(+v)).length>=2){hi=i;break}}
+    const headers=aoa[hi].map((h,i)=>String(h).trim()||("คอลัมน์ "+(i+1)));const rows=aoa.slice(hi+1).filter(r=>r.some(v=>v!==""));
+    let kind=impKind;if(headers.includes("Workplace")&&headers.includes("Status"))kind="locum";setKind(kind);
+    const saved=(settings.maps||{})[kind]||{},map={};
+    FIELDS[kind].forEach(([k,,re])=>{let idx=saved[k]!=null?headers.indexOf(saved[k]):-1;if(idx<0)idx=headers.findIndex(h=>re.test(h));map[k]=idx});
+    if(kind==="meowjot"&&map.type===map.category)map.type=-1;
+    imp={kind,file:f.name,headers,rows,map};drawMap()}catch(err){console.error(err);toast("อ่านไฟล์ไม่ได้ ลอง export เป็น .xlsx หรือ .csv")}};
+  r.readAsArrayBuffer(f);
+}
+function parseDate(v){
+  if(v===""||v==null)return null;
+  if(typeof v==="number"&&v>20000&&v<80000)return new Date(Math.round((v-25569)*864e5)).toISOString().slice(0,10);
+  const s=String(v).trim();let m;
+  if((m=s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))){let y=+m[1];if(y>2400)y-=543;return y+"-"+m[2].padStart(2,"0")+"-"+m[3].padStart(2,"0")}
+  if((m=s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})/))){let y=+m[3];if(y<100)y+=y>60?2500:2000;if(y>2400)y-=543;return y+"-"+m[2].padStart(2,"0")+"-"+m[1].padStart(2,"0")}
+  if((m=s.match(/^(\d{1,2})\s*(\S+?)\s*(\d{2,4})/))){const mi=TH_M.findIndex(t=>m[2].replace(/\./g,"")===t.replace(/\./g,""));if(mi>=0){let y=+m[3];if(y<100)y+=2500;if(y>2400)y-=543;return y+"-"+String(mi+1).padStart(2,"0")+"-"+m[1].padStart(2,"0")}}
+  return null}
+function parseAmt(v){if(typeof v==="number")return v;const s=String(v).replace(/[,฿\s]|บาท|THB/gi,"");const n=parseFloat(s.replace(/[()]/g,""));return isNaN(n)?null:(/^\(.*\)$/.test(s)?-n:n)}
+function fromLocumBackup(data){
+  const places=data.places||[],tx=data.transactions||[];const place=id=>places.find(p=>p.id===id);const rv=(p,k)=>Number(p&&p.rates?p.rates[k]:0)||0;
+  const tiered=t=>{if(t.type!=="income"||!t.meta||t.meta.hours==null)return false;const p=place(t.placeId);if(!p)return false;const c=(p.categories||[]).find(x=>x.key===t.catKey);return!!(c&&c.formulaKey==="sairee_hourly")};
+  const tierHrs={};tx.forEach(t=>{if(t.meta&&t.meta.hours&&t.date){const k=t.placeId+"|"+t.catKey+"|"+t.date.slice(0,7);tierHrs[k]=(tierHrs[k]||0)+t.meta.hours}});
+  const rateFor=(p,h)=>h<=rv(p,"tier1max")?rv(p,"tier1"):h<=rv(p,"tier2max")?rv(p,"tier2"):rv(p,"tier3");
+  const eff=t=>{if(!tiered(t))return+t.amount||0;return(t.meta.hours||0)*rateFor(place(t.placeId),tierHrs[t.placeId+"|"+t.catKey+"|"+t.date.slice(0,7)]||0)};
+  const out=[];let planned=0,expenses=0,skipped=0;
+  const lo=new Date(Date.now()-62*864e5).toISOString().slice(0,10),hi=new Date(Date.now()+62*864e5).toISOString().slice(0,10);
+  const sched=tx.filter(t=>t.type==="income"&&t.date&&t.date>=lo&&t.date<=hi).map(t=>({id:t.id,date:t.date.slice(0,10),start:t.startTime||"",end:t.endTime||"",place:t.placeName||"",cat:t.catLabel||"",note:(t.note||"").slice(0,60),amount:Math.round(eff(t)*100)/100,hours:(t.meta&&t.meta.hours)||0,planned:!!t.planned,paid:t.paid===true}));
+  const clockRate=(data.settings&&+data.settings.clockRate)||null;
+  tx.forEach(t=>{if(t.type!=="income"){expenses++;return}if(t.planned){planned++;return}const a=eff(t);if(!t.date||!a){skipped++;return}
+    out.push({d:t.date.slice(0,10),s:t.placeName||"ไม่ระบุ",c:t.catLabel||"",h:(t.meta&&t.meta.hours)||0,a:Math.round(a*100)/100,st:t.paid===true?"paid":"pending",n:(t.note||"").slice(0,140),o:"locum"})});
+  const placesCfg=places.map(p=>({id:p.id,name:p.name,rates:p.rates||{},categories:(p.categories||[]).map(c=>({key:c.key,label:c.label,formulaKey:c.formulaKey||"manual",rateKey:c.rateKey||null}))}));
+  return{out,skipped,incomeRows:expenses,planned,sched,clockRate,placesCfg}}
+function normalize(){
+  if(imp.json)return fromLocumBackup(imp.json);
+  const {kind,rows,map}=imp;const out=[],inv=[];let skipped=0,incomeRows=0,transfers=0;const ire=investRe();
+  rows.forEach(r=>{const g=k=>map[k]>=0?r[map[k]]:"";const d=parseDate(g("date"));const a=parseAmt(g("amount"));if(!d||a==null||a===0){skipped++;return}
+    if(kind==="meowjot"){const ty=String(g("type"));if(/transfer|โอน|ย้ายเงิน/i.test(ty)){const nt=clean(g("note")),ct=clean(g("category"));if(ire.test(nt+" "+ct)){inv.push({d,a:Math.abs(a),n:(nt||ct).slice(0,80)});return}transfers++;return}if(/รายรับ|income/i.test(ty)){incomeRows++;return}out.push({d,c:clean(g("category"))||"ไม่ระบุหมวด",a:Math.abs(a),n:clean(g("note")).slice(0,140)})}
+    else{if(/expense|รายจ่าย/i.test(String(g("type")))){incomeRows++;return}const st=String(g("status"));
+      out.push({d,s:String(g("source")).trim()||"Sairee Clinic",c:String(g("category")).trim(),h:+parseAmt(g("hours"))||0,a:Math.abs(a),st:st&&/outstanding|ค้าง|รอ|pending|unpaid|ยังไม่/i.test(st)?"pending":"paid",o:"locum"})}});
+  return{out,skipped,incomeRows,transfers,inv}}
+function drawMap(){
+  $("mapPanel").hidden=false;const {kind,headers,map,file,rows}=imp;
+  $("mapInfo").textContent=file;
+  $("mapFields").hidden=!!imp.json;
+  $("mapFields").innerHTML=imp.json?"":FIELDS[kind].map(([k,lab,,req])=>`<div class="field"><label for="mf-${k}">${lab}${req?"":" (ถ้ามี)"}</label><select id="mf-${k}" data-mf="${k}"><option value="-1">— ไม่มี —</option>${headers.map((h,i)=>`<option value="${i}"${i===map[k]?" selected":""}>${esc(h)}</option>`).join("")}</select></div>`).join("");
+  $("mapHint").textContent=imp.json?`Backup วันที่ ${(imp.json.savedAt||"").slice(0,10)} · ใช้เฉพาะรายรับที่ทำงานแล้ว (ไม่รวมกะ planned) · คิดเรทขั้นบันไดตามชั่วโมงรวมทั้งเดือนแบบเดียวกับในแอป · รายจ่ายใน Locum Ledger ถูกข้าม`:kind==="meowjot"?"แถวรายรับใน Meowjot จะถูกข้าม · ยอดติดลบนับเป็นรายจ่าย":"CSV ไม่มีชั่วโมง ถ้าอยากเห็น ฿/ชม. ใช้ backup .json · แถว expense ถูกข้าม · outstanding = unpaid";
+  const n=normalize();const ms=[...new Set(n.out.map(x=>x.d.slice(0,7)))].sort();
+  const future=n.out.filter(x=>x.d.slice(0,7)>todayKey()).length;
+  const missing=imp.json?[]:FIELDS[kind].filter(f=>f[3]&&map[f[0]]<0).map(f=>f[1]);
+  $("doImport").disabled=!!missing.length||!n.out.length;
+  $("impSummary").textContent=missing.length?"ยังไม่ได้เลือกคอลัมน์: "+missing.join(", "):`${n.out.length} รายการ · ${ms.map(mLabel).join(", ")} · รวม ฿${fmt(sum(n.out,x=>x.a))}`+(n.skipped?` · ข้าม ${n.skipped} แถวที่อ่านไม่ได้`:"")+(n.incomeRows?` · ข้าม${kind==="meowjot"?"รายรับ":"รายจ่าย"} ${n.incomeRows}`:"")+(n.planned?` · ข้ามกะ planned ${n.planned}`:"")+(n.inv&&n.inv.length?` · ลงทุน ${n.inv.length} รายการ ฿${fmt(sum(n.inv,x=>x.a))}`:"")+(n.transfers?` · ข้ามโอนระหว่างบัญชี ${n.transfers}`:"")+(ms.some(hasData)?" · แทนที่ข้อมูลเดิมจากแหล่งนี้ในเดือนดังกล่าว":"")+(future?` · ⚠ มี ${future} รายการวันที่อยู่ในอนาคต ตรวจรูปแบบวันที่ก่อนบันทึก`:"");
+  const pv=n.out.slice().sort((a,b)=>a.d<b.d?1:-1).slice(0,6);
+  $("mapPreview").innerHTML=pv.length?pv.map(x=>kind==="meowjot"?rowHTML(svg(catIcon(x.c)),"",esc(clean(x.n)||x.c),dLabel(x.d)+" · "+esc(x.c)+" → "+GROUPS[groupOf(x.c)].n,baht(x.a)):rowHTML(svg("hospital"),"",esc(x.s)+` <span class="tag ${x.st==="paid"?"paid":"unpaid"}">${x.st==="paid"?"paid":"unpaid"}</span>`,dLabel(x.d)+(x.c?" · "+esc(x.c):"")+(x.h?" · "+x.h+" ชม.":""),baht(x.a))).join("")+(n.out.length>6?`<div class="hint" style="text-align:center">และอีก ${n.out.length-6} รายการ</div>`:""):'<div class="empty">ยังอ่านแถวไม่ได้ ตรวจคอลัมน์วันที่และยอดเงิน</div>';
+}
+$("mapFields").addEventListener("change",e=>{const k=e.target.dataset.mf;if(k){imp.map[k]=+e.target.value;drawMap()}});
+$("cancelImport").addEventListener("click",()=>{imp=null;$("mapPanel").hidden=true});
+$("doImport").addEventListener("click",async()=>{
+  const {kind,headers,map,file}=imp;const n=normalize();const by={},byInv={};n.out.forEach(x=>(by[x.d.slice(0,7)]=by[x.d.slice(0,7)]||[]).push(x));(n.inv||[]).forEach(x=>{(byInv[x.d.slice(0,7)]=byInv[x.d.slice(0,7)]||[]).push(x);by[x.d.slice(0,7)]=by[x.d.slice(0,7)]||[]});
+  if(!imp.json){settings.maps=settings.maps||{};settings.maps[kind]={};Object.entries(map).forEach(([k,i])=>{if(i>=0)settings.maps[kind][k]=headers[i]})}
+  const keys=Object.keys(by).sort();
+  for(const k of keys){const m=M(k);months[k]=m;m.meta=m.meta||{};
+    if(kind==="meowjot"){m.expenses=by[k];m.invest=byInv[k]||[];m.meta.meowjot=file}else{m.income=m.income.filter(x=>x.o!=="locum").concat(by[k]);m.meta.locum=file}
+    m.meta[kind+"At"]=new Date().toISOString();await saveMonth(k)}
+  if(!imp.json)await saveSettings();if(imp.json&&n.sched){writeLS(LS_SCHED,{savedAt:new Date().toISOString(),sourceAt:(imp.json&&imp.json.savedAt)||new Date().toISOString(),clockRate:n.clockRate,shifts:n.sched,places:n.placesCfg})}if(imp.json&&/เครื่องนี้/.test(file)){writeLS(LS_META,{...meta(),locumSync:new Date().toISOString()});checkLocum()}imp=null;$("mapPanel").hidden=true;cur=keys[keys.length-1]||cur;touchedMonth=true;
+  toast(`นำเข้าแล้ว ${n.out.length} รายการ`);setTab("overview")});
+function renderImportLog(){
+  const ks=Object.keys(months).filter(k=>months[k].meta&&(months[k].meta.locumAt||months[k].meta.meowjotAt)).sort().reverse().slice(0,8);
+  $("impLog").innerHTML=ks.length?ks.map(k=>{const mt=months[k].meta;return rowHTML(svg("doc"),"",mFull(k),[mt.locumAt?"Locum "+new Date(mt.locumAt).toLocaleDateString("th-TH",{day:"numeric",month:"short"}):"",mt.meowjotAt?"Meowjot "+new Date(mt.meowjotAt).toLocaleDateString("th-TH",{day:"numeric",month:"short"}):""].filter(Boolean).join(" · "),`<span class="soft" style="font-size:12px">${months[k].income.length} รับ · ${months[k].expenses.length} จ่าย</span>`)}).join(""):'<div class="empty">ยังไม่เคยนำเข้า</div>';
+}
+
+/* sample (never saved) */
+function buildSample(){
+  const ms={};const cats=[["อาหาร",[80,260]],["ค่าเช่าคอนโด",[2000,2000,1]],["โทรศัพท์",[259,259,1]],["ผ่อนรถ",[20500,20500,1]],["ลงทุน Dime",[15000,15000,1]],["BTC Binance",[10000,10000,1]],["ช้อปปิ้ง",[300,2500]],["กาแฟ",[60,120]],["ครอบครัว",[5000,5000,1]],["เดินทาง",[100,800]]];
+  for(let i=5;i>=0;i--){const k=shiftKey(todayKey(),-i);const exp=[],inc=[];let seed=i*97+13;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
+    const days=new Date(+k.slice(0,4),+k.slice(5),0).getDate();
+    cats.forEach(([c,[lo,hi,once]])=>{const n=once?1:Math.floor(6+rnd()*14);for(let j=0;j<n;j++){const dd=once?(c==="ผ่อนรถ"?5:1):1+Math.floor(rnd()*days);exp.push({d:k+"-"+String(dd).padStart(2,"0"),c,a:Math.round(lo+rnd()*(hi-lo)),n:""})}});
+    if(i===0)exp.push({d:k+"-12",c:"ช้อปปิ้ง",a:3990,n:"ผ่อน 0% 10 เดือน"});
+    for(let w=0;w<4;w++){const h=60+Math.round(rnd()*8);inc.push({d:k+"-"+String(7+w*7).padStart(2,"0"),s:"ตัวอย่าง คลินิก A",c:"Hourly",h,a:h*500,st:i===0&&w===3?"pending":"paid",o:"locum"})}
+    ms[k]={income:inc,expenses:exp,assets:{portfolio:820000+(5-i)*31000,card:i>2?18000-(5-i)*6000:0,car:900000-(5-i)*20500},meta:{}}}
+  return ms}
+$("trySample").addEventListener("click",()=>{sample=true;months=buildSample();settings={...defaultSettings(),budgets:{"อาหาร":6000,"ช้อปปิ้ง":4000,"กาแฟ":1500}};cur=todayKey();render()});
+$("exitSample").addEventListener("click",()=>{sample=false;months=real.months;settings=real.settings||defaultSettings();cur=pickMonth();render()});
+
+/* nav */
+function setTab(t){tab=t;openCat=null;$("pageTitle").textContent=TITLES[t];document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===t));
+  ["overview","income","expense","import","settings"].forEach(v=>$("view-"+v).hidden=v!==t);render();window.scrollTo({top:0})}
+document.querySelector(".tabbar").addEventListener("click",e=>{const b=e.target.closest(".tab-btn");if(b)setTab(b.dataset.tab)});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-goto]");if(b)setTab(b.dataset.goto)});
+$("prevM").addEventListener("click",()=>{cur=shiftKey(cur,-1);touchedMonth=true;openCat=null;render()});
+$("nextM").addEventListener("click",()=>{cur=shiftKey(cur,1);touchedMonth=true;openCat=null;render()});
+function pickMonth(){if(hasData(todayKey()))return todayKey();const ks=Object.keys(months).filter(hasData).sort();return ks.length?ks[ks.length-1]:todayKey()}
+let tt;function toast(s){const t=$("toast");t.textContent=s;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)}
+try{const h=location.hash.slice(1);if(TITLES[h])tab=h}catch(e){}
+setKind("locum");setTab(tab);
+
+/* storage — localStorage with a mirror key, same pattern as Locum Ledger */
+var LS_MONTHS="ledger-months-v1",LS_SETTINGS="ledger-settings-v1",LS_META="ledger-meta-v1",LS_SCHED="ledger-sched-v1";
+function writeLS(k,v){const j=JSON.stringify(v);let ok=false;try{localStorage.setItem(k,j);ok=true}catch(e){}try{localStorage.setItem(k+"~mirror",j)}catch(e){}return ok}
+function readLS(k){const p=r=>{try{return r?JSON.parse(r):null}catch(e){return null}};let v=null;try{v=p(localStorage.getItem(k))}catch(e){}if(v==null){try{v=p(localStorage.getItem(k+"~mirror"))}catch(e){}}return v}
+var storeOK=true;
+function persistMonths(){if(sample)return;real.months=months;storeOK=writeLS(LS_MONTHS,months)&&storeOK;$("dbBanner").hidden=storeOK}
+function persistSettings(){if(sample)return;real.settings=settings;storeOK=writeLS(LS_SETTINGS,settings)&&storeOK;$("dbBanner").hidden=storeOK}
+(function load(){
+  const ms=readLS(LS_MONTHS)||{};Object.keys(ms).forEach(k=>{const v=ms[k]||{};ms[k]={income:v.income||[],expenses:v.expenses||[],invest:v.invest||[],assets:v.assets||{},meta:v.meta||{}}});
+  real.months=months=ms;real.settings=settings={...defaultSettings(),...(readLS(LS_SETTINGS)||{})};
+  try{localStorage.setItem("ledger-probe","1");localStorage.removeItem("ledger-probe")}catch(e){storeOK=false;$("dbBanner").hidden=false}
+  if(!touchedMonth)cur=pickMonth();render();checkLocum();renderBackupBanner();
+})();
+
+/* backup */
+function meta(){return readLS(LS_META)||{}}
+function download(name,text){try{const b=new Blob([text],{type:"application/json"});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);return true}catch(e){return false}}
+function ageText(iso){if(!iso)return"ยังไม่เคยสำรอง";const d=Math.floor((Date.now()-new Date(iso))/864e5);return"สำรองล่าสุด "+(d<=0?"วันนี้":d+" วันก่อน")}
+function renderBackupBanner(){const m=meta();const any=Object.keys(months).some(hasData);const d=m.lastBackup?Math.floor((Date.now()-new Date(m.lastBackup))/864e5):null;
+  const show=any&&!sample&&(d==null||d>=14);$("backupBanner").hidden=!show;if(show)$("backupBannerTxt").textContent=d==null?"ยังไม่เคยสำรองข้อมูล LEDGER":"ไม่ได้สำรองข้อมูลมา "+d+" วัน";
+  if($("backupAge"))$("backupAge").textContent=ageText(m.lastBackup)}
+$("saveBackup").addEventListener("click",()=>{const now=new Date().toISOString();
+  const ok=download("ledger-backup-"+now.slice(0,10)+".json",JSON.stringify({app:"ledger",version:1,savedAt:now,months:real.months,settings:real.settings}));
+  if(ok){writeLS(LS_META,{...meta(),lastBackup:now});renderBackupBanner();toast("เซฟไฟล์แล้ว")}else toast("เบราว์เซอร์นี้สร้างไฟล์ไม่ได้")});
+let pendingRestore=null;
+$("restoreBtn").addEventListener("click",()=>$("restoreFile").click());
+$("restoreFile").addEventListener("change",e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const r=new FileReader();r.onload=()=>{let d;try{d=JSON.parse(r.result)}catch(err){$("restoreMsg").textContent="ไฟล์อ่านไม่ได้";return}
+  if(!d||d.app!=="ledger"||typeof d.months!=="object"){$("restoreMsg").textContent=d&&d.app==="locum-ledger"?"นี่คือ backup ของ Locum Ledger — นำเข้าที่แท็บ นำเข้า แทน":"ไฟล์นี้ไม่ใช่ backup ของ LEDGER";return}
+  pendingRestore=d;const n=Object.keys(d.months).length;$("restoreMsg").textContent=`ไฟล์วันที่ ${(d.savedAt||"").slice(0,10)} · ${n} เดือน`;$("restoreConfirm").hidden=false};r.readAsText(f)});
+$("restoreConfirm").addEventListener("click",()=>{const d=pendingRestore;if(!d)return;sample=false;
+  months={};Object.keys(d.months).forEach(k=>{const v=d.months[k]||{};months[k]={income:v.income||[],expenses:v.expenses||[],invest:v.invest||[],assets:v.assets||{},meta:v.meta||{}}});
+  settings={...defaultSettings(),...(d.settings||{})};persistMonths();persistSettings();pendingRestore=null;$("restoreConfirm").hidden=true;$("restoreMsg").textContent="";cur=pickMonth();toast("กู้คืนแล้ว");setTab("overview")});
+
+/* Locum Ledger on the same site → read its storage directly */
+function locumData(){const tx=readLS("ll-tx-v1");if(!Array.isArray(tx))return null;return{app:"locum-ledger",places:readLS("ll-places-v1")||[],transactions:tx,settings:readLS("ll-settings-v1")||{},savedAt:new Date().toISOString()}}
+function checkLocum(){const d=locumData();$("llSync").hidden=!d;if(!d)return;const inc=d.transactions.filter(t=>t.type==="income"&&!t.planned).length;
+  const last=meta().locumSync;$("llSyncInfo").textContent=`${inc} รายการรายรับ · `+(last?"ดึงล่าสุด "+new Date(last).toLocaleDateString("th-TH",{day:"numeric",month:"short"}):"ยังไม่เคยดึง")}
+/* widget snapshot */
+function widgetSnapshot(){
+  let shifts=null,clockRate=null,src="none",incomeAt=null,placesCfg=[];
+  const live=locumData();
+  if(live){const r=fromLocumBackup(live);shifts=r.sched;clockRate=r.clockRate;placesCfg=r.placesCfg;src="live";incomeAt=new Date().toISOString()}
+  else{const st=readLS(LS_SCHED);if(st&&Array.isArray(st.shifts)){shifts=st.shifts;clockRate=st.clockRate||null;placesCfg=st.places||[];src=st.savedAt;incomeAt=st.sourceAt||st.savedAt}}
+  const mk=todayKey(),m=M(mk),expByDay={};let expMonth=0;
+  m.expenses.forEach(e=>{if(groupOf(e.c)==="skip")return;expByDay[e.d]=(expByDay[e.d]||0)+e.a;expMonth+=e.a});
+  const lo=shiftKey(mk,-1);
+  const manual=Object.keys(months).filter(k=>k>=lo).flatMap(k=>months[k].income.filter(x=>x.o!=="locum").map(x=>({date:x.d,amount:x.a})));
+  if(!shifts){shifts=Object.keys(months).filter(k=>k>=lo).flatMap(k=>months[k].income.filter(x=>x.o==="locum").map(x=>({date:x.d,start:"",end:"",place:x.s,amount:x.a,hours:x.h||0,planned:false,paid:x.st==="paid"})))}
+  const budget=Object.values(settings.budgets).reduce((s,b)=>s+(+b||0),0);
+  const yr=mk.slice(0,4),investByMonth={};Object.keys(months).filter(k=>k.slice(0,4)===yr&&k<=mk).sort().forEach(k=>{const v=stats(k).invested;if(v)investByMonth[k]=Math.round(v*100)/100});
+  const invKeys=Object.keys(months).filter(k=>k.slice(0,4)===yr&&k<=mk&&months[k].meta&&months[k].meta.meowjot).sort();
+  Object.keys(expByDay).forEach(k=>expByDay[k]=Math.round(expByDay[k]*100)/100);
+  return{app:"ledger-widget",v:1,kind:"full",generatedAt:new Date().toISOString(),incomeAt:incomeAt||"1970-01-01T00:00:00Z",source:src,month:mk,clockRate,shifts,places:placesCfg,manual,expByDay,expMonth:Math.round(expMonth*100)/100,expMonthKey:mk,budget,investMonth:investByMonth[mk]||0,investYear:Math.round(Object.values(investByMonth).reduce((a,b)=>a+b,0)*100)/100,investYearKey:yr,investSince:invKeys[0]||mk,investByMonth}}
+async function sendWidget(){
+  const snap=widgetSnapshot();const text=JSON.stringify(snap);
+  const timed=snap.shifts.filter(s=>s.start&&s.end).length;
+  const isTouch=navigator.maxTouchPoints>1;
+  let ok=false;
+  try{const file=new File([text],"ledger-widget.json",{type:"application/json"});
+    if(isTouch&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file]});ok=true}}catch(e){if(e&&e.name==="AbortError"){toast("ยกเลิกแล้ว");return}}
+  if(!ok)ok=download("ledger-widget.json",text);
+  if(ok){writeLS(LS_META,{...meta(),widgetAt:snap.generatedAt});renderWidgetAge();
+    toast(timed?`ส่งแล้ว · ${timed} กะมีเวลาเริ่ม-เลิก`:"ส่งแล้ว แต่ยังไม่มีกะที่มีเวลา นาฬิกาสดจะยังไม่ทำงาน")}
+  else toast("เบราว์เซอร์นี้สร้างไฟล์ไม่ได้")}
+function renderWidgetAge(){const m=meta();if($("widgetAge"))$("widgetAge").textContent=m.widgetAt?"ส่งล่าสุด "+new Date(m.widgetAt).toLocaleString("th-TH",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"ยังไม่เคยส่ง";
+  if($("widgetHow"))$("widgetHow").textContent=navigator.maxTouchPoints>1?"iPhone: เลือก Save to Files → iCloud Drive → Scriptable → แทนที่ไฟล์เดิม":"Mac: ไฟล์ลงโฟลเดอร์ Downloads widget บนเดสก์ท็อปจะหยิบไฟล์ใหม่ล่าสุดเอง"}
+$("widgetBtn").addEventListener("click",sendWidget);$("widgetBtn2").addEventListener("click",sendWidget);
+$("llSyncBtn").addEventListener("click",()=>{const d=locumData();if(!d){toast("ไม่พบข้อมูล Locum Ledger");return}setKind("locum");imp={kind:"locum",file:"Locum Ledger (เครื่องนี้)",json:d,headers:[],rows:[],map:{}};drawMap();$("mapPanel").scrollIntoView({behavior:"smooth",block:"start"})});
+})();
+</script>
+</body>
+</html>
