@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<!-- BUILD: 2026-10-08 · build 79 (one-tap widget send via Shortcuts) -->
+<!-- BUILD: 2026-10-08 · build 80 (Import Meowjot spending for the widget) -->
 <title>Locum Ledger</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1866,6 +1866,13 @@ and nothing loops unless the thing it marks is genuinely live. */  /* ---- 1. mo
       <div id="ics-msg" class="hint" style="margin-top:11px"></div>
       <button type="button" class="btn btn-ghost hidden" id="ics-confirm-past" style="margin-top:11px"></button>
     </div>
+    <div class="section-label">Spending (Meowjot)</div>
+    <div class="card">
+      <div class="hint" style="margin:0 0 12px">Bring in your spending from Meowjot (เหมียวจด) so the widget shows <strong>spent today, spent this month, net and invested</strong>. In Meowjot: Export → CSV → Save to Files, then pick that file here. Importing the same month again replaces it — nothing doubles. Transfers between your own accounts are left out; transfers to Dime, Binance and the like count as invested.</div>
+      <button type="button" class="btn btn-primary" id="mj-import-btn">Import Meowjot file</button>
+      <input type="file" id="mj-file" style="display:none">
+      <div id="mj-msg" class="hint" style="margin-top:9px"></div>
+    </div>
     <div class="section-label">Widget</div>
     <div class="card">
       <div class="hint" style="margin:0 0 12px">Admits, refers and procedures you add from the LEDGER widget wait in <strong>ledger-quickadd.json</strong> (iCloud Drive › Scriptable, or Documents/LEDGER on the Mac). Bring them in here so they become normal entries. Importing twice is safe.</div>
@@ -1904,7 +1911,7 @@ and nothing loops unless the thing it marks is genuinely live. */  /* ---- 1. mo
     <div class="card">
       <div class="rate-row" style="border-bottom:none">
         <span class="rate-name">This build</span>
-        <span class="rate-val" id="build-stamp">2026-10-08 · build 79</span>
+        <span class="rate-val" id="build-stamp">2026-10-08 · build 80</span>
       </div>
       <div class="hint" style="margin:2px 0 0">If this does not match the newest file you uploaded, the browser is still showing a cached copy.</div>
     </div>
@@ -6489,10 +6496,13 @@ function widgetIncomeSnapshot(){
     .map(function(t){ return { id:t.id, date:t.date.slice(0,10), start:t.startTime||'', end:t.endTime||'', place:t.placeName||'',
       cat:t.catLabel||'', note:(t.note||'').slice(0,60), amount:Math.round(effectiveAmount(t)*100)/100, hours:(t.meta&&t.meta.hours)||0,
       planned:!!t.planned, paid:t.paid===true }; });
-  return { app:'ledger-widget', v:1, kind:'income', source:'locum-ledger', generatedAt:new Date().toISOString(),
+  var mj=mjWidgetFields();
+  var out={ app:'ledger-widget', v:1, kind:'income', source:'locum-ledger', generatedAt:new Date().toISOString(),
     month:todayStr().slice(0,7), clockRate:settings.clockRate||null, shifts:shifts,
     places:places.map(function(p){ return { id:p.id, name:p.name, rates:p.rates||{},
       categories:(p.categories||[]).map(function(c){ return { key:c.key, label:c.label, formulaKey:c.formulaKey||'manual', rateKey:c.rateKey||null }; }) }; }) };
+  if(mj) Object.keys(mj).forEach(function(k){ out[k]=mj[k]; });
+  return out;
 }
 var widgetToastTimer=null;
 function widgetToast(msg){
@@ -6502,6 +6512,85 @@ function widgetToast(msg){
   clearTimeout(widgetToastTimer);
   widgetToastTimer=setTimeout(function(){ bar.classList.add('hidden'); },3200);
 }
+// ---- Meowjot spending (kept apart from Locum Ledger's own entries; only the widget uses it) ----
+var MJ_KEY='ll-meowjot-v1';
+var MJ_INVEST=/btc|eth|crypto|binance|dime|tsla|tesla|meta|palantir|pltr|spacex|spcx|xpeng|xiaomi|alibaba|baba|nvda|nvidia|aapl|googl|amd|amzn|avgo|crwd|หุ้น|ลงทุน|กองทุน|t-bill|treasury|etf|invest/i;
+function mjLoad(){ try{ var d=JSON.parse(localStorage.getItem(MJ_KEY)||localStorage.getItem(MJ_KEY+'~mirror')||'null'); return d&&d.months?d:{months:{}}; }catch(e){ return {months:{}}; } }
+function mjSave(d){ var t=JSON.stringify(d); try{ localStorage.setItem(MJ_KEY,t); localStorage.setItem(MJ_KEY+'~mirror',t); }catch(e){} }
+function mjParseCSV(text){
+  var rows=[], row=[], cur='', q=false;
+  text=String(text).replace(/^\uFEFF/,'');
+  for(var i=0;i<text.length;i++){
+    var ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){ cur+='"'; i++; } else q=false; } else cur+=ch; }
+    else if(ch==='"') q=true;
+    else if(ch===','){ row.push(cur); cur=''; }
+    else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n') i++; row.push(cur); cur=''; if(row.some(function(v){return v!=='';})) rows.push(row); row=[]; }
+    else cur+=ch;
+  }
+  row.push(cur); if(row.some(function(v){return v!=='';})) rows.push(row);
+  return rows;
+}
+function mjImport(text){
+  var rows=mjParseCSV(text); if(rows.length<2) throw new Error('empty');
+  var h=rows[0].map(function(x){ return x.trim().toLowerCase(); });
+  var ix=function(re){ for(var i=0;i<h.length;i++) if(re.test(h[i])) return i; return -1; };
+  var iD=ix(/^date|วันที่/), iT=ix(/^type|ประเภท/), iC=ix(/^category|หมวด/), iA=ix(/^amount|จำนวน/), iN=ix(/^note|บันทึก/);
+  if(iD<0||iA<0) throw new Error('not a Meowjot export');
+  var months={}, n=0;
+  rows.slice(1).forEach(function(r){
+    var m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec((r[iD]||'').trim()); if(!m) return;   // Meowjot dates are DD/MM/YYYY
+    var ds=m[3]+'-'+String(m[2]).padStart(2,'0')+'-'+String(m[1]).padStart(2,'0'), mk=ds.slice(0,7);
+    var type=(iT>=0?r[iT]:'').trim().toLowerCase(), cat=(iC>=0?r[iC]:'').trim(), note=(iN>=0?r[iN]:'').trim();
+    var amt=Math.abs(parseFloat(String(r[iA]).replace(/[,\s฿]/g,''))||0); if(!amt) return;
+    var M=months[mk]||(months[mk]={expByDay:{},total:0,invest:0,rows:0});
+    if(/^income|รายรับ/.test(type)) return;
+    var isTransfer=/^transfer|โอน/.test(type);
+    if(isTransfer) M.sawTransfer=true;
+    if(isTransfer || /^(-|–|)$/.test(cat)){
+      if(MJ_INVEST.test(note)||MJ_INVEST.test(cat)) M.invest+=amt;   // money moved into investments
+      return;
+    }
+    if(/invest|ลงทุน/i.test(cat)) M.invest+=amt;
+    M.expByDay[ds]=Math.round(((M.expByDay[ds]||0)+amt)*100)/100; M.total+=amt; M.rows++; n++;
+  });
+  var d=mjLoad(), at=new Date().toISOString();
+  Object.keys(months).forEach(function(k){ var M=months[k]; M.total=Math.round(M.total*100)/100; M.invest=Math.round(M.invest*100)/100; M.importedAt=at; d.months[k]=M; });
+  mjSave(d);
+  return {months:Object.keys(months).sort(), n:n, d:d};
+}
+function mjWidgetFields(){
+  var d=mjLoad(), mk=todayStr().slice(0,7), yr=mk.slice(0,4), keys=Object.keys(d.months).sort();
+  if(!keys.length) return null;
+  var M=d.months[mk]||{expByDay:{},total:0,invest:0}, inv={};
+  keys.forEach(function(k){ if(k.slice(0,4)===yr && k<=mk && d.months[k].invest) inv[k]=d.months[k].invest; });
+  var invKeys=keys.filter(function(k){ return k.slice(0,4)===yr && k<=mk; });
+  var out={ expByDay:M.expByDay||{}, expMonth:M.total||0, expMonthKey:mk, expAt:M.importedAt||null };
+  // investments only when the exports actually carried transfers; otherwise leave LEDGER's figures alone
+  if(invKeys.some(function(k){ return d.months[k].sawTransfer || d.months[k].invest; })){
+    out.investMonth=inv[mk]||0; out.investYear=Object.keys(inv).reduce(function(t,k){ return t+inv[k]; },0);
+    out.investYearKey=yr; out.investSince=invKeys[0]||mk; out.investByMonth=inv;
+  }
+  return out;
+}
+document.getElementById('mj-import-btn').addEventListener('click',function(){ document.getElementById('mj-file').click(); });
+document.getElementById('mj-file').addEventListener('change',function(){
+  var f=this.files&&this.files[0]; this.value=''; if(!f) return;
+  var msg=document.getElementById('mj-msg');
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var res=mjImport(r.result);
+      var mk=todayStr().slice(0,7), M=res.d.months[mk];
+      msg.textContent='Imported '+res.months.map(function(k){ return MONTHS[parseInt(k.slice(5),10)-1].slice(0,3)+' '+k.slice(0,4); }).join(', ')
+        +' · '+res.n+' items'+(M?' · this month spent '+fmt(M.total)+(M.invest?' · invested '+fmt(M.invest):''):'')
+        +'. Now tap the widget button to send it.';
+      widgetToast('Spending imported — tap the widget button to send');
+    }catch(e){ msg.textContent='Could not read that file — export from Meowjot as CSV and try again.'; }
+  };
+  r.readAsText(f,'utf-8');
+});
+
 // one-tap send: copy the snapshot, then hand it to the "LEDGER Income" Shortcut (it saves into Scriptable)
 var WSC_KEY='ll-widget-shortcut';
 function wscOn(){ try{ return localStorage.getItem(WSC_KEY)==='1'; }catch(e){ return false; } }
