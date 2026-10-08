@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<!-- BUILD: 2026-10-07 · build 77 (Send to widget) -->
+<!-- BUILD: 2026-10-08 · build 78 (widget gets 13 months back, 12 ahead) -->
 <title>Locum Ledger</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1900,7 +1900,7 @@ and nothing loops unless the thing it marks is genuinely live. */  /* ---- 1. mo
     <div class="card">
       <div class="rate-row" style="border-bottom:none">
         <span class="rate-name">This build</span>
-        <span class="rate-val" id="build-stamp">2026-10-07 · build 77</span>
+        <span class="rate-val" id="build-stamp">2026-10-08 · build 78</span>
       </div>
       <div class="hint" style="margin:2px 0 0">If this does not match the newest file you uploaded, the browser is still showing a cached copy.</div>
     </div>
@@ -6477,7 +6477,8 @@ if(settings.icsUrl) setTimeout(function(){ syncFromLink(true); },600);
 // Writes ledger-widget-income.json: this app's income entries (±62 days) with start/end times and
 // the same effectiveAmount() the app shows. The widgets merge it with LEDGER's expense snapshot.
 function widgetIncomeSnapshot(){
-  var lo=new Date(Date.now()-62*864e5), hi=new Date(Date.now()+62*864e5);
+  // a year of history and everything booked up to a year ahead, so the widget can page through any month
+  var now0=new Date(), lo=new Date(now0.getFullYear(), now0.getMonth()-13, 1), hi=new Date(now0.getFullYear()+1, now0.getMonth()+1, 0);
   var ds=function(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
   var a=ds(lo), b=ds(hi);
   var shifts=transactions.filter(function(t){ return t.type==='income' && t.date && t.date>=a && t.date<=b; })

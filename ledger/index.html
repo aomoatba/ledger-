@@ -663,7 +663,7 @@ function fromLocumBackup(data){
   const rateFor=(p,h)=>h<=rv(p,"tier1max")?rv(p,"tier1"):h<=rv(p,"tier2max")?rv(p,"tier2"):rv(p,"tier3");
   const eff=t=>{if(!tiered(t))return+t.amount||0;return(t.meta.hours||0)*rateFor(place(t.placeId),tierHrs[t.placeId+"|"+t.catKey+"|"+t.date.slice(0,7)]||0)};
   const out=[];let planned=0,expenses=0,skipped=0;
-  const lo=new Date(Date.now()-62*864e5).toISOString().slice(0,10),hi=new Date(Date.now()+62*864e5).toISOString().slice(0,10);
+  const lo=new Date(Date.now()-400*864e5).toISOString().slice(0,10),hi=new Date(Date.now()+400*864e5).toISOString().slice(0,10);
   const sched=tx.filter(t=>t.type==="income"&&t.date&&t.date>=lo&&t.date<=hi).map(t=>({id:t.id,date:t.date.slice(0,10),start:t.startTime||"",end:t.endTime||"",place:t.placeName||"",cat:t.catLabel||"",note:(t.note||"").slice(0,60),amount:Math.round(eff(t)*100)/100,hours:(t.meta&&t.meta.hours)||0,planned:!!t.planned,paid:t.paid===true}));
   const clockRate=(data.settings&&+data.settings.clockRate)||null;
   tx.forEach(t=>{if(t.type!=="income"){expenses++;return}if(t.planned){planned++;return}const a=eff(t);if(!t.date||!a){skipped++;return}
