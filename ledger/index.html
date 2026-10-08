@@ -333,7 +333,7 @@ svg text{fill:var(--ink-faint);font-size:10.5px;font-weight:600;font-family:var(
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></svg>
       <b id="dropTitle">ลากไฟล์ backup .json มาวาง</b>
       <span class="hint" style="margin:0" id="dropHint">Locum Ledger → Settings → Backup → Save a file · หรือ CSV จาก Totals</span>
-      <input id="file" type="file" accept=".xlsx,.xls,.csv,.json,text/csv,application/json" hidden>
+      <input id="file" type="file" hidden>
     </label>
     <div id="mapPanel" hidden>
       <div class="section-label">ตรวจก่อนบันทึก<span id="mapInfo"></span></div>
@@ -640,7 +640,7 @@ function readFile(f){
       setKind("locum");imp={kind:"locum",file:f.name,json:data,headers:[],rows:[],map:{}};drawMap()};r.readAsText(f);return}
   if(!window.XLSX){toast("โหลดตัวอ่านไฟล์ไม่สำเร็จ รีเฟรชหน้าแล้วลองใหม่");return}
   const r=new FileReader();r.onload=()=>{try{
-    const wb=XLSX.read(new Uint8Array(r.result),{type:"array",cellDates:false,codepage:65001,raw:/\.(csv|txt)$/i.test(f.name)});const ws=wb.Sheets[wb.SheetNames[0]];
+    const wb=XLSX.read(new Uint8Array(r.result),{type:"array",cellDates:false,codepage:65001,raw:!/\.xlsx?$/i.test(f.name)});const ws=wb.Sheets[wb.SheetNames[0]];
     const aoa=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:""});
     let hi=0;for(let i=0;i<Math.min(15,aoa.length);i++){if(aoa[i].filter(v=>typeof v==="string"&&v.trim()&&isNaN(+v)).length>=2){hi=i;break}}
     const headers=aoa[hi].map((h,i)=>String(h).trim()||("คอลัมน์ "+(i+1)));const rows=aoa.slice(hi+1).filter(r=>r.some(v=>v!==""));
