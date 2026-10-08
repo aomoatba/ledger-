@@ -363,6 +363,10 @@ svg text{fill:var(--ink-faint);font-size:10.5px;font-weight:600;font-family:var(
     <div class="card glassy">
       <div class="hint" style="margin:0 2px 6px">ส่งตารางกะ เรท และยอดรายจ่ายไปให้ widget บน iPhone (Scriptable) และ Mac (Übersicht) นาฬิกาเงินคำนวณสดจากเวลากะ อัปเดตใหม่เมื่อเพิ่มกะหรือนำเข้ารายจ่าย</div>
       <div class="hint" id="widgetAge" style="margin:0 2px 11px;color:var(--ink-soft);font-weight:560"></div>
+      <label style="display:flex;gap:10px;align-items:flex-start;margin:0 2px 11px;font-size:13px;font-weight:560;line-height:1.45;cursor:pointer">
+        <input type="checkbox" id="wscToggle" style="margin-top:3px;width:18px;height:18px;flex:none">
+        <span>ส่งแตะเดียวบน iPhone — ปุ่ม widget จะคัดลอกข้อมูลแล้วเปิด Shortcut <b>LEDGER Expenses</b> ให้เซฟลง iCloud Drive › Scriptable เอง (เปิดหลังสร้าง Shortcut แล้วเท่านั้น)</span>
+      </label>
       <button class="btn btn-primary" id="widgetBtn2">ส่งข้อมูลไป widget</button>
       <div class="hint" id="widgetHow"></div>
     </div>
@@ -785,11 +789,19 @@ function widgetSnapshot(){
   const yr=mk.slice(0,4),investByMonth={};Object.keys(months).filter(k=>k.slice(0,4)===yr&&k<=mk).sort().forEach(k=>{const v=stats(k).invested;if(v)investByMonth[k]=Math.round(v*100)/100});
   const invKeys=Object.keys(months).filter(k=>k.slice(0,4)===yr&&k<=mk&&months[k].meta&&months[k].meta.meowjot).sort();
   Object.keys(expByDay).forEach(k=>expByDay[k]=Math.round(expByDay[k]*100)/100);
-  return{app:"ledger-widget",v:1,kind:"full",generatedAt:new Date().toISOString(),incomeAt:incomeAt||"1970-01-01T00:00:00Z",source:src,month:mk,clockRate,shifts,places:placesCfg,manual,expByDay,expMonth:Math.round(expMonth*100)/100,expMonthKey:mk,budget,investMonth:investByMonth[mk]||0,investYear:Math.round(Object.values(investByMonth).reduce((a,b)=>a+b,0)*100)/100,investYearKey:yr,investSince:invKeys[0]||mk,investByMonth}}
+  const la=latestAssets(mk),pa=la?latestAssets(shiftKey(la.k,-1)):null;
+  const retire={target:+settings.retireTarget||0,portfolio:la?+la.a.portfolio:null,at:la?la.k:null,prev:pa?+pa.a.portfolio:null,prevAt:pa?pa.k:null,card:la&&la.a.card!=null?+la.a.card:null,car:la&&la.a.car!=null?+la.a.car:null,prevCard:pa&&pa.a.card!=null?+pa.a.card:null};
+  return{app:"ledger-widget",retire,v:1,kind:"full",generatedAt:new Date().toISOString(),incomeAt:incomeAt||"1970-01-01T00:00:00Z",source:src,month:mk,clockRate,shifts,places:placesCfg,manual,expByDay,expMonth:Math.round(expMonth*100)/100,expMonthKey:mk,budget,investMonth:investByMonth[mk]||0,investYear:Math.round(Object.values(investByMonth).reduce((a,b)=>a+b,0)*100)/100,investYearKey:yr,investSince:invKeys[0]||mk,investByMonth}}
+const WSC_KEY="ledger-widget-shortcut";
+const wscOn=()=>{try{return localStorage.getItem(WSC_KEY)==="1"}catch(e){return false}};
 async function sendWidget(){
   const snap=widgetSnapshot();const text=JSON.stringify(snap);
   const timed=snap.shifts.filter(s=>s.start&&s.end).length;
   const isTouch=navigator.maxTouchPoints>1;
+  if(isTouch&&wscOn()&&navigator.clipboard&&navigator.clipboard.writeText){
+    try{await navigator.clipboard.writeText(text);writeLS(LS_META,{...meta(),widgetAt:snap.generatedAt});renderWidgetAge();
+      location.href="shortcuts://run-shortcut?name="+encodeURIComponent("LEDGER Expenses");return}
+    catch(e){toast("คัดลอกไม่ได้ ปิดตัวเลือกส่งแตะเดียวใน Settings");return}}
   let ok=false;
   try{const file=new File([text],"ledger-widget.json",{type:"application/json"});
     if(isTouch&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file]});ok=true}}catch(e){if(e&&e.name==="AbortError"){toast("ยกเลิกแล้ว");return}}
@@ -797,6 +809,7 @@ async function sendWidget(){
   if(ok){writeLS(LS_META,{...meta(),widgetAt:snap.generatedAt});renderWidgetAge();
     toast(timed?`ส่งแล้ว · ${timed} กะมีเวลาเริ่ม-เลิก`:"ส่งแล้ว แต่ยังไม่มีกะที่มีเวลา นาฬิกาสดจะยังไม่ทำงาน")}
   else toast("เบราว์เซอร์นี้สร้างไฟล์ไม่ได้")}
+(function(){const t=document.getElementById("wscToggle");if(!t)return;t.checked=wscOn();t.addEventListener("change",()=>{try{localStorage.setItem(WSC_KEY,t.checked?"1":"0")}catch(e){}})})();
 function renderWidgetAge(){const m=meta();if($("widgetAge"))$("widgetAge").textContent=m.widgetAt?"ส่งล่าสุด "+new Date(m.widgetAt).toLocaleString("th-TH",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"ยังไม่เคยส่ง";
   if($("widgetHow"))$("widgetHow").textContent=navigator.maxTouchPoints>1?"iPhone: เลือก Save to Files → iCloud Drive → Scriptable → แทนที่ไฟล์เดิม":"Mac: ไฟล์ลงโฟลเดอร์ Downloads widget บนเดสก์ท็อปจะหยิบไฟล์ใหม่ล่าสุดเอง"}
 $("widgetBtn").addEventListener("click",sendWidget);$("widgetBtn2").addEventListener("click",sendWidget);

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<!-- BUILD: 2026-10-08 · build 78 (widget gets 13 months back, 12 ahead) -->
+<!-- BUILD: 2026-10-08 · build 79 (one-tap widget send via Shortcuts) -->
 <title>Locum Ledger</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1869,6 +1869,10 @@ and nothing loops unless the thing it marks is genuinely live. */  /* ---- 1. mo
     <div class="section-label">Widget</div>
     <div class="card">
       <div class="hint" style="margin:0 0 12px">Admits, refers and procedures you add from the LEDGER widget wait in <strong>ledger-quickadd.json</strong> (iCloud Drive › Scriptable, or Documents/LEDGER on the Mac). Bring them in here so they become normal entries. Importing twice is safe.</div>
+      <label class="wsc-row" style="display:flex;gap:10px;align-items:flex-start;margin:0 0 12px;font-size:13px;font-weight:560;line-height:1.4;cursor:pointer">
+        <input type="checkbox" id="wsc-toggle" style="margin-top:3px;width:18px;height:18px;flex:none">
+        <span>One-tap send on iPhone — the widget button copies the data and runs the Shortcut <strong>LEDGER Income</strong>, which saves it into iCloud Drive › Scriptable for you. Turn on only after you have made that Shortcut.</span>
+      </label>
       <button type="button" class="btn btn-primary" id="qa-import-btn">Import quick adds</button>
       <input type="file" id="qa-file" accept="application/json,.json" style="display:none">
       <div id="qa-msg" class="hint" style="margin-top:9px"></div>
@@ -1900,7 +1904,7 @@ and nothing loops unless the thing it marks is genuinely live. */  /* ---- 1. mo
     <div class="card">
       <div class="rate-row" style="border-bottom:none">
         <span class="rate-name">This build</span>
-        <span class="rate-val" id="build-stamp">2026-10-08 · build 78</span>
+        <span class="rate-val" id="build-stamp">2026-10-08 · build 79</span>
       </div>
       <div class="hint" style="margin:2px 0 0">If this does not match the newest file you uploaded, the browser is still showing a cached copy.</div>
     </div>
@@ -6498,11 +6502,23 @@ function widgetToast(msg){
   clearTimeout(widgetToastTimer);
   widgetToastTimer=setTimeout(function(){ bar.classList.add('hidden'); },3200);
 }
+// one-tap send: copy the snapshot, then hand it to the "LEDGER Income" Shortcut (it saves into Scriptable)
+var WSC_KEY='ll-widget-shortcut';
+function wscOn(){ try{ return localStorage.getItem(WSC_KEY)==='1'; }catch(e){ return false; } }
+(function(){ var t=document.getElementById('wsc-toggle'); if(!t) return; t.checked=wscOn();
+  t.addEventListener('change',function(){ try{ localStorage.setItem(WSC_KEY,t.checked?'1':'0'); }catch(e){} }); })();
 document.getElementById('widget-send').addEventListener('click',function(){
   var snap=widgetIncomeSnapshot(), text=JSON.stringify(snap), name='ledger-widget-income.json';
   var timed=snap.shifts.filter(function(s){ return s.start&&s.end; }).length;
   var done=function(){ widgetToast('Sent to widget · '+snap.shifts.length+' entries'+(timed?'':' (no timed shifts yet)')); };
   var isTouch=navigator.maxTouchPoints>1;
+  if(isTouch && wscOn() && navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      done();
+      location.href='shortcuts://run-shortcut?name='+encodeURIComponent('LEDGER Income');
+    }).catch(function(){ widgetToast('Could not copy — turn off one-tap send in Settings'); });
+    return;
+  }
   try{
     var file=new File([text],name,{type:'application/json'});
     if(isTouch && navigator.canShare && navigator.canShare({files:[file]})){
