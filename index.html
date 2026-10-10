@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<!-- BUILD: 2026-10-08 · build 80 (Import Meowjot spending for the widget) -->
+<!-- BUILD: 2026-10-10 · build 81 (Fireworks button) -->
 <title>Locum Ledger</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1484,6 +1484,7 @@ and nothing loops unless the thing it marks is genuinely live. */  /* ---- 1. mo
   <div class="topbar">
     <h1 class="large-title" id="page-title">Overview</h1>
     <span style="display:flex;gap:2px">
+      <button type="button" class="icon-btn" id="hanabi-btn" aria-label="Fireworks" title="Fireworks"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 6.3V2.9M14.5 7.5l2.7-2.1M14.5 11.5l2.7 2.1M9.5 7.5L6.8 5.4M9.5 11.5l-2.7 2.1"/><path d="M12 22.5c-.4-2.2-.2-4.4 0-6.6" opacity=".55"/><circle cx="14.5" cy="4.5" r=".95" fill="currentColor" stroke="none"/><circle cx="9.5" cy="4.5" r=".95" fill="currentColor" stroke="none"/><circle cx="17.6" cy="9.5" r=".95" fill="currentColor" stroke="none"/><circle cx="6.4" cy="9.5" r=".95" fill="currentColor" stroke="none"/><circle cx="12" cy="9.5" r="1.25" fill="currentColor" stroke="none"/></svg></button>
       <button type="button" class="icon-btn" id="widget-send" aria-label="Send to widget" title="Send to widget"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="17" height="7" rx="2"/></svg></button>
       <button type="button" class="icon-btn" id="sound-toggle" aria-label="Toggle sound"></button>
       <button type="button" class="icon-btn" id="theme-toggle" aria-label="Toggle dark mode"></button>
@@ -1911,7 +1912,7 @@ and nothing loops unless the thing it marks is genuinely live. */  /* ---- 1. mo
     <div class="card">
       <div class="rate-row" style="border-bottom:none">
         <span class="rate-name">This build</span>
-        <span class="rate-val" id="build-stamp">2026-10-08 · build 80</span>
+        <span class="rate-val" id="build-stamp">2026-10-10 · build 81</span>
       </div>
       <div class="hint" style="margin:2px 0 0">If this does not match the newest file you uploaded, the browser is still showing a cached copy.</div>
     </div>
@@ -6649,5 +6650,119 @@ document.getElementById('qa-file').addEventListener('change',function(){
   r.readAsText(f);
 });
 })();</script>
+<script>
+// Hanabi: the same Japanese-festival fireworks as the Mac widget, over the whole screen (iPhone / iPad).
+// Every tap fires a volley; tapping fast keeps the show going and makes it bigger. Taps pass through the sky.
+(function () {
+const fireworks = (caption) => {
+  if (typeof document === "undefined") return;
+  const now0 = performance.now();
+  let F = window.__fw;
+  if (!F) {
+    const cv = document.createElement("canvas"), dpr = window.devicePixelRatio || 1, W = window.innerWidth, H = window.innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    cv.style.cssText = "position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483647";
+    document.body.appendChild(cv);
+    const g = cv.getContext("2d"); g.scale(dpr, dpr);
+    F = window.__fw = { cv: cv, g: g, W: W, H: H, R: Math.min(W, H), shells: [], sparks: [], clicks: [], endAt: 0, next: 0, n: 0 };
+    const COLS = ["#FF4D4D", "#FF8A3D", "#FFB347", "#FFD84D", "#FFF3B0", "#7CFF6B", "#3DDC97", "#4CC9F0", "#4D7CFF", "#B28DFF", "#FF5FCF", "#FFFFFF", "#D97757"];
+    const GOLD = ["#FFD08A", "#FFC46B", "#F7B35B", "#FFE6A8"], pick = (a) => a[Math.floor(Math.random() * a.length)];
+    const TYPES = ["kiku", "kiku", "botan", "yanagi", "double", "triple", "senrin", "ring", "multi"];
+    F.launch = (big) => {
+      const type = F.n++ === 0 ? "kiku" : pick(TYPES);
+      F.shells.push({ type: type, x: F.W * (0.08 + Math.random() * 0.84), y: F.H + 8,
+        vx: (Math.random() - 0.5) * 1.4, vy: -Math.sqrt(2 * 0.09 * F.H * (0.5 + Math.random() * 0.38)),
+        c: pick(COLS), c2: pick(COLS), size: F.R * (0.0085 + Math.random() * 0.0055) * (big ? 1.25 : 1) });
+    };
+    const sphere = (sh, k, c, cnt, o) => {
+      for (let i = 0; i < cnt; i++) {
+        const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, r = Math.sqrt(1 - u * u);
+        F.sparks.push(Object.assign({ x: sh.x, y: sh.y, px: sh.x, py: sh.y, vx: r * Math.cos(th) * sh.size * k, vy: r * Math.sin(th) * sh.size * k,
+          life: 1, c: typeof c === "function" ? c(i) : c, decay: 0.0065 + Math.random() * 0.003, drag: 0.979, grav: 0.03, w: 1.9, trail: true, crackle: false }, o));
+      }
+    };
+    F.burst = (sh) => {
+      const t = sh.type;
+      if (t === "yanagi") { for (let i = 0; i < 200; i++) { const a = Math.random() * Math.PI * 2, v = sh.size * (0.3 + Math.random() * 0.45);
+        F.sparks.push({ x: sh.x, y: sh.y, px: sh.x, py: sh.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: pick(GOLD), decay: 0.0036 + Math.random() * 0.002, drag: 0.972, grav: 0.045, w: 1.6, trail: true }); } }
+      else if (t === "ring") { const tilt = Math.random() * Math.PI; for (let i = 0; i < 120; i++) { const a = i / 120 * Math.PI * 2, v = sh.size;
+        const x = Math.cos(a) * v, y = Math.sin(a) * v * 0.45, vx = x * Math.cos(tilt) - y * Math.sin(tilt), vy = x * Math.sin(tilt) + y * Math.cos(tilt);
+        F.sparks.push({ x: sh.x, y: sh.y, px: sh.x, py: sh.y, vx: vx, vy: vy, life: 1, c: sh.c, decay: 0.008, drag: 0.98, grav: 0.025, w: 2.2, trail: true }); }
+        sphere(sh, 0.35, sh.c2, 50, { trail: false, w: 2.4, decay: 0.012 }); }
+      else if (t === "botan") sphere(sh, 1, sh.c, 190, { trail: false, w: 2.8, decay: 0.011 });
+      else if (t === "double") { sphere(sh, 1, sh.c, 170); sphere(sh, 0.5, sh.c2, 90, { trail: false, w: 2.6 }); }
+      else if (t === "triple") { sphere(sh, 1, sh.c, 160); sphere(sh, 0.66, sh.c2, 110); sphere(sh, 0.33, pick(GOLD), 60, { trail: false, w: 2.6 }); }
+      else if (t === "multi") sphere(sh, 1, (i) => COLS[i % COLS.length], 240);
+      else if (t === "senrin") sphere(sh, 1, sh.c, 200, { crackle: true });
+      else sphere(sh, 1, sh.c, 230);
+      const g = F.g, rr = sh.size * 30; g.globalCompositeOperation = "lighter";
+      const fl = g.createRadialGradient(sh.x, sh.y, 0, sh.x, sh.y, rr); fl.addColorStop(0, "rgba(255,230,190,.22)"); fl.addColorStop(1, "rgba(255,230,190,0)");
+      g.fillStyle = fl; g.beginPath(); g.arc(sh.x, sh.y, rr, 0, Math.PI * 2); g.fill();
+    };
+    const step = (now) => {
+      const g = F.g;
+      // the faster the clicks, the denser the sky
+      F.clicks = F.clicks.filter((t) => now - t < 2500);
+      const heat = F.clicks.length;
+      if (now < F.endAt && now > F.next) { const k = 1 + Math.floor(heat / 3); for (let i = 0; i < k; i++) F.launch(heat > 6); F.next = now + Math.max(90, 520 - heat * 55) * (0.6 + Math.random() * 0.8); }
+      g.globalCompositeOperation = "destination-out"; g.fillStyle = "rgba(0,0,0,0.15)"; g.fillRect(0, 0, F.W, F.H);
+      g.globalCompositeOperation = "lighter"; g.lineCap = "round";
+      for (let i = F.shells.length - 1; i >= 0; i--) {
+        const sh = F.shells[i], px = sh.x, py = sh.y; sh.x += sh.vx; sh.y += sh.vy; sh.vy += 0.09;
+        g.globalAlpha = 1; g.strokeStyle = "rgba(255,200,140,.9)"; g.lineWidth = 2.2; g.beginPath(); g.moveTo(px, py); g.lineTo(sh.x, sh.y); g.stroke();
+        if (Math.random() < 0.6) F.sparks.push({ x: sh.x, y: sh.y, px: sh.x, py: sh.y, vx: (Math.random() - 0.5) * 0.4, vy: Math.random() * 0.6, life: 0.6, decay: 0.03, drag: 0.95, grav: 0.02, w: 1.2, c: "#FFC46B", trail: false });
+        if (sh.vy >= -0.4) { F.burst(sh); F.shells.splice(i, 1); }
+      }
+      if (F.sparks.length > 7000) F.sparks.splice(0, F.sparks.length - 7000);
+      for (let i = F.sparks.length - 1; i >= 0; i--) {
+        const p = F.sparks[i]; p.px = p.x; p.py = p.y;
+        p.vx *= p.drag; p.vy = p.vy * p.drag + p.grav; p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+        if (p.life <= 0) { F.sparks.splice(i, 1); continue; }
+        let al = Math.min(1, p.life * 1.3);
+        if (p.crackle && p.life < 0.45) { al *= Math.random() < 0.5 ? 1 : 0.15; if (Math.random() < 0.3) p.c = "#FFFFFF"; }
+        g.globalAlpha = al; g.strokeStyle = p.c; g.fillStyle = p.c; g.lineWidth = p.w * (0.5 + p.life * 0.6);
+        if (p.trail) { g.beginPath(); g.moveTo(p.px, p.py); g.lineTo(p.x, p.y); g.stroke(); }
+        else { g.beginPath(); g.arc(p.x, p.y, p.w * (0.5 + p.life * 0.5), 0, Math.PI * 2); g.fill(); }
+      }
+      if (F.cap && now - F.cap.t < 4200) {   // the reason for the show, written large in the sky, fading in and out
+        const e = (now - F.cap.t) / 4200, al = Math.min(1, e * 6, (1 - e) * 3);
+        g.globalCompositeOperation = "source-over"; g.globalAlpha = al; g.textAlign = "center"; g.textBaseline = "middle";
+        g.font = "800 " + Math.round(F.R * 0.075) + "px -apple-system, 'SF Pro Display', sans-serif";
+        g.shadowColor = "rgba(255,160,90,.9)"; g.shadowBlur = 28; g.fillStyle = "#FFE9D2";
+        g.fillText(F.cap.text, F.W / 2, F.H * 0.42 - (1 - Math.min(1, e * 5)) * 20);
+        if (F.cap.sub) { g.font = "650 " + Math.round(F.R * 0.026) + "px -apple-system, sans-serif"; g.shadowBlur = 12; g.fillText(F.cap.sub, F.W / 2, F.H * 0.42 + F.R * 0.065); }
+        g.shadowBlur = 0;
+      }
+      g.globalAlpha = 1;
+      if (now < F.endAt || F.sparks.length || F.shells.length) requestAnimationFrame(step);
+      else { F.cv.remove(); window.__fw = null; }
+    };
+    requestAnimationFrame(step);
+  }
+  // every click: an instant volley that grows with the click streak, and a longer show
+  if (caption) F.cap = { text: caption.text || caption, sub: caption.sub || "", t: now0 };
+  F.clicks.push(now0);
+  const heat = F.clicks.filter((t) => now0 - t < 2500).length;
+  for (let i = 0; i < Math.min(5, 1 + heat); i++) F.launch(heat > 4);
+  F.endAt = Math.max(F.endAt, now0) + (F.endAt > now0 ? 2500 : 6000);
+  F.endAt = Math.min(F.endAt, now0 + 30000);
+};
+window.llFireworks = fireworks;
+// a night sky fades in behind the show (the app is light, and fireworks need the dark), then fades away again
+var sky = null;
+function nightSky() {
+  if (!sky) {
+    sky = document.createElement("div");
+    sky.style.cssText = "position:fixed;inset:0;pointer-events:none;z-index:2147483646;opacity:0;transition:opacity .6s ease;background:radial-gradient(120% 90% at 50% 100%, rgba(30,24,60,.82), rgba(6,8,22,.9))";
+    document.body.appendChild(sky);
+  }
+  requestAnimationFrame(function () { sky.style.opacity = "1"; });
+  clearInterval(sky._t);
+  sky._t = setInterval(function () { if (!window.__fw) { sky.style.opacity = "0"; clearInterval(sky._t); } }, 300);
+}
+var btn = document.getElementById("hanabi-btn");
+if (btn) btn.addEventListener("click", function () { nightSky(); fireworks(); });
+})();
+</script>
 </body>
 </html>
