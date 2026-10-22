@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LEDGER">
+<meta name="theme-color" content="#FAF9F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1B1A" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<title>LEDGER</title>
+<style>
+:root{
+  --bg:#FAF9F5; --bg-2:#F0EEE6; --surface:#FFFFFF; --ink:#191919; --ink-soft:#6F6B62; --ink-faint:#9A958B;
+  --line:rgba(25,25,25,.08); --line-2:rgba(25,25,25,.14);
+  --glass:rgba(255,255,255,.58); --glass-edge:rgba(255,255,255,.8);
+  --shadow:0 1px 2px rgba(25,25,25,.04),0 8px 28px rgba(25,25,25,.06);
+  --ledger:#C96442; --ledger-soft:rgba(201,100,66,.12);
+  --invest:#2F8A5F; --invest-soft:rgba(47,138,95,.12);
+  --health:#B8860B; --health-soft:rgba(214,160,20,.16);
+  --pos:#2F8A5F; --neg:#B4442E; --warn:#C27C0E; --plan:#8A8478;
+  --tab:#262624; --tab-ink:#8F8A81; --tab-on:#fff;
+  --r-l:22px; --r-m:16px; --r-s:11px;
+  --pad:16px; --gap:14px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Sukhumvit Set","Thonburi","Helvetica Neue",system-ui,sans-serif;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Sukhumvit Set","Thonburi",system-ui,sans-serif;
+  --round:"SF Pro Rounded",ui-rounded,-apple-system,system-ui,sans-serif;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#1C1B1A; --bg-2:#262523; --surface:#2A2826; --ink:#F5F4EF; --ink-soft:#A8A399; --ink-faint:#77726A;
+  --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14);
+  --glass:rgba(42,40,38,.62); --glass-edge:rgba(255,255,255,.07);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.28);
+  --ledger:#E08360; --ledger-soft:rgba(224,131,96,.16);
+  --invest:#6CC79A; --invest-soft:rgba(108,199,154,.15);
+  --health:#F2C230; --health-soft:rgba(242,194,48,.15);
+  --pos:#74C79B; --neg:#EE8B72; --warn:#F0B44C; --plan:#8F897E;
+  --tab:#0F0F0E; color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1C1B1A; --bg-2:#262523; --surface:#2A2826; --ink:#F5F4EF; --ink-soft:#A8A399; --ink-faint:#77726A;
+    --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14);
+    --glass:rgba(42,40,38,.62); --glass-edge:rgba(255,255,255,.07);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.28);
+    --ledger:#E08360; --ledger-soft:rgba(224,131,96,.16);
+    --invest:#6CC79A; --invest-soft:rgba(108,199,154,.15);
+    --health:#F2C230; --health-soft:rgba(242,194,48,.15);
+    --pos:#74C79B; --neg:#EE8B72; --warn:#F0B44C; --plan:#8F897E;
+    --tab:#0F0F0E; color-scheme:dark;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;text-size-adjust:100%}
+body{min-height:100vh;min-height:100dvh;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent,var(--ledger));outline-offset:2px;border-radius:8px}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.hide-amt .amt{filter:blur(7px);transition:filter .2s}
+
+/* drifting colour orbs — one per section, the page tints toward the open tab */
+.orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orbs i{position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(80px);opacity:.38;transition:transform 1.6s cubic-bezier(.2,.7,.2,1),opacity 1s}
+.orbs .o1{background:var(--ledger);top:-30vmax;left:-24vmax}
+.orbs .o2{background:var(--invest);bottom:-34vmax;right:-26vmax;opacity:.26}
+.orbs .o3{background:var(--health);top:30vh;left:55vw;opacity:.22;width:40vmax;height:40vmax}
+[data-view="invest"] .orbs .o2{transform:translate(-10vw,-12vh);opacity:.42}
+[data-view="health"] .orbs .o3{transform:translate(-22vw,-14vh);opacity:.4}
+[data-view="ledger"] .orbs .o1{transform:translate(8vw,6vh);opacity:.46}
+@media (prefers-reduced-motion:reduce){.orbs i{transition:none}}
+
+/* shell */
+.app{position:relative;z-index:1;display:grid;grid-template-columns:1fr;min-height:100dvh}
+.nav{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));
+  display:flex;gap:2px;padding:6px;background:var(--tab);border-radius:26px;box-shadow:0 8px 30px rgba(0,0,0,.28)}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:62px;padding:7px 8px 6px;border-radius:20px;color:var(--tab-ink);font-size:10.5px;font-weight:600;letter-spacing:.01em}
+.nav button svg{width:22px;height:22px}
+.nav button[aria-current="page"]{color:var(--tab-on);background:rgba(255,255,255,.1)}
+.nav button[aria-current="page"] .dot{background:var(--sec)}
+.nav .dot{width:5px;height:5px;border-radius:50%;background:transparent;margin-top:1px}
+.nav .brand,.nav .navfoot{display:none}
+main{padding:calc(env(safe-area-inset-top) + 8px) max(16px,env(safe-area-inset-right)) calc(110px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));max-width:1320px;width:100%;margin:0 auto}
+
+.top{display:flex;align-items:center;gap:10px;min-height:52px;margin-bottom:6px}
+.top h1{font-family:var(--display);font-size:30px;line-height:1.1;font-weight:750;letter-spacing:-.02em;margin:0;flex:1}
+.top .sub{display:block;font-size:13px;font-weight:500;color:var(--ink-soft);letter-spacing:0;margin-top:3px}
+.iconbtn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--glass-edge);box-shadow:var(--shadow);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
+.iconbtn svg{width:19px;height:19px}
+
+/* cards */
+.grid{display:grid;gap:var(--gap);grid-template-columns:1fr}
+.card{position:relative;background:var(--glass);border:1px solid var(--glass-edge);border-radius:var(--r-l);padding:var(--pad);box-shadow:var(--shadow);backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4);min-width:0}
+.card h2{font-size:15px;font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:8px;letter-spacing:-.005em}
+.card h2 .meta{margin-left:auto;font-size:12.5px;font-weight:500;color:var(--ink-faint)}
+.card.flat{background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0}
+.muted{color:var(--ink-soft)} .faint{color:var(--ink-faint)}
+.pos{color:var(--pos)} .neg{color:var(--neg)}
+.small{font-size:12.5px} .tiny{font-size:11.5px}
+.row{display:flex;align-items:center;gap:10px}
+.between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;background:var(--bg-2);color:var(--ink-soft);white-space:nowrap}
+.chip.sec{background:var(--sec-soft);color:var(--sec)}
+.chip.pos{background:rgba(47,138,95,.12);color:var(--pos)} .chip.neg{background:rgba(180,68,46,.11);color:var(--neg)} .chip.warn{background:rgba(194,124,14,.13);color:var(--warn)}
+.seg{display:inline-flex;padding:3px;border-radius:12px;background:var(--bg-2);gap:2px}
+.seg button{padding:6px 12px;border-radius:9px;font-size:13px;font-weight:600;color:var(--ink-soft)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.list{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line);min-width:0}
+.li:first-child{border-top:0}
+.li .grow{flex:1;min-width:0}
+.li .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .s{font-size:12.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .r{text-align:right;flex:none}
+button.li{width:100%;text-align:left}
+.bar{height:8px;border-radius:99px;background:var(--bg-2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:inherit;background:var(--sec)}
+.empty{padding:22px 6px;text-align:center;color:var(--ink-soft)}
+
+/* section accents */
+.s-ledger{--sec:var(--ledger);--sec-soft:var(--ledger-soft)}
+.s-invest{--sec:var(--invest);--sec-soft:var(--invest-soft)}
+.s-health{--sec:var(--health);--sec-soft:var(--health-soft)}
+
+/* hero figure — the one loud thing on each page */
+.hero{padding:20px var(--pad) 18px}
+.hero .lbl{font-size:13px;font-weight:600;color:var(--ink-soft)}
+.big{font-family:var(--round);font-weight:700;font-size:clamp(40px,11vw,60px);line-height:1;letter-spacing:-.035em;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.big small{font-size:.42em;font-weight:600;letter-spacing:0;color:var(--ink-soft);margin-right:3px;vertical-align:.55em}
+.mid{font-family:var(--round);font-weight:700;font-size:24px;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.stat{padding:10px 11px;border-radius:var(--r-m);background:var(--bg-2)}
+:root[data-theme="dark"] .stat{background:rgba(255,255,255,.04)}
+.stat b{display:block;font-family:var(--round);font-size:17px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat span{font-size:11.5px;color:var(--ink-soft);font-weight:500}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--sec)}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.live::before{animation:none}}
+
+/* home lanes */
+.lanes{display:flex;flex-direction:column;justify-content:space-around}
+.lane{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px var(--pad);text-align:left;width:100%}
+.lane .ic{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:var(--sec-soft);color:var(--sec)}
+.lane .ic svg{width:22px;height:22px}
+.lane .k{font-size:12.5px;color:var(--ink-soft);font-weight:600}
+.lane .v{font-family:var(--round);font-weight:700;font-size:22px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.15}
+.lane .x{font-size:12.5px;color:var(--ink-soft)}
+.lane .chev{color:var(--ink-faint)}
+
+/* charts */
+svg.chart{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--ink-soft);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+
+/* week strip (health) */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.day{border-radius:13px;padding:7px 3px 8px;text-align:center;background:var(--bg-2);font-size:11px;color:var(--ink-soft);min-width:0}
+:root[data-theme="dark"] .day{background:rgba(255,255,255,.04)}
+.day b{display:block;font-size:15px;color:var(--ink);font-family:var(--round)}
+.day .k{display:block;margin-top:4px;height:6px;width:6px;border-radius:50%;margin-inline:auto;background:var(--line-2)}
+.day.today{outline:2px solid var(--sec)}
+.day.done .k{background:var(--pos)} .day.rest .k{background:transparent;border:1px solid var(--line-2)}
+.day.race .k{background:var(--health)} .day.test .k{background:#D9548B}
+.ring{position:relative;display:grid;place-items:center}
+.ring svg{transform:rotate(-90deg)}
+.ring .in{position:absolute;text-align:center;line-height:1.1}
+.rings{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.rings .ring .in b{font-family:var(--round);font-size:15px}
+.rings .cap{font-size:11.5px;color:var(--ink-soft);margin-top:4px}
+
+/* stock rows */
+.sym{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff;flex:none;letter-spacing:-.02em}
+.spark{width:64px;height:24px;flex:none}
+
+/* sheet (detail) */
+.sheet-bg{position:fixed;inset:0;z-index:40;background:rgba(20,18,16,.38);opacity:0;pointer-events:none;transition:opacity .25s}
+.sheet{position:fixed;z-index:41;left:0;right:0;bottom:0;max-height:88dvh;overflow:auto;background:var(--bg);border-radius:24px 24px 0 0;padding:10px 18px calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);visibility:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s .32s;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.sheet .grab{width:38px;height:5px;border-radius:3px;background:var(--line-2);margin:0 auto 12px}
+.sheet-open .sheet-bg{opacity:1;pointer-events:auto}
+.sheet-open .sheet{transform:none;visibility:visible;transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){.sheet,.sheet-bg{transition:none}}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px}
+.kv dt{color:var(--ink-soft)} .kv dd{margin:0;text-align:right;font-weight:600}
+.quote{border-left:3px solid var(--sec);padding:4px 0 4px 12px;margin:10px 0;color:var(--ink)}
+ul.plain{margin:6px 0 0;padding-left:18px} ul.plain li{margin:3px 0}
+
+.toast{position:fixed;z-index:50;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--tab);color:#fff;padding:10px 16px;border-radius:14px;font-size:13.5px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:14px;font-weight:650;background:var(--ink);color:var(--bg)}
+.btn.ghost{background:var(--bg-2);color:var(--ink)}
+.btn.sec{background:var(--sec);color:#fff}
+.drop{border:1.5px dashed var(--line-2);border-radius:var(--r-l);padding:26px 18px;text-align:center}
+.drop.over{border-color:var(--ledger);background:var(--ledger-soft)}
+input[type=number],input[type=text],input[type=search]{font:inherit;color:var(--ink);background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:9px 12px;width:100%}
+
+/* ===== layouts: phone → fold (open) → iPad → Mac ===== */
+.span2,.span3{grid-column:auto}
+@media (min-width:600px){
+  .grid.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid.g2 .span2{grid-column:1/-1}
+  .sheet{left:50%;right:auto;width:min(620px,94vw);transform:translate(-50%,105%);border-radius:24px 24px 0 0}
+  .sheet-open .sheet{transform:translate(-50%,0)}
+}
+/* tablet / Mac / open foldable: sidebar */
+@media (min-width:820px){
+  .app{grid-template-columns:232px 1fr}
+  .nav{position:sticky;top:0;left:auto;bottom:auto;transform:none;height:100dvh;flex-direction:column;gap:4px;border-radius:0;padding:calc(18px + env(safe-area-inset-top)) 12px 18px;box-shadow:none;background:transparent;border-right:1px solid var(--line)}
+  .nav .brand{display:flex;align-items:center;gap:10px;padding:4px 10px 18px;font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:.02em;color:var(--ink)}
+  .nav .brand img{width:28px;height:28px;border-radius:8px}
+  .nav button{flex-direction:row;justify-content:flex-start;gap:12px;min-width:0;padding:10px 12px;border-radius:13px;font-size:14.5px;color:var(--ink-soft);font-weight:600}
+  .nav button[aria-current="page"]{background:var(--glass);color:var(--ink);box-shadow:var(--shadow)}
+  .nav button svg{width:20px;height:20px}
+  .nav .dot{margin:0 0 0 auto}
+  .nav .navfoot{display:block;margin-top:auto;padding:10px 12px;font-size:12px;color:var(--ink-faint)}
+  main{padding:calc(env(safe-area-inset-top) + 22px) 28px 40px}
+  .top h1{font-size:34px}
+  .toast{bottom:28px}
+}
+@media (min-width:1100px){
+  :root{--pad:20px;--gap:18px}
+  .grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .grid.g3 .span2{grid-column:span 2}
+  .grid.g3 .span3{grid-column:1/-1}
+  .grid.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:820px) and (max-width:1099px){
+  .grid.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid.g3 .span2,.grid.g3 .span3{grid-column:1/-1}
+}
+@media (min-width:600px) and (max-width:819px){
+  .grid.g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid.g3 .span2,.grid.g3 .span3{grid-column:1/-1}
+}
+/* foldable split across a hinge: keep content off the fold */
+@media (horizontal-viewport-segments:2){
+  main{padding-left:16px;padding-right:16px}
+  .grid.g2,.grid.g3{grid-template-columns:calc(env(viewport-segment-width 0 0) - 32px) calc(env(viewport-segment-width 1 0) - 32px);column-gap:calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0) + 32px)}
+}
+</style>
+</head>
+<body>
+<div class="orbs" aria-hidden="true"><i class="o1"></i><i class="o2"></i><i class="o3"></i></div>
+<div class="app">
+  <nav class="nav" id="nav" aria-label="หมวด">
+    <div class="brand"><img src="data:image/png;base64,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" alt="" onerror="this.remove()">LEDGER</div>
+    <button data-go="home" class="s-ledger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></svg><span>วันนี้</span><i class="dot"></i></button>
+    <button data-go="ledger" class="s-ledger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="3"/><path d="M3.5 9.5h17M7.5 14.5h4"/></svg><span>Ledger</span><i class="dot"></i></button>
+    <button data-go="invest" class="s-invest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5-5 4 3 7-8"/><path d="M15 7h5v5"/></svg><span>Invest</span><i class="dot"></i></button>
+    <button data-go="health" class="s-health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg><span>Health</span><i class="dot"></i></button>
+    <button data-go="settings" class="s-ledger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>ข้อมูล</span><i class="dot"></i></button>
+    <div class="navfoot" id="navfoot"></div>
+  </nav>
+  <main id="main" tabindex="-1"></main>
+</div>
+<div class="sheet-bg" id="sheetbg"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div id="sheetbody"></div></div>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="file" accept=".json,application/json" hidden>
+
+<script>
+'use strict';
+/* ================= storage ================= */
+const K = { data:'app2-data', view:'app2-view', theme:'app2-theme', hide:'app2-hide', hxDone:'app2-hx-done', hxKm:'app2-hx-km', invSeg:'app2-inv-seg' };
+const ls = {
+  get(k, d){ try{ const v = localStorage.getItem(k) ?? localStorage.getItem(k+'~mirror'); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ const t = JSON.stringify(v); localStorage.setItem(k, t); localStorage.setItem(k+'~mirror', t); }catch(e){} },
+  raw(k){ try{ return localStorage.getItem(k) ?? localStorage.getItem(k+'~mirror'); }catch(e){ return null; } }
+};
+let DATA = ls.get(K.data, null);
+const S = { view: ls.get(K.view,'home'), ledMonth: null, invSeg: ls.get(K.invSeg,'dca'), q:'' };
+
+/* ================= helpers ================= */
+const $ = (s, el=document) => el.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TH_M = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const TH_MF = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const TH_D = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+const TH_DF = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const pad = n => String(n).padStart(2,'0');
+const iso = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const mkOf = d => d.getFullYear()+'-'+pad(d.getMonth()+1);
+const dOf = s => { const p = String(s).slice(0,10).split('-'); return new Date(+p[0], +p[1]-1, +p[2]); };
+const DAY = 864e5;
+const daysIn = mk => new Date(+mk.slice(0,4), +mk.slice(5,7), 0).getDate();
+const thMonth = (mk, full) => (full?TH_MF:TH_M)[+mk.slice(5,7)-1] + ' ' + (+mk.slice(0,4)+543);
+const thDate = (s, withDow) => { const d = dOf(s); return (withDow? TH_D[d.getDay()]+' ' : '') + d.getDate()+' '+TH_M[d.getMonth()]; };
+const B = (n, d=0) => '฿' + Math.round(n||0).toLocaleString('en-US', {maximumFractionDigits:d});
+const Bk = n => { const a = Math.abs(n||0), s = n<0?'−':''; return s+'฿'+(a>=1e6 ? (a/1e6).toFixed(a>=1e7?1:2)+'M' : a>=1e4 ? (a/1e3).toFixed(a>=1e5?0:1)+'k' : Math.round(a).toLocaleString('en-US')); };
+const P = (x, d=1) => (x>0?'+':x<0?'−':'') + Math.abs((x||0)*100).toFixed(d) + '%';
+const clamp = (x,a,b) => Math.max(a, Math.min(b, x));
+const amt = (s) => `<span class="amt">${s}</span>`;
+const ago = (t) => { if(!t) return '—'; const ms = Date.now() - new Date(t).getTime(); if(isNaN(ms)) return '—'; const m = Math.round(ms/6e4);
+  return m<1?'เมื่อกี้': m<60? m+' นาทีที่แล้ว' : m<1440? Math.round(m/60)+' ชม.ที่แล้ว' : Math.round(m/1440)+' วันที่แล้ว'; };
+const hm = v => { const m = /^(\d{1,2}):(\d{2})/.exec(v||''); return m ? (+m[1])*60 + (+m[2]) : null; };
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove('on'), 2600); }
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ================= charts (inline SVG) ================= */
+function sparkSVG(vals, color, w=64, h=24){
+  const v = (vals||[]).filter(x => x!=null); if(v.length<2) return `<svg class="spark" viewBox="0 0 ${w} ${h}"></svg>`;
+  const lo = Math.min(...v), hi = Math.max(...v), r = hi-lo || 1;
+  const pts = v.map((y,i) => [i*(w-2)/(v.length-1)+1, h-2-(y-lo)/r*(h-4)]);
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" points="${pts.map(p=>p.map(n=>n.toFixed(1)).join(',')).join(' ')}"/></svg>`;
+}
+function ringSVG(frac, size, stroke, color, track){
+  const r = (size-stroke)/2, c = 2*Math.PI*r, f = clamp(frac||0, 0, 1);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${track||'var(--bg-2)'}" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${(c*f).toFixed(1)} ${c.toFixed(1)}"/></svg>`;
+}
+/* cumulative month chart: actual (solid), booked (dashed), pace (thin) */
+function cumChart(mk, actualByDay, bookedByDay, todayIdx, color){
+  const n = daysIn(mk), W = 600, H = 190, L = 4, R = 4, T = 12, Bm = 22;
+  let a=0, b=0; const A=[], Bb=[];
+  for(let d=1; d<=n; d++){ const k = mk+'-'+pad(d); a += actualByDay[k]||0; b += (actualByDay[k]||0)+(bookedByDay[k]||0); A.push(a); Bb.push(b); }
+  const upTo = todayIdx==null ? n : todayIdx;
+  const earned = A[upTo-1]||0, pace = upTo>0 ? earned/upTo*n : 0;
+  const max = Math.max(b, pace, 1)*1.08;
+  const x = i => L + i*(W-L-R)/(n-1), y = v => T + (H-T-Bm)*(1 - v/max);
+  const path = (arr, k) => arr.slice(0,k).map((v,i) => (i?'L':'M')+x(i).toFixed(1)+','+y(v).toFixed(1)).join('');
+  const area = upTo>0 ? path(A, upTo)+`L${x(upTo-1).toFixed(1)},${y(0)}L${x(0)},${y(0)}Z` : '';
+  const ticks = [1, 8, 15, 22, n].map(d => `<text x="${x(d-1)}" y="${H-5}" font-size="11" fill="var(--ink-faint)" text-anchor="${d===1?'start':d===n?'end':'middle'}">${d}</text>`).join('');
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="รายรับสะสมทั้งเดือน">
+    <defs><linearGradient id="ga" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".28"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line-2)"/>
+    <path d="${path(Bb, n)}" fill="none" stroke="var(--plan)" stroke-width="2" stroke-dasharray="5 5"/>
+    ${upTo>0?`<line x1="${x(0)}" y1="${y(0)}" x2="${x(n-1)}" y2="${y(pace)}" stroke="var(--pos)" stroke-width="1.5" opacity=".9"/>`:''}
+    ${area?`<path d="${area}" fill="url(#ga)"/>`:''}
+    <path d="${path(A, upTo)}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    ${upTo>0?`<circle cx="${x(upTo-1)}" cy="${y(earned)}" r="5" fill="${color}" stroke="var(--surface)" stroke-width="2"/>`:''}
+    ${ticks}</svg>`;
+}
+function barsSVG(items, opts={}){ // items [{label, v, v2?, hi?}]
+  const W = opts.w||340, H = opts.h||150, T = 12, Bm = 20, n = items.length, gap = n>20?3:n>10?5:8;
+  const max = Math.max(1, ...items.map(i => Math.max(i.v||0, i.v2||0, opts.target||0)))*1.1;
+  const bw = (W - gap*(n-1))/n;
+  const y = v => T + (H-T-Bm)*(1 - v/max);
+  let s = '';
+  items.forEach((it,i) => {
+    const x0 = i*(bw+gap);
+    if(it.v2!=null){ const w2 = bw/2-2;
+      s += `<rect x="${x0}" y="${y(it.v)}" width="${w2}" height="${Math.max(0,y(0)-y(it.v))}" rx="4" fill="${opts.c1}" opacity="${it.hi?1:.85}"/>`;
+      s += `<rect x="${x0+w2+4}" y="${y(it.v2)}" width="${w2}" height="${Math.max(0,y(0)-y(it.v2))}" rx="4" fill="${opts.c2}" opacity="${it.hi?1:.75}"/>`;
+    } else s += `<rect x="${x0}" y="${y(it.v||0)}" width="${bw}" height="${Math.max(0,y(0)-y(it.v||0))}" rx="5" fill="${it.c||opts.c1}" opacity="${it.hi||opts.flat?1:.55}"/>`;
+    s += `<text x="${x0+bw/2}" y="${H-5}" font-size="11.5" fill="var(--ink-faint)" text-anchor="middle">${esc(it.label)}</text>`;
+  });
+  if(opts.target) s += `<line x1="0" x2="${W}" y1="${y(opts.target)}" y2="${y(opts.target)}" stroke="var(--ink-faint)" stroke-dasharray="4 4"/>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.aria||'กราฟแท่ง')}">${s}</svg>`;
+}
+function donutSVG(parts, size=132, stroke=18){
+  const tot = parts.reduce((a,p)=>a+p.v,0)||1, r = (size-stroke)/2, c = 2*Math.PI*r; let off = 0;
+  const segs = parts.map(p => { const len = c*p.v/tot; const s = `<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${p.c}" stroke-width="${stroke}" stroke-dasharray="${Math.max(0,len-2).toFixed(1)} ${c.toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}"/>`; off += len; return s; }).join('');
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform:rotate(-90deg)" aria-hidden="true">${segs}</svg>`;
+}
+
+/* ================= LEDGER model ================= */
+/* Live from Locum Ledger when this page shares its origin (same site, same browser), else the Mac bundle. */
+function locumLive(){
+  let tx, places;
+  try{ tx = JSON.parse(ls.raw('ll-tx-v1')||'null'); places = JSON.parse(ls.raw('ll-places-v1')||'null'); }catch(e){}
+  if(!Array.isArray(tx) || !tx.length || !Array.isArray(places)) return null;
+  const pById = {}; places.forEach(p => pById[p.id] = p);
+  const rv = (p,k) => Number(p && p.rates ? p.rates[k] : 0) || 0;
+  const tierH = {};
+  tx.forEach(t => { if(t.type==='income' && t.meta && t.meta.hours && t.date){ const key = t.placeId+'|'+t.catKey+'|'+t.date.slice(0,7); tierH[key] = (tierH[key]||0) + t.meta.hours; } });
+  const eff = t => {
+    const p = pById[t.placeId]; const c = p && (p.categories||[]).find(x => x.key===t.catKey);
+    if(!(c && c.formulaKey==='sairee_hourly' && t.meta && t.meta.hours!=null)) return +t.amount||0;
+    const h = tierH[t.placeId+'|'+t.catKey+'|'+t.date.slice(0,7)]||0;
+    const rate = h<=rv(p,'tier1max') ? rv(p,'tier1') : h<=rv(p,'tier2max') ? rv(p,'tier2') : rv(p,'tier3');
+    return (t.meta.hours||0)*rate;
+  };
+  const shifts = tx.filter(t => t.type==='income' && t.date).map(t => ({ id:t.id, date:t.date.slice(0,10), start:t.startTime||'', end:t.endTime||'',
+    place:t.placeName || (pById[t.placeId]||{}).name || '', cat:t.catLabel||'', note:(t.note||''), amount:Math.round(eff(t)*100)/100,
+    hours:(t.meta&&t.meta.hours)||0, planned:!!t.planned, paid:t.paid===true }));
+  let exp = null;
+  try{ const mj = JSON.parse(ls.raw('ll-meowjot-v1')||'null'); if(mj && mj.months) exp = mj.months; }catch(e){}
+  return { shifts, expMonths: exp, src:'live' };
+}
+function ledgerModel(){
+  const live = locumLive();
+  const L = (DATA && DATA.ledger) || {};
+  let shifts = live ? live.shifts : (L.shifts||[]).slice();
+  // widget quick-adds that Locum Ledger has not imported yet
+  const ids = new Set(shifts.map(s => s.id));
+  (L.quickadd||[]).forEach(q => { if(!ids.has(q.id) && !shifts.some(s => s.date===q.date && s.cat===q.catLabel && Math.abs(s.amount-q.amount)<1))
+    shifts.push({ id:q.id, date:q.date, start:'', end:'', place:'', cat:q.catLabel||'Quick add', note:(q.note||'')+' · quick add', amount:+q.amount||0, hours:0, planned:false, paid:false, qa:true }); });
+  // spending by month → {mk:{expByDay,total,invest}}
+  let exp = {};
+  if(live && live.expMonths) exp = live.expMonths;
+  else if(L.exp && L.exp.expMonthKey) exp[L.exp.expMonthKey] = { expByDay:L.exp.expByDay||{}, total:L.exp.expMonth||0, importedAt:L.exp.expAt };
+  const inv = L.investByMonth || {};
+  Object.keys(inv).forEach(k => { exp[k] = exp[k] || {expByDay:{}, total:0}; if(exp[k].invest==null) exp[k].invest = inv[k]; });
+  return { shifts, exp, src: live ? 'live' : 'bundle', at: live ? null : L.generatedAt };
+}
+/* how much of a shift counts at `now` (mirrors the widget clock) */
+function shiftSpan(s){
+  const st = hm(s.start), en = hm(s.end); if(st==null || en==null) return null;
+  const a = dOf(s.date).getTime() + st*6e4; let b = dOf(s.date).getTime() + en*6e4; if(b<=a) b += DAY;
+  return [a,b];
+}
+function earnedNow(s, now){
+  const sp = shiftSpan(s), t = now.getTime();
+  if(s.planned){ if(sp) return t>=sp[1] ? s.amount : (t>=sp[0] ? s.amount*(t-sp[0])/(sp[1]-sp[0]) : 0); return s.date <= iso(now) ? 0 : 0; }
+  if(!sp) return s.date <= iso(now) ? s.amount : 0;
+  if(t<=sp[0]) return 0; if(t>=sp[1]) return s.amount; return s.amount*(t-sp[0])/(sp[1]-sp[0]);
+}
+const CAT_TH = { 'hourly (tiered)':'เวรรายชั่วโมง', 'patient exam':'ตรวจคนไข้', 'shift base rate':'ค่าเวรพื้นฐาน', 'oncall':'On call', 'hotel visit':'ตรวจที่โรงแรม' };
+const catName = c => CAT_TH[(c||'').toLowerCase()] || c || 'รายการ';
+function kindOf(cat){ const c = (cat||'').toLowerCase();
+  if(/hour|exam|shift|base/.test(c)) return 'shift'; if(/admit/.test(c)) return 'admit'; if(/refer/.test(c)) return 'refer';
+  if(/on ?call/.test(c)) return 'oncall'; if(/proc|slab|boot/.test(c)) return 'proc'; return 'other'; }
+const KIND = { shift:['ชั่วโมง/เวร','var(--ledger)'], admit:['Admit','#7A6FD0'], refer:['Refer','#3E8FD0'], proc:['หัตถการ','#2F8A5F'], oncall:['On call','#C27C0E'], other:['อื่นๆ','var(--ink-faint)'] };
+function monthStats(M, mk, now){
+  const inMonth = M.shifts.filter(s => s.date.slice(0,7)===mk);
+  const curMk = mkOf(now), isCur = mk===curMk, isPast = mk<curMk;
+  const actualByDay = {}, bookedByDay = {}; let earned=0, booked=0, hours=0, unpaid=0, liveShift=null; const kinds = {};
+  inMonth.forEach(s => {
+    const e = isPast ? (s.planned ? 0 : s.amount) : isCur ? earnedNow(s, now) : 0;
+    const rest = (isPast ? 0 : s.amount - e);
+    actualByDay[s.date] = (actualByDay[s.date]||0) + e; bookedByDay[s.date] = (bookedByDay[s.date]||0) + Math.max(0, rest);
+    earned += e; booked += s.amount; if(e>0) hours += (s.hours||0)*(e/(s.amount||1));
+    if(!s.paid && e>0 && !s.planned) unpaid += e;
+    const k = kindOf(s.cat); kinds[k] = kinds[k] || {n:0, v:0, h:0}; kinds[k].n++; kinds[k].v += isPast||isCur ? e : s.amount; kinds[k].h += (isPast||isCur) ? (s.hours||0)*(e/(s.amount||1)) : (s.hours||0);
+    const sp = shiftSpan(s); if(isCur && sp && now>=sp[0] && now<sp[1]) liveShift = { s, sp, rate: s.amount/((sp[1]-sp[0])/36e5) };
+  });
+  const n = daysIn(mk), dayIdx = isCur ? now.getDate() : isPast ? n : 0;
+  const pace = dayIdx>0 ? earned/dayIdx*n : 0;
+  const today = isCur ? inMonth.filter(s => s.date===iso(now)).reduce((a,s)=>a+earnedNow(s,now),0) : 0;
+  const E = M.exp[mk] || null;
+  return { mk, inMonth, actualByDay, bookedByDay, earned, booked, hours, unpaid, kinds, liveShift, pace, today, dayIdx, isCur, isPast, exp:E };
+}
+
+/* ================= INVEST model ================= */
+function investModel(){
+  const I = (DATA && DATA.invest) || null; if(!I) return null;
+  const fx = I.fx||{}, usd = fx.usdthb || 33.5, hkd = fx.hkdthb || usd/7.8;
+  const toTHB = (v, ccy) => ccy==='USD' ? v*usd : ccy==='HKD' ? v*hkd : v;
+  let val=0, cost=0, day=0; const rows = (I.holdings||[]).map(h => {
+    const px = h.price||0, v = toTHB(px*(h.units||0), h.ccy), c = toTHB(h.cost||0, h.ccy), d = v - v/(1+(h.chg||0));
+    val += v; cost += c; day += d; return Object.assign({}, h, { valTHB:v, costTHB:c, pl:v-c, plPct: c? (v-c)/c : 0, dayTHB:d });
+  }).sort((a,b) => b.valTHB - a.valTHB);
+  const cash = (I.cash && I.cash.amount) || 0;
+  const total = val + cash;
+  const byMkt = {}; rows.forEach(r => byMkt[r.market||'อื่นๆ'] = (byMkt[r.market||'อื่นๆ']||0) + r.valTHB);
+  return { I, rows, val, cost, day, cash, total, byMkt, usd };
+}
+const ACT = { buy:['ทยอยซื้อ','pos'], add:['เติม','pos'], dont:['ยังไม่ซื้อ','warn'], wait:['รอ','warn'], sell:['ขาย','neg'], hold:['ถือ',''] };
+function verdictChip(x){
+  const f = x.funnel, v = x.verdict;
+  if(f && f.verdict) return `<span class="chip ${/ผ่าน|ซื้อ|เติม/.test(f.verdict)&&!/ไม่ผ่าน/.test(f.verdict)?'pos':/ไม่ผ่าน|ขาย/.test(f.verdict)?'neg':'warn'}">${esc(f.verdict)}${f.grade?' · '+esc(f.grade):''}</span>`;
+  if(v && v.act){ const a = ACT[v.act]||[v.label||v.act,'']; return `<span class="chip ${a[1]}">${esc(a[0])}${v.grade?' · '+esc(v.grade):''}</span>`; }
+  return '';
+}
+const IC_GLYPH = { coin:'₿', space:'🚀', hw:'📱', auto:'🚗', cart:'🛒', chip:'⚡', software:'◆', web:'◎', health:'✚', bank:'$', leisure:'✈', fund:'◉' };
+function symBadge(x){ const t = (x.sym||'').replace(/\d+$/,'').slice(0,4); return `<span class="sym" style="background:${esc(x.color||'#888')}">${esc(t)}</span>`; }
+function fmtPx(p, ccy){ if(p==null) return '—'; const s = ccy==='USD'?'$':ccy==='HKD'?'HK$':'฿'; return s + (p>=1000 ? Math.round(p).toLocaleString('en-US') : p>=10 ? p.toFixed(2) : p.toFixed(p<1?4:3)); }
+
+/* ================= HEALTH model ================= */
+function healthModel(now){
+  const H = (DATA && DATA.health) || null; if(!H || !H.plan || !H.plan.T) return null;
+  const Pl = H.plan, start = dOf(Pl.START);
+  const weekOf = d => Math.floor(Math.round((dOf(iso(d)) - start)/DAY)/7) + 1;
+  const phaseOf = w => w<=4?'base': w<=8?'build': w<=12?'specific': w===13?'recovery':'doubles';
+  const session = d => { const k = iso(d); if(Pl.SPECIAL[k]) return Pl.SPECIAL[k]; const w = weekOf(d);
+    if(w<1 || w>21) return { title:'นอกโปรแกรม', detail:'โปรแกรมซ้อม 21 สัปดาห์', rest:true };
+    const dow = d.getDay(); if(dow===1 || dow===4) return Pl.REST; return Pl.T[phaseOf(w)][dow] || Pl.REST; };
+  const doneLocal = ls.get(K.hxDone, {}), kmLocal = ls.get(K.hxKm, {});
+  const done = Object.assign({}, (H.state||{}).done||{}, doneLocal);
+  const w = weekOf(now), monday = new Date(start.getTime() + (w-1)*7*DAY);
+  const runsIn = (wk) => (H.runs||[]).filter(r => weekOf(dOf(r.date))===wk).reduce((a,r)=>a+(+r.km||0),0) + (+((H.state||{}).km||{})['w'+wk]||0) + (+kmLocal['w'+wk]||0);
+  return { H, Pl, w, phase:phaseOf(w), session, weekOf, done, monday, runsIn };
+}
+function secOf(s){ if(!s) return 0; const p = String(s).split(':').map(Number); return p.length===3 ? p[0]*3600+p[1]*60+p[2] : p[0]*60+(p[1]||0); }
+const mmss = s => { s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return h? h+':'+pad(m)+':'+pad(x) : m+':'+pad(x); };
+
+/* ================= views ================= */
+const now0 = () => new Date();
+function topbar(title, sub, extra=''){
+  return `<header class="top"><h1>${title}${sub?`<span class="sub">${sub}</span>`:''}</h1>${extra}
+    <button class="iconbtn" data-act="eye" aria-label="ซ่อน/แสดงตัวเลข">${document.body.classList.contains('hide-amt')
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 6 9 6a15 15 0 0 1-3 3.4M6.6 6.6C4.3 8.2 3 12 3 12s4 6 9 6c1.6 0 3-.4 4.3-1"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 12s4-6 9-6 9 6 9 6-4 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/></svg>'}</button></header>`;
+}
+function noData(sec, what){
+  return `<div class="card s-${sec}"><div class="empty"><p style="margin:0 0 6px;font-weight:650;color:var(--ink)">ยังไม่มีข้อมูล ${what}</p>
+    <p style="margin:0 0 14px">นำเข้าไฟล์ <b>ledger-app-data.json</b> จาก iCloud Drive › Scriptable (Mac สร้างให้ทุก 10 นาที)</p>
+    <button class="btn sec" data-act="import">เลือกไฟล์ข้อมูล</button></div></div>`;
+}
+
+/* ---------- HOME ---------- */
+function vHome(){
+  const now = now0(), hr = now.getHours();
+  const hello = hr<5?'ดึกแล้ว': hr<12?'อรุณสวัสดิ์': hr<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น';
+  const M = ledgerModel(), st = monthStats(M, mkOf(now), now);
+  const inv = investModel(), hx = healthModel(now);
+  let html = topbar(hello, `${TH_DF[now.getDay()]} ${now.getDate()} ${TH_MF[now.getMonth()]} ${now.getFullYear()+543}`);
+  // hero: the live month clock
+  html += `<div class="grid g3">`;
+  html += `<section class="card hero s-ledger span2">
+    <div class="between"><span class="lbl">รายรับ ${thMonth(st.mk, true)}</span>${st.liveShift?`<span class="live">กำลังเข้าเวร</span>`:''}</div>
+    <div class="big amt" id="h-earn"><small>฿</small>${Math.round(st.earned).toLocaleString('en-US')}</div>
+    <div class="small muted">วันนี้ ${amt(`<b id="h-today" class="num" style="color:var(--ink)">${B(st.today)}</b>`)} · ถ้าเข้าเวรครบตามที่ลงไว้ ${amt(B(st.booked))}</div>
+    <div style="margin-top:12px">${cumChart(st.mk, st.actualByDay, st.bookedByDay, st.dayIdx, css('--ledger')||'#C96442')}</div>
+  </section>`;
+  // three lanes
+  html += `<section class="card lanes" style="padding:4px 0">`;
+  const lane = (sec, go, icon, k, v, x) => `<button class="lane s-${sec}" data-go="${go}"><span class="ic">${icon}</span><span><span class="k">${k}</span><div class="v">${v}</div><span class="x">${x}</span></span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>`;
+  html += lane('ledger','ledger', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.5" y="5" width="17" height="14" rx="3"/><path d="M3.5 9.5h17"/></svg>',
+    'ใช้จ่ายเดือนนี้', amt(st.exp ? B(st.exp.total) : '—'), st.exp && st.exp.invest ? 'ลงทุนไป '+amt(B(st.exp.invest)) : 'จาก Meowjot');
+  html += `<div style="height:1px;background:var(--line);margin:0 16px"></div>`;
+  html += lane('invest','invest', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 17l5-5 4 3 7-8"/></svg>',
+    'พอร์ตรวม', inv ? amt(Bk(inv.total)) : '—', inv ? `<span class="${inv.day>=0?'pos':'neg'}">${amt((inv.day>=0?'+':'−')+B(Math.abs(inv.day)))}</span> วันนี้` : 'ยังไม่มีข้อมูล');
+  html += `<div style="height:1px;background:var(--line);margin:0 16px"></div>`;
+  if(hx){ const s = hx.session(now), race = hx.Pl.RACES.map(r => ({r, d:Math.ceil((dOf(r.date)-dOf(iso(now)))/DAY)})).find(x => x.d>=0);
+    html += lane('health','health', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>',
+      'ซ้อมวันนี้'+(hx.done[iso(now)]?' ✓':''), esc(s.title), race ? `${race.r.flag} ${esc(race.r.short)} อีก ${race.d} วัน` : '');
+  } else html += lane('health','health','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>','ซ้อมวันนี้','—','ยังไม่มีข้อมูล');
+  html += `</section>`;
+  // this week at a glance
+  {
+    const up = M.shifts.filter(s => s.date>=iso(now) && !(st.liveShift && st.liveShift.s===s)).sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start)).slice(0,3);
+    html += `<section class="card s-ledger"><h2>เวรถัดไป</h2><div class="list">${up.map(s => `<div class="li"><span class="grow"><span class="t">${thDate(s.date,true)} ${esc(s.start&&s.end?s.start+'–'+s.end:'')}</span><div class="s">${esc(s.place)} · ${esc(catName(s.cat))}</div></span><b class="amt num">${B(s.amount)}</b></div>`).join('') || '<div class="muted small">ยังไม่ได้ลงเวร</div>'}</div></section>`;
+    if(hx){ html += `<section class="card s-health"><h2>ซ้อมสัปดาห์นี้<span class="meta">W${hx.w} · วิ่ง ${hx.runsIn(hx.w).toFixed(1)}/${hx.Pl.KM[hx.w-1]||0} กม.</span></h2><div class="week">${[0,1,2,3,4,5,6].map(i => { const d = new Date(hx.monday.getTime()+i*DAY), k = iso(d), ss = hx.session(d);
+      return `<div class="day ${k===iso(now)?'today':''} ${hx.done[k]?'done':''} ${ss.rest?'rest':''} ${ss.race?'race':''} ${ss.test?'test':''}" title="${esc(ss.title)}">${TH_D[d.getDay()]}<b>${d.getDate()}</b><span class="k"></span></div>`; }).join('')}</div>
+      <div class="small muted" style="margin-top:10px">พรุ่งนี้: ${esc(hx.session(new Date(now.getTime()+DAY)).title)}</div></section>`; }
+    if(inv){ const mv = inv.rows.concat((inv.I.watchlist||[]).filter(x=>x.dca && x.chg!=null)).filter(x => x.chg!=null).sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg)).slice(0,4);
+      html += `<section class="card s-invest"><h2>ขยับแรงวันนี้</h2><div class="list">${mv.map(x => `<button class="li" data-stock="${esc(x.sym)}">${symBadge(x)}<span class="grow"><span class="t">${esc(x.name)}</span><div class="s">${fmtPx(x.price,x.ccy)}</div></span><b class="num ${x.chg>=0?'pos':'neg'}">${P(x.chg)}</b></button>`).join('')}</div></section>`; }
+  }
+  // what needs attention
+  const notes = [];
+  if(st.unpaid>0) notes.push(['ledger', `ค่าเวรเดือนนี้ที่รอรับ ${amt(B(st.unpaid))}`]);
+  if(st.exp && st.earned>0 && st.exp.total>st.earned) notes.push(['ledger', `ใช้จ่ายเกินรายรับเดือนนี้ ${amt(B(st.exp.total-st.earned))}`]);
+  if(inv){ inv.rows.filter(r => r.exitAt && r.price>=r.exitAt).forEach(r => notes.push(['invest', `${esc(r.sym)} ถึงราคาออก ${fmtPx(r.exitAt, r.ccy)} แล้ว`])); }
+  if(hx){ const med = (hx.H.meds||[])[0]; if(med){ const nd = nextDose(med, now); if(nd.days<=1) notes.push(['health', `${esc(med.name)} ${esc(med.dose)} — ${nd.days<0?'เลยกำหนด':nd.days===0?'วันนี้':'พรุ่งนี้'} (${thDate(nd.due, true)})`]); }
+    const k = hx.runsIn(hx.w), tgt = hx.Pl.KM[hx.w-1]||0; if(tgt && now.getDay()===0 && k<tgt) notes.push(['health', `วิ่งสัปดาห์นี้ ${k.toFixed(1)}/${tgt} กม.`]); }
+  const age = DATA && DATA.generatedAt ? (Date.now()-new Date(DATA.generatedAt))/36e5 : null;
+  if(age!=null && age>6) notes.push(['ledger', `ข้อมูลจาก Mac อัปเดตล่าสุด ${ago(DATA.generatedAt)} — นำเข้าไฟล์ใหม่ได้ที่แท็บข้อมูล`]);
+  html += `<section class="card span3"><h2>ต้องดู${notes.length?`<span class="meta">${notes.length} เรื่อง</span>`:''}</h2>${notes.length ? `<div class="list">${notes.map(n => `<div class="li s-${n[0]}"><span style="width:8px;height:8px;border-radius:50%;background:var(--sec);flex:none"></span><span class="grow">${n[1]}</span></div>`).join('')}</div>` : '<div class="muted small">ไม่มีอะไรค้าง</div>'}</section>`;
+  html += `</div>`;
+  return html;
+}
+function nextDose(med, now){
+  const last = (med.log||[]).map(l => l.due).sort().pop() || med.start;
+  const due = iso(new Date(dOf(last).getTime() + med.everyDays*DAY));
+  return { due, days: Math.round((dOf(due) - dOf(iso(now)))/DAY), last };
+}
+
+/* ---------- LEDGER ---------- */
+function vLedger(){
+  const now = now0(), M = ledgerModel();
+  if(!M.shifts.length && !Object.keys(M.exp).length) return topbar('Ledger') + noData('ledger','รายรับ');
+  const months = [...new Set(M.shifts.map(s => s.date.slice(0,7)).concat(Object.keys(M.exp)))].sort();
+  const cur = mkOf(now); if(!S.ledMonth) S.ledMonth = cur;
+  const mk = S.ledMonth, st = monthStats(M, mk, now), i = months.indexOf(mk);
+  const nav = `<div class="seg" role="group" aria-label="เลือกเดือน"><button data-act="mprev" ${i<=0?'disabled style="opacity:.35"':''} aria-label="เดือนก่อน">‹</button><button aria-pressed="true" data-act="mnow">${thMonth(mk)}</button><button data-act="mnext" ${i>=months.length-1?'disabled style="opacity:.35"':''} aria-label="เดือนถัดไป">›</button></div>`;
+  let h = topbar('Ledger', M.src==='live' ? 'รายรับสดจาก Locum Ledger' : 'รายรับจาก Locum Ledger · '+ago(M.at), '') ;
+  h = h.replace('<button class="iconbtn"', nav + '<button class="iconbtn"');
+  h += `<div class="grid g3 s-ledger">`;
+  // hero
+  const net = st.exp ? st.earned - st.exp.total : null;
+  h += `<section class="card hero span2">
+    <div class="between"><span class="lbl">${st.isCur?'รับแล้วถึงตอนนี้': st.isPast?'รายรับทั้งเดือน':'ลงเวรไว้'}</span>${st.liveShift?`<span class="live" id="l-live">${esc(st.liveShift.s.place||'เวร')} · ${B(st.liveShift.rate)}/ชม.</span>`:''}</div>
+    <div class="big amt" id="l-earn"><small>฿</small>${Math.round(st.isCur||st.isPast ? st.earned : st.booked).toLocaleString('en-US')}</div>
+    <div style="margin-top:12px">${cumChart(mk, st.actualByDay, st.bookedByDay, st.isCur?st.dayIdx: st.isPast? daysIn(mk) : 0, css('--ledger'))}</div>
+    <div class="legend"><span><i style="background:var(--ledger)"></i>รับแล้ว</span><span><i style="background:var(--plan)"></i>รวมเวรที่ลงไว้</span>${st.isCur?'<span><i style="background:var(--pos)"></i>เพซเฉลี่ย</span>':''}</div>
+    <div class="stats">
+      <div class="stat"><b class="amt">${st.isCur?B(st.today):B(st.booked)}</b><span>${st.isCur?'วันนี้':'ลงไว้ทั้งเดือน'}</span></div>
+      <div class="stat"><b class="amt">${st.isCur?B(st.pace):B(st.hours?st.earned/st.hours:0)}</b><span>${st.isCur?'เพซสิ้นเดือน':'เฉลี่ย/ชม.'}</span></div>
+      <div class="stat"><b>${Math.round(st.hours)} ชม.</b><span>ทำงานแล้ว</span></div>
+    </div></section>`;
+  // spending vs income
+  h += `<section class="card"><h2>รับ − จ่าย<span class="meta">${st.exp && st.exp.importedAt ? 'Meowjot '+ago(st.exp.importedAt) : ''}</span></h2>`;
+  if(st.exp){
+    const inc = st.isCur||st.isPast ? st.earned : st.booked, out = st.exp.total||0, inv = st.exp.invest||0, mx = Math.max(inc, out, 1);
+    h += `<div class="mid amt ${net>=0?'pos':'neg'}">${net>=0?'+':'−'}${B(Math.abs(net))}</div><div class="small muted" style="margin-bottom:12px">คงเหลือหลังหักรายจ่าย</div>
+      <div class="between small"><span>รายรับ</span><b class="amt num">${B(inc)}</b></div><div class="bar" style="margin:5px 0 10px"><i style="width:${inc/mx*100}%"></i></div>
+      <div class="between small"><span>รายจ่าย (รวมโอนลงทุน)</span><b class="amt num">${B(out)}</b></div><div class="bar" style="margin:5px 0 10px"><i style="width:${out/mx*100}%;background:var(--ink-soft)"></i></div>
+      ${inv?`<div class="between small"><span>โอนไปลงทุน</span><b class="amt num" style="color:var(--invest)">${B(inv)}</b></div>`:''}`;
+    const days = Object.keys(st.exp.expByDay||{}).sort();
+    if(days.length){ const n = daysIn(mk); const items = []; for(let d=1; d<=n; d++){ const k = mk+'-'+pad(d); items.push({label: d%5===1?String(d):'', v: st.exp.expByDay[k]||0, hi: k===iso(now)}); }
+      h += `<div style="margin-top:12px">${barsSVG(items, {c1:'var(--ink-soft)', h:110, aria:'รายจ่ายรายวัน'})}</div><div class="tiny faint">รายจ่ายรายวัน · วันที่โอนก้อนใหญ่จะสูง</div>`; }
+  } else h += `<div class="muted small">ยังไม่มีรายจ่ายของเดือนนี้ — นำเข้า Meowjot ใน Locum Ledger แล้วกดส่งไป widget</div>`;
+  h += `</section>`;
+  // by kind
+  const ks = Object.entries(st.kinds).sort((a,b)=>b[1].v-a[1].v), kmax = Math.max(1, ...ks.map(k=>k[1].v));
+  h += `<section class="card"><h2>แยกตามงาน</h2><div class="list">${ks.map(([k,v]) => `<div class="li" style="display:block"><div class="between"><span class="t">${KIND[k][0]}</span><span class="num"><span class="faint small">${k==='shift'?Math.round(v.h)+' ชม.':v.n+' เคส'}</span> &nbsp;<b class="amt">${B(v.v)}</b></span></div><div class="bar" style="margin-top:6px;height:6px"><i style="width:${v.v/kmax*100}%;background:${KIND[k][1]}"></i></div></div>`).join('') || '<div class="muted small">ไม่มีรายการ</div>'}</div></section>`;
+  // month history
+  const hist = months.filter(m => m<=cur).slice(-6).map(m => { const s2 = monthStats(M, m, now); return { label: TH_M[+m.slice(5)-1], v: s2.isCur? s2.earned : s2.earned, v2: (M.exp[m]||{}).total||0, hi: m===mk }; });
+  h += `<section class="card"><h2>ย้อนหลัง</h2>${barsSVG(hist, {c1:'var(--ledger)', c2:'var(--ink-faint)', aria:'รายรับเทียบรายจ่ายรายเดือน'})}<div class="legend"><span><i style="background:var(--ledger)"></i>รายรับ</span><span><i style="background:var(--ink-faint)"></i>รายจ่าย</span></div></section>`;
+  // shifts list
+  const list = st.inMonth.slice().sort((a,b) => (a.date+a.start).localeCompare(b.date+b.start));
+  const upcoming = list.filter(s => s.date>=iso(now)), past = list.filter(s => s.date<iso(now)).reverse();
+  const row = s => { const e = st.isCur ? earnedNow(s, now) : s.amount, live = st.liveShift && st.liveShift.s===s;
+    return `<div class="li"><div style="width:44px;text-align:center;flex:none"><div class="tiny faint">${TH_D[dOf(s.date).getDay()]}</div><div class="mid" style="font-size:19px">${dOf(s.date).getDate()}</div></div>
+      <div class="grow"><div class="t">${esc(catName(s.cat))}${live?' <span class="live" style="margin-left:4px">สด</span>':''}</div><div class="s">${esc([s.place, s.start&&s.end?s.start+'–'+s.end:'', s.note].filter(Boolean).join(' · '))}</div></div>
+      <div class="r"><div class="num amt" style="font-weight:700">${B(s.amount)}</div><div class="tiny">${s.planned&&e<s.amount?'<span class="faint">ลงไว้</span>':s.paid?'<span class="pos">ได้รับแล้ว</span>':'<span style="color:var(--warn)">รอรับ</span>'}</div></div></div>`; };
+  if(upcoming.length) h += `<section class="card"><h2>เวรที่จะถึง<span class="meta">${upcoming.length} รายการ</span></h2><div class="list">${upcoming.slice(0,8).map(row).join('')}</div></section>`;
+  h += `<section class="card span3"><h2>รายการล่าสุด<span class="meta">${past.length} รายการ</span></h2><div class="list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));column-gap:28px">${past.slice(0,12).map(row).join('').replace(/class="li"/g,'class="li" style="border-top:1px solid var(--line)"') || '<div class="muted small">ยังไม่มี</div>'}</div></section>`;
+  h += `</div>`;
+  return h;
+}
+
+/* ---------- INVEST ---------- */
+function vInvest(){
+  const m = investModel(); if(!m) return topbar('Invest') + noData('invest','พอร์ต');
+  const I = m.I, now = now0();
+  let h = topbar('Invest', 'ราคา '+ago(I.pricesAt) + (I.dca && I.dca.policyV ? ' · DCA '+esc(I.dca.policyV) : ''));
+  h += `<div class="grid g3 s-invest">`;
+  // hero
+  const ms = (I.plan && I.plan.milestones) || [1e6], next = ms.find(x => x>m.total) || ms[ms.length-1];
+  h += `<section class="card hero span2"><div class="between"><span class="lbl">มูลค่าพอร์ต + เงินสด</span><span class="chip ${m.day>=0?'pos':'neg'}">${amt((m.day>=0?'+':'−')+B(Math.abs(m.day)))} วันนี้</span></div>
+    <div class="big amt"><small>฿</small>${Math.round(m.total).toLocaleString('en-US')}</div>
+    <div class="small muted">หุ้น/คริปโต ${amt(B(m.val))} · ${esc((I.cash&&I.cash.label)||'เงินสด')} ${amt(B(m.cash))} · กำไร ${amt(`<span class="${m.val-m.cost>=0?'pos':'neg'}">${(m.val-m.cost>=0?'+':'−')+B(Math.abs(m.val-m.cost))}</span>`)}</div>
+    <div style="margin-top:16px"><div class="between small"><span>เป้าถัดไป ${Bk(next)}</span><b class="num">${(m.total/next*100).toFixed(m.total/next<.1?1:0)}%</b></div>
+    <div class="bar" style="height:10px;margin-top:6px"><i style="width:${clamp(m.total/next*100,1,100)}%"></i></div>
+    <div class="tiny faint" style="margin-top:6px">หลักไมล์ ${ms.map(Bk).join(' → ')}</div></div></section>`;
+  // DCA this month
+  const D = I.dca||{}, R = I.route||{}, invM = ((DATA.ledger||{}).investByMonth||{})[mkOf(now)]||0;
+  const sure = D.sure||0, fast = D.fast||0, stockShare = D.stock!=null?D.stock:.8, total = sure+fast;
+  const payday = R.payday||25, pd = new Date(now.getFullYear(), now.getMonth(), payday); if(pd < dOf(iso(now))) pd.setMonth(pd.getMonth()+1);
+  const dleft = Math.round((pd - dOf(iso(now)))/DAY);
+  h += `<section class="card"><h2>DCA เดือนนี้<span class="meta">${dleft===0?'วันนี้วันเงินเข้า':'อีก '+dleft+' วันถึงวันที่ '+payday}</span></h2>
+    <div class="mid amt">${B(invM)} <span class="small muted" style="font-family:var(--font);font-weight:500">/ ${B(total)}</span></div>
+    <div class="bar" style="height:10px;margin:8px 0 14px"><i style="width:${clamp(invM/(total||1)*100,0,100)}%"></i></div>
+    <div class="list">
+      <div class="li"><span class="grow"><span class="t">รวยแน่</span><div class="s">${esc((D.sureSyms||[]).join(', '))} · ${esc(R.us||'')} DCA plan วันที่ ${R.planDay||'—'}</div></span><b class="amt num">${B(sure)}</b></div>
+      <div class="li"><span class="grow"><span class="t">รวยเร็ว · หุ้น ${Math.round(stockShare*100)}%</span><div class="s">ตามรายการ DCA ด้านล่าง · ${esc(R.us||'')}</div></span><b class="amt num">${B(fast*stockShare)}</b></div>
+      <div class="li"><span class="grow"><span class="t">รวยเร็ว · BTC ${Math.round((1-stockShare)*100)}%</span><div class="s">${esc(R.btc||'')} ก้อนเดียวต่อเดือน</div></span><b class="amt num">${B(fast*(1-stockShare))}</b></div>
+    </div></section>`;
+  // holdings
+  h += `<section class="card span2"><h2>ที่ถืออยู่<span class="meta">${m.rows.length} ตัว</span></h2><div class="list">${m.rows.map(r => `
+    <button class="li" data-stock="${esc(r.sym)}">${symBadge(r)}<span class="grow"><span class="t">${esc(r.name)}</span><div class="s">${esc(r.sym)} · ${fmtPx(r.price, r.ccy)} <span class="${(r.chg||0)>=0?'pos':'neg'}">${P(r.chg)}</span>${r.where?' · '+esc(r.where):''}</div></span>
+    ${sparkSVG(r.spark, (r.chg||0)>=0?css('--pos'):css('--neg'))}
+    <span class="r"><div class="num amt" style="font-weight:700">${B(r.valTHB)}</div><div class="tiny ${r.pl>=0?'pos':'neg'} num">${P(r.plPct)}</div></span></button>`).join('')}</div></section>`;
+  // allocation
+  const MK_C = { USA:'#4C7DF0', China:'#E0644E', Crypto:'#E9A23B', Thailand:'#2F8A5F', Global:'#7A6FD0' };
+  const parts = Object.entries(m.byMkt).sort((a,b)=>b[1]-a[1]).map(([k,v],i) => ({k, v, c: MK_C[k] || ['#9C7BEA','#3FB6B2','#B0B7C3'][i%3]}));
+  if(m.cash) parts.push({k:'เงินสด', v:m.cash, c:'var(--ink-faint)'});
+  const ptot = parts.reduce((a,p)=>a+p.v,0)||1;
+  h += `<section class="card"><h2>สัดส่วน</h2><div class="row" style="gap:18px;align-items:center"><div class="ring">${donutSVG(parts)}<div class="in"><b class="mid amt" style="font-size:17px">${Bk(m.total)}</b></div></div>
+    <div class="grow" style="flex:1;min-width:0">${parts.map(p => `<div class="between small" style="padding:3px 0"><span><i style="display:inline-block;width:9px;height:9px;border-radius:3px;background:${p.c};margin-right:7px"></i>${esc(p.k)}</span><b class="num">${(p.v/ptot*100).toFixed(0)}%</b></div>`).join('')}</div></div></section>`;
+  // watchlist
+  const W = I.watchlist||[];
+  const segs = [['dca','รายการ DCA', W.filter(x=>x.dca)], ['podium','คิวถัดไป', W.filter(x=>x.tier==='podium')], ['all','ทั้งหมด', W]];
+  const seg = segs.find(s => s[0]===S.invSeg) || segs[0];
+  let rows = seg[2]; if(S.q) { const q = S.q.toLowerCase(); rows = W.filter(x => (x.sym+' '+x.name).toLowerCase().includes(q)); }
+  h += `<section class="card span3"><div class="between" style="flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Watchlist</h2>
+    <div class="seg" role="group">${segs.map(s => `<button data-seg="${s[0]}" aria-pressed="${s===seg&&!S.q}">${s[1]} <span class="faint">${s[2].length}</span></button>`).join('')}</div></div>
+    <input type="search" id="wq" placeholder="ค้นหาชื่อหุ้น" value="${esc(S.q)}" style="margin-bottom:6px" aria-label="ค้นหา">
+    <div class="list wl" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));column-gap:24px">${rows.map(x => `
+    <button class="li" data-stock="${esc(x.sym)}" style="border-top:1px solid var(--line)">${symBadge(x)}<span class="grow"><span class="t">${esc(x.name)}</span><div class="s">${esc(x.sym)} · ${fmtPx(x.price, x.ccy)} ${x.chg!=null?`<span class="${x.chg>=0?'pos':'neg'}">${P(x.chg)}</span>`:''}</div></span>
+    <span class="r">${verdictChip(x)}</span></button>`).join('') || '<div class="muted small" style="padding:10px 0">ไม่พบ</div>'}</div></section>`;
+  h += `</div>`;
+  return h;
+}
+function stockSheet(sym){
+  const m = investModel(); if(!m) return;
+  const x = m.rows.find(r => r.sym===sym) || (m.I.watchlist||[]).find(r => r.sym===sym); if(!x) return;
+  const th = x.thesis, f = x.funnel, v = x.verdict, e = x.earnings;
+  let h = `<div class="s-invest"><div class="row" style="margin-bottom:10px">${symBadge(x)}<div class="grow" style="flex:1"><div style="font-weight:750;font-size:18px">${esc(x.name)}</div><div class="small muted">${esc(x.sym)} · ${esc(x.market||'')}${x.where?' · '+esc(x.where):''}</div></div>${verdictChip(x)}</div>
+  <div class="row" style="align-items:flex-end;gap:14px;margin-bottom:12px"><div class="mid">${fmtPx(x.price, x.ccy)}</div>${x.chg!=null?`<span class="${x.chg>=0?'pos':'neg'} small num">${P(x.chg)} วันนี้</span>`:''}<span style="margin-left:auto">${sparkSVG(x.spark, x.chg>=0?css('--pos'):css('--neg'), 110, 34)}</span></div>`;
+  if(x.valTHB!=null) h += `<dl class="kv card" style="margin:0 0 12px"><dt>มูลค่า</dt><dd class="amt">${B(x.valTHB)}</dd><dt>ต้นทุน</dt><dd class="amt">${B(x.costTHB)}</dd><dt>กำไร/ขาดทุน</dt><dd class="amt ${x.pl>=0?'pos':'neg'}">${(x.pl>=0?'+':'−')+B(Math.abs(x.pl))} (${P(x.plPct)})</dd><dt>จำนวน</dt><dd>${(+x.units).toLocaleString('en-US',{maximumFractionDigits:8})}</dd>${x.exitAt?`<dt>ราคาออก</dt><dd>${fmtPx(x.exitAt, x.ccy)}</dd>`:''}</dl>`;
+  if(th) h += `<h3 style="font-size:14px;margin:14px 0 4px">Thesis ของฉัน <span class="chip" style="margin-left:4px">${esc(th.status||'')}</span></h3><div class="quote">${esc(th.one)}</div>
+    ${th.pillars&&th.pillars.length?`<div class="small"><b>เสาหลัก</b><ul class="plain">${th.pillars.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>`:''}
+    ${th.breaks&&th.breaks.length?`<div class="small" style="margin-top:8px"><b>ขายเมื่อ</b><ul class="plain">${th.breaks.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>`:''}`;
+  if(f) h += `<h3 style="font-size:14px;margin:16px 0 4px">Funnel ${f.grade?'· เกรด '+esc(f.grade):''}</h3><p class="small" style="margin:0 0 6px">${esc(f.one||'')}</p>${f.dcaFit?`<div class="small muted">DCA: ${esc(f.dcaFit)}</div>`:''}`;
+  if(e) h += `<h3 style="font-size:14px;margin:16px 0 4px">งบล่าสุด ${esc(e.label||'')} · ${esc(e.verdict||'')}</h3><p class="small" style="margin:0">${esc(e.one||'')}</p>`;
+  if(v && v.levels && v.levels.length) h += `<h3 style="font-size:14px;margin:16px 0 4px">โซนซื้อ</h3><div class="row" style="flex-wrap:wrap;gap:6px">${v.levels.map(l=>`<span class="chip sec">≤ ${fmtPx(l.p, x.ccy)} · ×${l.x}</span>`).join('')}</div>${v.call?`<div class="small muted" style="margin-top:6px">${esc(v.call)}${v.val?' · '+esc(v.val):''}</div>`:''}`;
+  h += `</div>`;
+  openSheet(h);
+}
+
+/* ---------- HEALTH ---------- */
+function vHealth(){
+  const now = now0(), x = healthModel(now); if(!x) return topbar('Health') + noData('health','สุขภาพ/HYROX');
+  const { H, Pl } = x, today = iso(now), s = x.session(now);
+  const PH = { base:'พื้นฐาน', build:'สร้างความทน', specific:'เฉพาะการแข่ง', recovery:'ฟื้นตัว', doubles:'เตรียม Doubles' };
+  let h = topbar('Health', x.w>=1&&x.w<=21 ? `สัปดาห์ ${x.w}/21 · ${PH[x.phase]}` : 'HYROX');
+  h += `<div class="grid g3 s-health">`;
+  // hero: today's session
+  const isDone = !!x.done[today];
+  h += `<section class="card hero span2"><div class="between"><span class="lbl">ซ้อมวันนี้</span>${s.race?'<span class="chip sec">วันแข่ง</span>':s.test?'<span class="chip" style="background:rgba(217,84,139,.14);color:#D9548B">เทสต์</span>':''}</div>
+    <div style="font-family:var(--display);font-size:clamp(26px,6.4vw,36px);font-weight:750;letter-spacing:-.02em;line-height:1.15;margin:6px 0 8px">${esc(s.title)}</div>
+    <p style="margin:0 0 6px;max-width:68ch">${esc(s.detail||'')}</p>${s.where?`<div class="small muted">📍 ${esc(s.where)}</div>`:''}
+    <div class="row" style="margin-top:14px;flex-wrap:wrap"><button class="btn ${isDone?'ghost':'sec'}" data-act="hxdone">${isDone?'ซ้อมเสร็จแล้ว ✓ · แตะเพื่อยกเลิก':'ซ้อมเสร็จแล้ว'}</button><button class="btn ghost" data-act="hxkm">+ บันทึกกิโลวิ่ง</button></div>
+    <div class="week" style="margin-top:16px">${[0,1,2,3,4,5,6].map(i => { const d = new Date(x.monday.getTime()+i*DAY), k = iso(d), ss = x.session(d);
+      return `<div class="day ${k===today?'today':''} ${x.done[k]?'done':''} ${ss.rest?'rest':''} ${ss.race?'race':''} ${ss.test?'test':''}" title="${esc(ss.title)}">${TH_D[d.getDay()]}<b>${d.getDate()}</b><span class="k"></span></div>`; }).join('')}</div></section>`;
+  // races
+  h += `<section class="card"><h2>นับถอยหลัง</h2>${Pl.RACES.map(r => { const d = Math.ceil((dOf(r.date)-dOf(today))/DAY); const tot = Math.ceil((dOf(r.date)-dOf(Pl.START))/DAY);
+    return `<div style="margin-bottom:14px"><div class="between"><span style="font-weight:650">${r.flag} ${esc(r.short)} <span class="faint small">${esc(r.fmt)}</span></span><span class="mid" style="font-size:22px">${d>=0?d:'จบ'}<span class="small muted" style="font-family:var(--font)"> ${d>=0?'วัน':''}</span></span></div><div class="bar" style="margin-top:6px"><i style="width:${clamp((1-d/tot)*100,2,100)}%"></i></div><div class="tiny faint" style="margin-top:4px">${esc(r.sub)}</div></div>`; }).join('')}
+    <div class="small"><b>เป้า 1:42</b><div class="row" style="gap:2px;margin-top:6px;height:10px;border-radius:5px;overflow:hidden">${Pl.TARGET.map((t,i)=>`<i style="flex:${t.sec};height:100%;background:${['var(--health)','var(--ledger)','var(--ink-faint)'][i]}"></i>`).join('')}</div>
+    <div class="tiny muted" style="margin-top:5px">${Pl.TARGET.map(t=>esc(t.label)+' '+esc(t.time)).join(' · ')}</div></div></section>`;
+  // km this week
+  const k = x.runsIn(x.w), tgt = Pl.KM[x.w-1]||0;
+  const weeks = []; for(let w = Math.max(1, x.w-5); w <= Math.min(21, x.w+2); w++) weeks.push({ label:'W'+w, v: w<=x.w ? x.runsIn(w) : 0, v2: Pl.KM[w-1]||0, hi: w===x.w });
+  h += `<section class="card"><h2>วิ่งสัปดาห์นี้<span class="meta">เป้า ${tgt} กม.</span></h2><div class="row" style="gap:16px"><div class="ring">${ringSVG(tgt?k/tgt:0, 92, 10, 'var(--health)')}<div class="in"><b class="mid" style="font-size:20px">${k.toFixed(1)}</b><div class="tiny faint">กม.</div></div></div>
+    <div class="grow" style="flex:1">${barsSVG(weeks, {c1:'var(--health)', c2:'var(--line-2)', h:110, aria:'กิโลวิ่งรายสัปดาห์เทียบเป้า'})}</div></div>
+    <div class="list" style="margin-top:6px">${(H.runs||[]).slice(-3).reverse().map(r => `<div class="li"><span class="grow"><span class="t">${esc(r.name||'วิ่ง')}</span><div class="s">${thDate(r.date,true)}${r.where?' · '+esc(r.where):''}</div></span><span class="r num small"><b>${(+r.km).toFixed(2)} กม.</b><div class="faint">${esc(r.pace||'')}/กม. · ${esc(r.dur||'')}</div></span></div>`).join('')}</div></section>`;
+  // nutrition
+  const N = Pl.NUT||{}, nutDays = H.nut || {}, td = (H.today && H.today.date===today) ? H.today : (nutDays[today]||null);
+  const mac = [['kcal','kcal','var(--health)'],['protein','โปรตีน g','var(--ledger)'],['carbs','คาร์บ g','#3E8FD0'],['fat','ไขมัน g','var(--ink-soft)']];
+  const last7 = []; for(let i=6;i>=0;i--){ const d = new Date(dOf(today).getTime()-i*DAY), kk = iso(d); last7.push({label:TH_D[d.getDay()], v:(nutDays[kk]||{}).kcal||0, hi:kk===today}); }
+  h += `<section class="card"><h2>อาหารวันนี้<span class="meta">${td?'':'ยังไม่ได้บันทึก'}</span></h2><div class="rings">${mac.map(([f,l,c]) => { const v = td? +td[f]||0 : 0, t = N[f]||1;
+    return `<div><div class="ring" style="margin:0 auto">${ringSVG(v/t, 64, 7, c)}<div class="in"><b>${Math.round(v)}</b></div></div><div class="cap">${l}<br><span class="faint">/ ${t}</span></div></div>`; }).join('')}</div>
+    ${td && td.source ? `<p class="small muted" style="margin:10px 0 0">${esc(td.source)}</p>` : ''}
+    <div style="margin-top:10px">${barsSVG(last7, {c1:'var(--health)', target:N.kcal, h:100, aria:'แคลอรี 7 วัน'})}</div><div class="tiny faint">7 วัน · เส้นประ = เป้า ${N.kcal} kcal</div></section>`;
+  // body + meds + weather
+  const wt = (H.weight||[]).slice(-1)[0], med = (H.meds||[])[0];
+  let wxh = '';
+  if(H.wx && H.wx.hourly){ const hw = H.wx.hourly; const idx = hw.time.map((t,i)=>[t,i]).filter(([t]) => t.slice(0,10)===today && +t.slice(11,13)>=16 && +t.slice(11,13)<=20);
+    if(idx.length) wxh = `<div style="margin-top:12px"><div class="small" style="font-weight:650;margin-bottom:6px">ช่วงซ้อมเย็น</div><div class="row" style="gap:6px;overflow-x:auto">${idx.map(([t,i]) => `<div class="day" style="min-width:52px;flex:1"><span>${t.slice(11,16)}</span><b>${Math.round(hw.apparent_temperature[i])}°</b><span class="tiny">${hw.precipitation_probability[i]}% ฝน</span></div>`).join('')}</div><div class="tiny faint" style="margin-top:4px">อุณหภูมิที่รู้สึก · เกาะเต่า</div></div>`; }
+  h += `<section class="card"><h2>ร่างกาย</h2><dl class="kv">${wt?`<dt>น้ำหนัก</dt><dd>${wt.kg} kg <span class="faint small">${thDate(wt.date)}</span></dd>`:''}
+    ${med?(()=>{ const nd = nextDose(med, now); return `<dt>${esc(med.name)} ${esc(med.dose)}</dt><dd>${nd.days<0?'<span class="neg">เลยกำหนด</span>':nd.days===0?'<span style="color:var(--warn)">วันนี้</span>':'อีก '+nd.days+' วัน'} <span class="faint small">${thDate(nd.due,true)}</span></dd>`; })():''}</dl>${wxh}</section>`;
+  // last race vs plan
+  const res = (H.results||[])[0];
+  if(res && Pl.STN){ const rows = Pl.STN.map(sn => { const a = secOf((res.stations||{})[sn.k]); return { n:sn.s, a, t:sn.t, d:a-sn.t }; }).sort((p,q)=>q.d-p.d);
+    const mx = Math.max(...rows.map(r=>Math.max(r.a,r.t)),1);
+    h += `<section class="card span2"><h2>${esc(res.event)} ${esc(res.total)} → เป้า 1:42<span class="meta">${thDate(res.date)}</span></h2><div class="small muted" style="margin-bottom:10px">สถานีที่ห่างเป้ามากสุดอยู่บนสุด · แถบเทา = เวลาเป้า</div>
+      ${rows.map(r => `<div style="display:grid;grid-template-columns:62px 1fr 92px;gap:10px;align-items:center;padding:4px 0"><span class="small" style="font-weight:600">${esc(r.n)}</span>
+      <span style="position:relative;height:14px"><i style="position:absolute;left:0;top:0;height:100%;width:${r.t/mx*100}%;background:var(--line-2);border-radius:4px"></i><i style="position:absolute;left:0;top:4px;height:6px;width:${r.a/mx*100}%;background:${r.d>120?'var(--neg)':'var(--health)'};border-radius:3px"></i></span>
+      <span class="small num" style="text-align:right">${mmss(r.a)} <span class="${r.d>0?'neg':'pos'}">${r.d>0?'+':'−'}${mmss(Math.abs(r.d))}</span></span></div>`).join('')}
+      <div class="small" style="margin-top:10px"><b>กติกาวันแข่ง</b><ul class="plain">${(Pl.RACE_RULES||[]).map(r=>`<li>${esc(r)}</li>`).join('')}</ul></div></section>`; }
+  // trip
+  const trip = (H.trip||[])[0];
+  if(trip){ h += `<section class="card"><h2>ทริป ${trip.race==='hk-2027'?'🇭🇰 ฮ่องกง':'🇹🇼 ไทเป'}</h2><div class="list">${(trip.legs||[]).map(l => `<div class="li"><span style="font-size:18px">${l.type==='flight'?'✈️':l.type==='race'?'🏁':'📍'}</span><span class="grow"><span class="t">${esc(l.title)}</span><div class="s">${esc([l.from,l.to].filter(Boolean).join(' → '))} · ${thDate(l.start.slice(0,10),true)} ${l.start.slice(11,16)!=='00:00'?l.start.slice(11,16):''}</div></span><span class="chip pos">จองแล้ว</span></div>`).join('')}</div>
+    ${(trip.todo||[]).length?`<div class="small" style="margin-top:8px"><b style="color:var(--warn)">ยังต้องทำ ${trip.todo.length}</b><ul class="plain">${trip.todo.slice(0,5).map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:''}</section>`; }
+  // events
+  const ev = (H.events||[]).filter(e => (e.end||e.start) >= today).slice(0,8);
+  if(ev.length) h += `<section class="card span3"><h2>สนามที่น่าไป<span class="meta">เช็กล่าสุด ${ago(H.eventsAt)}</span></h2><div class="list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));column-gap:24px">${ev.map(e => {
+      const st = {on_sale:['เปิดจอง','pos'],sold_out:['เต็ม','neg'],presale:['พรีเซล','warn'],coming_soon:['เร็วๆ นี้',''],waitlist:['รอคิว','warn'],completed:['จบแล้ว','']}[e.status]||[e.status||'',''];
+      return `<a class="li" href="${esc(e.url||'#')}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-top:1px solid var(--line)"><span style="font-size:22px">${e.flag||'🏁'}</span><span class="grow"><span class="t">${esc(e.city)}${e.mine?' · ของฉัน':e.fav?' ♥':''}</span><div class="s">${thDate(e.start)}${e.end&&e.end!==e.start?'–'+thDate(e.end):''} · ${esc(e.name)}</div></span>${st[0]?`<span class="chip ${st[1]}">${st[0]}</span>`:''}</a>`; }).join('')}</div></section>`;
+  h += `</div>`;
+  return h;
+}
+
+/* ---------- SETTINGS / DATA ---------- */
+function vSettings(){
+  const d = DATA, live = locumLive();
+  let h = topbar('ข้อมูล', 'แหล่งข้อมูลและการตั้งค่า');
+  h += `<div class="grid g2">`;
+  h += `<section class="card s-ledger span2"><h2>นำเข้าข้อมูลจาก Mac</h2>
+    <div class="drop" id="drop"><p style="margin:0 0 6px;font-weight:650">ลากไฟล์ ledger-app-data.json มาวาง หรือเลือกไฟล์</p>
+    <p class="small muted" style="margin:0 0 14px;max-width:60ch;margin-inline:auto">Mac รวมข้อมูลจาก widget ทั้งสามตัวเป็นไฟล์นี้ให้ทุก 10 นาที อยู่ที่ iCloud Drive › Scriptable — บน iPhone/iPad เลือกจากแอป Files ได้เลย</p>
+    <button class="btn sec" data-act="import">เลือกไฟล์ข้อมูล</button></div></section>`;
+  const src = (name, ok, at, note) => `<div class="li"><span style="width:9px;height:9px;border-radius:50%;background:${ok?'var(--pos)':'var(--line-2)'};flex:none"></span><span class="grow"><span class="t">${name}</span><div class="s">${note}</div></span><span class="small faint">${at}</span></div>`;
+  h += `<section class="card"><h2>แหล่งข้อมูล</h2><div class="list">
+    ${src('ไฟล์จาก Mac', !!d, d? ago(d.generatedAt):'ยังไม่มี', d? 'สร้าง '+new Date(d.generatedAt).toLocaleString('th-TH'):'นำเข้าด้านบน')}
+    ${src('Locum Ledger (สด)', !!live, live?'ใช้อยู่':'—', live? live.shifts.length+' รายการในเบราว์เซอร์นี้' : 'เปิดแอปนี้จากเว็บเดียวกับ Locum Ledger เพื่ออ่านสด')}
+    ${src('INVEST', !!(d&&d.invest), d&&d.invest? ago(d.invest.pricesAt):'—', d&&d.invest? (d.invest.holdings||[]).length+' ตัวที่ถือ · '+(d.invest.watchlist||[]).length+' ใน watchlist':'')}
+    ${src('HYROX / Health', !!(d&&d.health), d&&d.health? ago(d.health.eventsAt):'—', d&&d.health? (d.health.runs||[]).length+' รอบวิ่ง · อาหาร '+Object.keys(d.health.nut||{}).length+' วัน':'')}
+  </div></section>`;
+  const th = ls.get(K.theme,'auto');
+  h += `<section class="card"><h2>การแสดงผล</h2><div class="between" style="margin-bottom:12px"><span>ธีม</span><div class="seg" role="group">${[['auto','อัตโนมัติ'],['light','สว่าง'],['dark','มืด']].map(([k,l]) => `<button data-theme="${k}" aria-pressed="${th===k}">${l}</button>`).join('')}</div></div>
+    <div class="between"><span>ซ่อนตัวเลขเงิน</span><button class="btn ghost" data-act="eye">${document.body.classList.contains('hide-amt')?'แสดง':'ซ่อน'}</button></div>
+    <p class="small muted" style="margin:14px 0 0">บน iPhone/iPad: Safari › แชร์ › เพิ่มไปยังหน้าจอโฮม เพื่อเปิดเต็มจอเหมือนแอป</p>
+    <div style="margin-top:14px"><button class="btn ghost" data-act="wipe">ลบข้อมูลในเครื่องนี้</button></div></section>`;
+  h += `</div>`;
+  return h;
+}
+
+/* ================= router & events ================= */
+const VIEWS = { home:vHome, ledger:vLedger, invest:vInvest, health:vHealth, settings:vSettings };
+function render(){
+  if(!VIEWS[S.view]) S.view = 'home';
+  document.body.dataset.view = S.view;
+  const main = $('#main');
+  main.className = S.view==='invest'?'s-invest': S.view==='health'?'s-health':'s-ledger';
+  main.innerHTML = VIEWS[S.view]();
+  document.querySelectorAll('#nav button[data-go]').forEach(b => b.setAttribute('aria-current', b.dataset.go===S.view ? 'page' : 'false'));
+  $('#navfoot').textContent = DATA ? 'ข้อมูล Mac · '+ago(DATA.generatedAt) : 'ยังไม่มีข้อมูล';
+  const wq = $('#wq'); if(wq){ wq.addEventListener('input', () => { S.q = wq.value; const pos = wq.selectionStart; render(); const n = $('#wq'); n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} }); }
+  const drop = $('#drop'); if(drop){
+    ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+    ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+    drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if(f) readFile(f); });
+  }
+}
+function go(v){ S.view = v; ls.set(K.view, v); render(); window.scrollTo({top:0}); }
+function openSheet(html){ $('#sheetbody').innerHTML = html; document.body.classList.add('sheet-open'); }
+function closeSheet(){ document.body.classList.remove('sheet-open'); }
+$('#sheetbg').addEventListener('click', closeSheet);
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeSheet(); });
+(() => { let y0 = null; const sh = $('#sheet'); sh.addEventListener('touchstart', e => { if(sh.scrollTop<=0) y0 = e.touches[0].clientY; }, {passive:true});
+  sh.addEventListener('touchmove', e => { if(y0!=null && e.touches[0].clientY - y0 > 90){ y0 = null; closeSheet(); } }, {passive:true}); sh.addEventListener('touchend', () => y0 = null); })();
+
+function readFile(f){
+  const r = new FileReader();
+  r.onload = () => { try{ const d = JSON.parse(r.result); if(d.app!=='ledger-app-data') throw 0; DATA = d; ls.set(K.data, d); toast('นำเข้าแล้ว · ข้อมูล '+ago(d.generatedAt)); render(); }
+    catch(e){ toast('ไฟล์นี้ไม่ใช่ ledger-app-data.json — เลือกไฟล์จาก iCloud Drive › Scriptable'); } };
+  r.readAsText(f, 'utf-8');
+}
+$('#file').addEventListener('change', e => { const f = e.target.files[0]; e.target.value=''; if(f) readFile(f); });
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-go],[data-act],[data-stock],[data-seg],[data-theme]'); if(!t) return;
+  if(t.dataset.go){ go(t.dataset.go); return; }
+  if(t.dataset.stock){ stockSheet(t.dataset.stock); return; }
+  if(t.dataset.seg){ S.invSeg = t.dataset.seg; S.q=''; ls.set(K.invSeg, S.invSeg); render(); return; }
+  if(t.dataset.theme){ ls.set(K.theme, t.dataset.theme); applyTheme(); render(); return; }
+  const a = t.dataset.act, now = now0();
+  if(a==='eye'){ document.body.classList.toggle('hide-amt'); ls.set(K.hide, document.body.classList.contains('hide-amt')); render(); }
+  else if(a==='import'){ $('#file').click(); }
+  else if(a==='mprev' || a==='mnext'){ const M = ledgerModel(); const months = [...new Set(M.shifts.map(s => s.date.slice(0,7)).concat(Object.keys(M.exp)))].sort(); const i = months.indexOf(S.ledMonth); const j = clamp(i + (a==='mprev'?-1:1), 0, months.length-1); S.ledMonth = months[j]; render(); }
+  else if(a==='mnow'){ S.ledMonth = mkOf(now); render(); }
+  else if(a==='hxdone'){ const d = ls.get(K.hxDone, {}), k = iso(now); const x = healthModel(now); if(x && x.done[k]) d[k] = false; else d[k] = true; if(d[k]===false && !((DATA.health.state||{}).done||{})[k]) delete d[k]; ls.set(K.hxDone, d); render(); }
+  else if(a==='hxkm'){ const x = healthModel(now); if(!x) return; const v = parseFloat(String(prompt('วิ่งไปกี่กิโล? (ใส่ค่าติดลบเพื่อลบออก)','')||'').replace(',','.')); if(isNaN(v)) return; const km = ls.get(K.hxKm, {}); const wk = 'w'+x.w; km[wk] = Math.round(((+km[wk]||0)+v)*10)/10; ls.set(K.hxKm, km); toast('บันทึก '+v+' กม.'); render(); }
+  else if(a==='wipe'){ if(confirm('ลบข้อมูลที่นำเข้าไว้ในเครื่องนี้? (ไม่กระทบ Locum Ledger และไฟล์บน Mac)')){ try{ [K.data,K.hxDone,K.hxKm].forEach(k => { localStorage.removeItem(k); localStorage.removeItem(k+'~mirror'); }); }catch(e){} DATA = null; render(); } }
+});
+
+function applyTheme(){ const t = ls.get(K.theme,'auto'); if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t); }
+applyTheme();
+if(ls.get(K.hide,false)) document.body.classList.add('hide-amt');
+
+/* ticking: the live shift clock updates every second without re-rendering the page */
+setInterval(() => {
+  if(S.view!=='home' && S.view!=='ledger') return;
+  const now = now0(), M = ledgerModel(), mk = S.view==='ledger' ? S.ledMonth : mkOf(now);
+  if(mk!==mkOf(now)) return;
+  const st = monthStats(M, mk, now); if(!st.liveShift) return;
+  const el = $(S.view==='home'?'#h-earn':'#l-earn'); if(el) el.innerHTML = '<small>฿</small>'+Math.round(st.earned).toLocaleString('en-US');
+  const td = $('#h-today'); if(td) td.textContent = B(st.today);
+}, 1000);
+// redraw when coming back to the app (date/prices may have moved on)
+document.addEventListener('visibilitychange', () => { if(!document.hidden) render(); });
+
+/* first run on a Mac served next to the file: pick it up automatically */
+(async () => {
+  render();
+  try{ const r = await fetch('./ledger-app-data.json', {cache:'no-store'}); if(r.ok){ const d = await r.json(); if(d.app==='ledger-app-data' && (!DATA || d.generatedAt > DATA.generatedAt)){ DATA = d; ls.set(K.data, d); render(); } } }catch(e){}
+})();
+</script>
+</body>
+</html>
