@@ -269,6 +269,7 @@ const ls = {
   set(k, v){ try{ const t = JSON.stringify(v); localStorage.setItem(k, t); localStorage.setItem(k+'~mirror', t); }catch(e){} },
   raw(k){ try{ return localStorage.getItem(k) ?? localStorage.getItem(k+'~mirror'); }catch(e){ return null; } }
 };
+const APP_V = 'v2.1';
 let DATA = ls.get(K.data, null);
 const S = { view: ls.get(K.view,'home'), ledMonth: null, invSeg: ls.get(K.invSeg,'dca'), q:'' };
 
@@ -761,7 +762,7 @@ function vSettings(){
   const th = ls.get(K.theme,'auto');
   h += `<section class="card"><h2>การแสดงผล</h2><div class="between" style="margin-bottom:12px"><span>ธีม</span><div class="seg" role="group">${[['auto','อัตโนมัติ'],['light','สว่าง'],['dark','มืด']].map(([k,l]) => `<button data-theme="${k}" aria-pressed="${th===k}">${l}</button>`).join('')}</div></div>
     <div class="between"><span>ซ่อนตัวเลขเงิน</span><button class="btn ghost" data-act="eye">${document.body.classList.contains('hide-amt')?'แสดง':'ซ่อน'}</button></div>
-    <p class="small muted" style="margin:14px 0 0">บน iPhone/iPad: Safari › แชร์ › เพิ่มไปยังหน้าจอโฮม เพื่อเปิดเต็มจอเหมือนแอป</p>
+    <p class="small muted" style="margin:14px 0 0">เวอร์ชันแอป ${APP_V}</p><p class="small muted" style="margin:6px 0 0">บน iPhone/iPad: Safari › แชร์ › เพิ่มไปยังหน้าจอโฮม เพื่อเปิดเต็มจอเหมือนแอป</p>
     <div class="row" style="margin-top:14px;flex-wrap:wrap"><button class="btn ghost" data-act="wipe">ลบข้อมูลในเครื่องนี้</button><button class="btn ghost" data-act="forgetkey">ลืมรหัสข้อมูล</button></div></section>`;
   h += `</div>`;
   return h;
@@ -778,7 +779,7 @@ function render(){
   if(S.locked){ const top = main.querySelector('.top'); if(top) top.insertAdjacentHTML('afterend', unlockCard()); }
   const uf = $('#unlock'); if(uf) uf.addEventListener('submit', async e => { e.preventDefault(); const pw = $('#pw').value.trim(); if(!pw) return; $('#pwmsg').textContent = 'กำลังถอดรหัส…'; const ok = await tryUnlock(S.locked, pw); if(ok){ ls.set(K.key, pw); toast('ปลดล็อกแล้ว · ข้อมูล '+ago(DATA.generatedAt)); render(); } else $('#pwmsg').textContent = 'รหัสไม่ถูกต้อง'; });
   document.querySelectorAll('#nav button[data-go]').forEach(b => b.setAttribute('aria-current', b.dataset.go===S.view ? 'page' : 'false'));
-  $('#navfoot').textContent = DATA ? 'ข้อมูล Mac · '+ago(DATA.generatedAt) : 'ยังไม่มีข้อมูล';
+  $('#navfoot').textContent = (DATA ? 'ข้อมูล Mac · '+ago(DATA.generatedAt) : 'ยังไม่มีข้อมูล') + ' · '+APP_V;
   const wq = $('#wq'); if(wq){ wq.addEventListener('input', () => { S.q = wq.value; const pos = wq.selectionStart; render(); const n = $('#wq'); n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} }); }
   const drop = $('#drop'); if(drop){
     ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
