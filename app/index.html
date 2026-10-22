@@ -269,7 +269,7 @@ const ls = {
   set(k, v){ try{ const t = JSON.stringify(v); localStorage.setItem(k, t); localStorage.setItem(k+'~mirror', t); }catch(e){} },
   raw(k){ try{ return localStorage.getItem(k) ?? localStorage.getItem(k+'~mirror'); }catch(e){ return null; } }
 };
-const APP_V = 'v2.1';
+const APP_V = 'v2.2';
 let DATA = ls.get(K.data, null);
 const S = { view: ls.get(K.view,'home'), ledMonth: null, invSeg: ls.get(K.invSeg,'dca'), q:'' };
 
@@ -849,7 +849,9 @@ async function tryUnlock(enc, pw){
 }
 async function loadRemote(){
   try{ const r = await fetch('./ledger-app-data.json', {cache:'no-store'}); if(r.ok){ const d = await r.json(); if(d.app==='ledger-app-data' && (!DATA || d.generatedAt > DATA.generatedAt)){ DATA = d; ls.set(K.data, d); render(); } } }catch(e){}
-  try{ const r = await fetch('./data.enc', {cache:'no-store'}); if(!r.ok) return; const enc = await r.json();
+  let url = './data.enc';
+  try{ const sr = await fetch('./source.json', {cache:'no-store'}); if(sr.ok){ const src = await sr.json(); if(src.gist && src.owner) url = `https://gist.githubusercontent.com/${src.owner}/${src.gist}/raw/data.enc?t=${Date.now()}`; } }catch(e){}
+  try{ let r = await fetch(url, {cache:'no-store'}); if(!r.ok && url!=='./data.enc') r = await fetch('./data.enc', {cache:'no-store'}); if(!r.ok) return; const enc = await r.json();
     if(enc.app!=='ledger-app-enc' || (DATA && DATA.generatedAt >= enc.generatedAt)) return;
     const pw = ls.get(K.key, null);
     if(pw && await tryUnlock(enc, pw)){ render(); return; }
