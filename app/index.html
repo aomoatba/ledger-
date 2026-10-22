@@ -263,7 +263,7 @@ input[type=number],input[type=text],input[type=search]{font:inherit;color:var(--
 <script>
 'use strict';
 /* ================= storage ================= */
-const K = { data:'app2-data', view:'app2-view', theme:'app2-theme', hide:'app2-hide', hxDone:'app2-hx-done', hxKm:'app2-hx-km', invSeg:'app2-inv-seg' };
+const K = { data:'app2-data', view:'app2-view', theme:'app2-theme', hide:'app2-hide', hxDone:'app2-hx-done', hxKm:'app2-hx-km', invSeg:'app2-inv-seg', key:'app2-key' };
 const ls = {
   get(k, d){ try{ const v = localStorage.getItem(k) ?? localStorage.getItem(k+'~mirror'); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k, v){ try{ const t = JSON.stringify(v); localStorage.setItem(k, t); localStorage.setItem(k+'~mirror', t); }catch(e){} },
@@ -482,6 +482,13 @@ function topbar(title, sub, extra=''){
     <button class="iconbtn" data-act="eye" aria-label="ซ่อน/แสดงตัวเลข">${document.body.classList.contains('hide-amt')
       ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 9 6 9 6a15 15 0 0 1-3 3.4M6.6 6.6C4.3 8.2 3 12 3 12s4 6 9 6c1.6 0 3-.4 4.3-1"/></svg>'
       : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 12s4-6 9-6 9 6 9 6-4 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/></svg>'}</button></header>`;
+}
+function unlockCard(){
+  if(!S.locked) return '';
+  return `<section class="card s-ledger" style="margin-bottom:var(--gap)"><h2>ข้อมูลล่าสุดจาก Mac รออยู่<span class="meta">${ago(S.locked.generatedAt)}</span></h2>
+    <p class="small muted" style="margin:0 0 10px">ข้อมูลถูกเข้ารหัสไว้ ใส่รหัสครั้งเดียว เครื่องนี้จะจำไว้</p>
+    <form id="unlock" class="row" style="gap:8px"><input type="password" id="pw" placeholder="รหัสข้อมูล" autocomplete="current-password" style="flex:1" aria-label="รหัสข้อมูล"><button class="btn sec" type="submit">ปลดล็อก</button></form>
+    <div id="pwmsg" class="small neg" style="margin-top:6px"></div></section>`;
 }
 function noData(sec, what){
   return `<div class="card s-${sec}"><div class="empty"><p style="margin:0 0 6px;font-weight:650;color:var(--ink)">ยังไม่มีข้อมูล ${what}</p>
@@ -755,7 +762,7 @@ function vSettings(){
   h += `<section class="card"><h2>การแสดงผล</h2><div class="between" style="margin-bottom:12px"><span>ธีม</span><div class="seg" role="group">${[['auto','อัตโนมัติ'],['light','สว่าง'],['dark','มืด']].map(([k,l]) => `<button data-theme="${k}" aria-pressed="${th===k}">${l}</button>`).join('')}</div></div>
     <div class="between"><span>ซ่อนตัวเลขเงิน</span><button class="btn ghost" data-act="eye">${document.body.classList.contains('hide-amt')?'แสดง':'ซ่อน'}</button></div>
     <p class="small muted" style="margin:14px 0 0">บน iPhone/iPad: Safari › แชร์ › เพิ่มไปยังหน้าจอโฮม เพื่อเปิดเต็มจอเหมือนแอป</p>
-    <div style="margin-top:14px"><button class="btn ghost" data-act="wipe">ลบข้อมูลในเครื่องนี้</button></div></section>`;
+    <div class="row" style="margin-top:14px;flex-wrap:wrap"><button class="btn ghost" data-act="wipe">ลบข้อมูลในเครื่องนี้</button><button class="btn ghost" data-act="forgetkey">ลืมรหัสข้อมูล</button></div></section>`;
   h += `</div>`;
   return h;
 }
@@ -768,6 +775,8 @@ function render(){
   const main = $('#main');
   main.className = S.view==='invest'?'s-invest': S.view==='health'?'s-health':'s-ledger';
   main.innerHTML = VIEWS[S.view]();
+  if(S.locked){ const top = main.querySelector('.top'); if(top) top.insertAdjacentHTML('afterend', unlockCard()); }
+  const uf = $('#unlock'); if(uf) uf.addEventListener('submit', async e => { e.preventDefault(); const pw = $('#pw').value.trim(); if(!pw) return; $('#pwmsg').textContent = 'กำลังถอดรหัส…'; const ok = await tryUnlock(S.locked, pw); if(ok){ ls.set(K.key, pw); toast('ปลดล็อกแล้ว · ข้อมูล '+ago(DATA.generatedAt)); render(); } else $('#pwmsg').textContent = 'รหัสไม่ถูกต้อง'; });
   document.querySelectorAll('#nav button[data-go]').forEach(b => b.setAttribute('aria-current', b.dataset.go===S.view ? 'page' : 'false'));
   $('#navfoot').textContent = DATA ? 'ข้อมูล Mac · '+ago(DATA.generatedAt) : 'ยังไม่มีข้อมูล';
   const wq = $('#wq'); if(wq){ wq.addEventListener('input', () => { S.q = wq.value; const pos = wq.selectionStart; render(); const n = $('#wq'); n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} }); }
@@ -806,6 +815,7 @@ document.addEventListener('click', e => {
   else if(a==='mnow'){ S.ledMonth = mkOf(now); render(); }
   else if(a==='hxdone'){ const d = ls.get(K.hxDone, {}), k = iso(now); const x = healthModel(now); if(x && x.done[k]) d[k] = false; else d[k] = true; if(d[k]===false && !((DATA.health.state||{}).done||{})[k]) delete d[k]; ls.set(K.hxDone, d); render(); }
   else if(a==='hxkm'){ const x = healthModel(now); if(!x) return; const v = parseFloat(String(prompt('วิ่งไปกี่กิโล? (ใส่ค่าติดลบเพื่อลบออก)','')||'').replace(',','.')); if(isNaN(v)) return; const km = ls.get(K.hxKm, {}); const wk = 'w'+x.w; km[wk] = Math.round(((+km[wk]||0)+v)*10)/10; ls.set(K.hxKm, km); toast('บันทึก '+v+' กม.'); render(); }
+  else if(a==='forgetkey'){ try{ localStorage.removeItem(K.key); localStorage.removeItem(K.key+'~mirror'); }catch(e){} toast('ลืมรหัสแล้ว — ครั้งหน้าจะถามใหม่'); }
   else if(a==='wipe'){ if(confirm('ลบข้อมูลที่นำเข้าไว้ในเครื่องนี้? (ไม่กระทบ Locum Ledger และไฟล์บน Mac)')){ try{ [K.data,K.hxDone,K.hxKm].forEach(k => { localStorage.removeItem(k); localStorage.removeItem(k+'~mirror'); }); }catch(e){} DATA = null; render(); } }
 });
 
@@ -825,11 +835,28 @@ setInterval(() => {
 // redraw when coming back to the app (date/prices may have moved on)
 document.addEventListener('visibilitychange', () => { if(!document.hidden) render(); });
 
-/* first run on a Mac served next to the file: pick it up automatically */
-(async () => {
-  render();
+/* data published with the app (encrypted), or a plain file sitting next to it on the Mac */
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function tryUnlock(enc, pw){
+  try{
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey({name:'PBKDF2', hash:'SHA-256', salt:b64(enc.salt), iterations:enc.iter||600000}, base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(enc.iv)}, key, b64(enc.ct));
+    const d = JSON.parse(new TextDecoder().decode(pt)); if(d.app!=='ledger-app-data') return false;
+    DATA = d; ls.set(K.data, d); S.locked = null; return true;
+  }catch(e){ return false; }
+}
+async function loadRemote(){
   try{ const r = await fetch('./ledger-app-data.json', {cache:'no-store'}); if(r.ok){ const d = await r.json(); if(d.app==='ledger-app-data' && (!DATA || d.generatedAt > DATA.generatedAt)){ DATA = d; ls.set(K.data, d); render(); } } }catch(e){}
-})();
+  try{ const r = await fetch('./data.enc', {cache:'no-store'}); if(!r.ok) return; const enc = await r.json();
+    if(enc.app!=='ledger-app-enc' || (DATA && DATA.generatedAt >= enc.generatedAt)) return;
+    const pw = ls.get(K.key, null);
+    if(pw && await tryUnlock(enc, pw)){ render(); return; }
+    S.locked = enc; render();
+  }catch(e){}
+}
+render(); loadRemote();
+document.addEventListener('visibilitychange', () => { if(!document.hidden) loadRemote(); });
 </script>
 </body>
 </html>
