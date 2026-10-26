@@ -269,7 +269,7 @@ const ls = {
   set(k, v){ try{ const t = JSON.stringify(v); localStorage.setItem(k, t); localStorage.setItem(k+'~mirror', t); }catch(e){} },
   raw(k){ try{ return localStorage.getItem(k) ?? localStorage.getItem(k+'~mirror'); }catch(e){ return null; } }
 };
-const APP_V = 'v2.2';
+const APP_V = 'v2.3';
 let DATA = ls.get(K.data, null);
 const S = { view: ls.get(K.view,'home'), ledMonth: null, invSeg: ls.get(K.invSeg,'dca'), q:'' };
 
@@ -611,8 +611,30 @@ function vLedger(){
 }
 
 /* ---------- INVEST ---------- */
+/* Cash accounts snapshot (entered in chat, 26 Oct 2026). Tiers: [up to, rate %/yr]. */
+const ACCT = { asOf:'2026-10-26', fx:33.74, items:[
+  { name:'Webull', where:'เงินสด USD รอลงทุน', amt:3000, ccy:'USD', tiers:[[Infinity,3.5]] },
+  { name:'Dime! FCD', where:'USD ฝากได้ดอก · ซื้อหุ้น US ได้', amt:2000, ccy:'USD', tiers:[[2000,4.5],[20000,2.5],[Infinity,0.5]] },
+  { name:'KBank', where:'บัญชีใช้จ่าย', amt:17173.70, ccy:'THB', tiers:[[Infinity,0.25]] },
+  { name:'Dime! Save', where:'ออมทรัพย์', amt:10000, ccy:'THB', tiers:[[10000,3],[300000,1],[Infinity,0.2]] },
+  { name:'Webull THB', where:'เงินบาทค้างในบัญชี', amt:4.35, ccy:'THB', tiers:[[Infinity,0]] }
+]};
+function acctInt(a){ let left=a.amt, prev=0, sum=0; for(const [up,r] of a.tiers){ const sl=Math.min(left, up-prev); if(sl<=0) break; sum+=sl*r/100; left-=sl; prev=up; } return a.ccy==='USD' ? sum*ACCT.fx : sum; }
+function accountsCard(){
+  const rows = ACCT.items.map(a => Object.assign({}, a, { thb: a.ccy==='USD' ? a.amt*ACCT.fx : a.amt, yr: acctInt(a) }));
+  const cash = rows.filter(r=>!r.risk), cashT = cash.reduce((s,r)=>s+r.thb,0), yr = rows.reduce((s,r)=>s+r.yr,0);
+  const d = new Date(ACCT.asOf+'T00:00:00'), when = d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+  const rate = r => r.tiers[0][1] ? `<span class="chip pos">${r.tiers[0][1]}%</span>` : '';
+  return `<section class="card"><h2>บัญชีเงินสด<span class="meta">ยอด ${esc(when)}</span></h2>
+    <div class="mid amt">${B(cashT)}</div>
+    <div class="small muted" style="margin:2px 0 10px">ดอกเบี้ย ≈ <b class="pos">${B(yr)}</b> / ปี · ${B(yr/12)} / เดือน</div>
+    <div class="list">${rows.map(r => `<div class="li"><span class="grow" style="min-width:0"><span class="t" style="white-space:normal">${esc(r.name)}</span><div class="s" style="white-space:normal">${esc(r.where)}</div></span>
+      <span class="r"><div class="num amt" style="font-weight:700">${r.ccy==='USD' ? '$'+r.amt.toLocaleString('en-US',{maximumFractionDigits:2}) : B(r.amt)}</div><div class="tiny">${rate(r)}</div></span></div>`).join('')}</div>
+    <div class="tiny faint" style="margin-top:8px">FX ${ACCT.fx} · เรทที่แสดงคือขั้นแรก ดอกเบี้ยคิดตามขั้นบันไดจริง</div></section>`;
+}
+
 function vInvest(){
-  const m = investModel(); if(!m) return topbar('Invest') + noData('invest','พอร์ต');
+  const m = investModel(); if(!m) return topbar('Invest') + `<div class="grid g3 s-invest">${accountsCard()}</div>` + noData('invest','พอร์ต');
   const I = m.I, now = now0();
   let h = topbar('Invest', 'ราคา '+ago(I.pricesAt) + (I.dca && I.dca.policyV ? ' · DCA '+esc(I.dca.policyV) : ''));
   h += `<div class="grid g3 s-invest">`;
@@ -624,6 +646,7 @@ function vInvest(){
     <div style="margin-top:16px"><div class="between small"><span>เป้าถัดไป ${Bk(next)}</span><b class="num">${(m.total/next*100).toFixed(m.total/next<.1?1:0)}%</b></div>
     <div class="bar" style="height:10px;margin-top:6px"><i style="width:${clamp(m.total/next*100,1,100)}%"></i></div>
     <div class="tiny faint" style="margin-top:6px">หลักไมล์ ${ms.map(Bk).join(' → ')}</div></div></section>`;
+  h += accountsCard();
   // DCA this month
   const D = I.dca||{}, R = I.route||{}, invM = ((DATA.ledger||{}).investByMonth||{})[mkOf(now)]||0;
   const sure = D.sure||0, fast = D.fast||0, stockShare = D.stock!=null?D.stock:.8, total = sure+fast;
